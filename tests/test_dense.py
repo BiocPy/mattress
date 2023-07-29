@@ -20,6 +20,7 @@ def test_numpy_with_dtype():
 def test_dense_column_major():
     y = np.ndarray((1000, 100), order = "F")
     y[:,:] = np.random.rand(1000, 100)
+    assert y.flags["F_CONTIGUOUS"]
     ptr = tatamize(y)
     assert all(ptr.row(0) == y[0, :])
     assert all(ptr.column(1) == y[:, 1])
