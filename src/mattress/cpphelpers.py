@@ -53,7 +53,13 @@ lib.py_extract_row.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
 lib.py_extract_column.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
 
 lib.py_initialize_dense_matrix.restype = ct.c_void_p
-lib.py_initialize_dense_matrix.argtypes = [ct.c_int, ct.c_int, ct.c_char_p, ct.c_void_p]
+lib.py_initialize_dense_matrix.argtypes = [
+    ct.c_int, 
+    ct.c_int, 
+    ct.c_char_p, 
+    ct.c_void_p,
+    ct.c_uint8
+]
 
 lib.py_initialize_compressed_sparse_matrix.restype = ct.c_void_p
 lib.py_initialize_compressed_sparse_matrix.argtypes = [

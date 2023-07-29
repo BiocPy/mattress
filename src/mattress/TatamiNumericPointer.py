@@ -92,9 +92,23 @@ class TatamiNumericPointer:
         if len(x.shape) != 2:
             raise ValueError("'x' should be a 2-dimensional array")
 
+        byrow = None
+        if x.flags["C_CONTIGUOUS"]:
+            byrow = True
+        elif x.flags["F_CONTIGUOUS"]:
+            byrow = False
+        else:
+            # I don't think it's possible to hit this, as a (non-view) ndarray
+            # should be contiguous in at least one direction.
+            raise ValueError("'x' must have contiguous storage for its arrays")
+
         return cls(
             ptr=lib.py_initialize_dense_matrix(
-                x.shape[0], x.shape[1], str(x.dtype).encode("utf-8"), x.ctypes.data
+                x.shape[0], 
+                x.shape[1], 
+                str(x.dtype).encode("utf-8"), 
+                x.ctypes.data, 
+                byrow
             ),
             obj=x,
         )
