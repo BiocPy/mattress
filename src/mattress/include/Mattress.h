@@ -1,8 +1,10 @@
 #ifndef MATTRESS_COMMON_H
 #define MATTRESS_COMMON_H
 
+#include <thread>
+#include <vector>
+
 #include "tatami/tatami.hpp"
-#include <iostream>
 
 struct Mattress {
     Mattress(tatami::NumericMatrix* p) : ptr(p) {}
