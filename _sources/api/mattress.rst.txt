@@ -1,0 +1,61 @@
+mattress package
+================
+
+Submodules
+----------
+
+mattress.TatamiNumericPointer module
+------------------------------------
+
+.. automodule:: mattress.TatamiNumericPointer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mattress.core module
+--------------------
+
+.. automodule:: mattress.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mattress.cpphelpers module
+--------------------------
+
+.. automodule:: mattress.cpphelpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mattress.interface module
+-------------------------
+
+.. automodule:: mattress.interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mattress.types module
+---------------------
+
+.. automodule:: mattress.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mattress.utils module
+---------------------
+
+.. automodule:: mattress.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: mattress
+   :members:
+   :undoc-members:
+   :show-inheritance:
