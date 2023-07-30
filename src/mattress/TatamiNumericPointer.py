@@ -104,11 +104,11 @@ class TatamiNumericPointer:
 
         return cls(
             ptr=lib.py_initialize_dense_matrix(
-                x.shape[0], 
-                x.shape[1], 
-                str(x.dtype).encode("utf-8"), 
-                x.ctypes.data, 
-                byrow
+                x.shape[0],
+                x.shape[1],
+                str(x.dtype).encode("utf-8"),
+                x.ctypes.data,
+                byrow,
             ),
             obj=x,
         )
