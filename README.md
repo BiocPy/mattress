@@ -51,7 +51,7 @@ Additionally you can also specify if the input matrix is a column or row major.
 
 ```python
 x = np.ones((2, 3), order='F')
-tatamat = tatamize(y, order="F")
+tatamat = tatamize(y)
 ```
 
 ## Developer Notes
