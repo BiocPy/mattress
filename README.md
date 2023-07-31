@@ -27,8 +27,7 @@ pip install mattress
 
 ## Usage
 
-***Currently only supports dense matrices.***
-
+### Dense matrices
 To convert a numpy dense matrix to tatami representation - 
 
 ```python
@@ -40,6 +39,7 @@ x = np.random.rand(1000, 100)
 tatamat = tatamize(y)
 ```
 
+### Methods
 Methods are available to access the matrix by `row`, `column`
 
 ```python
@@ -47,11 +47,19 @@ tatamat.row(0)
 tatamat.column(1)
 ```
 
-Additionally you can also specify if the input matrix is a column or row major.
+Also works if the matrix is row-major order.
 
 ```python
 x = np.ones((2, 3), order='F')
 tatamat = tatamize(y)
+```
+
+### Is your matrix sparse?
+
+```python
+from scipy.sparse import rand
+m = rand(3, 4, density=0.25, format="csr", random_state=42)
+tatamat = tatamize(m)
 ```
 
 ## Developer Notes
