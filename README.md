@@ -73,7 +73,11 @@ For typical development workflows, run this for tests
 python setup.py build_ext --inplace && tox
 ```
 
+To rebuild the **ctypes** bindings:
 
+```shell
+wrap.py src/mattress/lib --py src/mattress/cpphelpers.py --cpp src/mattress/lib/bindings.cpp
+```
 
 <!-- pyscaffold-notes -->
 

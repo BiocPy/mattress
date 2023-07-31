@@ -1,35 +1,39 @@
 #include "Mattress.h"
 
-extern "C" {
-
-int py_extract_nrow(Mattress* mat) {
-    return mat->ptr->nrow();
+//[[export]]
+int extract_nrow(const void* mat) {
+    return reinterpret_cast<const Mattress*>(mat)->ptr->nrow();
 }
 
-int py_extract_ncol(Mattress* mat) {
-    return mat->ptr->ncol();
+//[[export]]
+int extract_ncol(const void* mat) {
+    return reinterpret_cast<const Mattress*>(mat)->ptr->ncol();
 }
 
-int py_extract_sparse(Mattress* mat) {
-    return mat->ptr->sparse();
+//[[export]]
+int extract_sparse(const void* mat) {
+    return reinterpret_cast<const Mattress*>(mat)->ptr->sparse();
 }
 
-void py_extract_row(Mattress* mat, int r, void* output) {
+//[[export]]
+void extract_row(void* rawmat, int r, double* output) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->byrow) {
         mat->byrow = mat->ptr->dense_row();
     }
-    mat->byrow->fetch_copy(r, reinterpret_cast<double*>(output));
+    mat->byrow->fetch_copy(r, output);
 }
 
-void py_extract_column(Mattress* mat, int c, void* output) {
+//[[export]]
+void extract_column(void* rawmat, int c, double* output) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->bycol) {
         mat->bycol = mat->ptr->dense_column();
     }
-    mat->bycol->fetch_copy(c, reinterpret_cast<double*>(output));
+    mat->bycol->fetch_copy(c, output);
 }
 
-void py_free_mat(Mattress* mat) {
-    delete mat;
-}
-
+//[[export]]
+void free_mat(void* mat) {
+    delete reinterpret_cast<Mattress*>(mat);
 }

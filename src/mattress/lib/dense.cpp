@@ -5,18 +5,21 @@
 #include <cstdint>
 
 template<typename T>
-Mattress* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) { 
+void* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) { 
     tatami::ArrayView<T> view(ptr, static_cast<size_t>(nr) * static_cast<size_t>(nc));
+
+    Mattress* output;
     if (byrow) {
-        return new Mattress(new tatami::DenseRowMatrix<double, int, decltype(view)>(nr, nc, view));
+        output = new Mattress(new tatami::DenseRowMatrix<double, int, decltype(view)>(nr, nc, view));
     } else { 
-        return new Mattress(new tatami::DenseColumnMatrix<double, int, decltype(view)>(nr, nc, view));
+        output = new Mattress(new tatami::DenseColumnMatrix<double, int, decltype(view)>(nr, nc, view));
     }
+
+    return reinterpret_cast<void*>(output);
 }
 
-extern "C" {
-
-Mattress* py_initialize_dense_matrix(int nr, int nc, const char* type, void* ptr, uint8_t byrow) {
+//[[export]]
+void* initialize_dense_matrix(int nr, int nc, const char* type, void* ptr, uint8_t byrow) {
     if (std::strcmp(type, "float64") == 0) {
         return initialize_dense_matrix(nr, nc, reinterpret_cast<double*>(ptr), byrow);
 
@@ -50,6 +53,4 @@ Mattress* py_initialize_dense_matrix(int nr, int nc, const char* type, void* ptr
 
     throw std::runtime_error("unrecognized array type '" + std::string(type) + "' for dense matrix initialization");
     return NULL;
-}
-
 }
