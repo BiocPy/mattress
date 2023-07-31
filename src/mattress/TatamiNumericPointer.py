@@ -4,16 +4,15 @@ import numpy as np
 import scipy.sparse as sp
 
 from .cpphelpers import (
-    extract_nrow,
-    extract_ncol,
-    extract_sparse,
-    extract_row,
     extract_column,
+    extract_ncol,
+    extract_nrow,
+    extract_row,
+    extract_sparse,
     free_mat,
+    initialize_compressed_sparse_matrix,
     initialize_dense_matrix,
-    initialize_compressed_sparse_matrix
 )
-
 from .types import NumberTypes
 
 __author__ = "ltla, jkanche"
@@ -28,21 +27,22 @@ class TatamiNumericPointer:
         """Initialize the class.
 
         Args:
-            ptr (Mattress): pointer to a Mattress instance wrapping a tatami Matrix.
-            obj (Any): arbitrary Python object that is referenced by the tatami instance.
-                       This is stored here to avoid garbage collection.
+            ptr (Mattress): Pointer to a Mattress instance wrapping a tatami Matrix.
+            obj (Any): Arbitrary Python object that is referenced by the tatami instance.
+                This is stored here to avoid garbage collection.
         """
         self.ptr = ptr
         self.obj = obj
 
     def __del__(self):
+        """Free the reference."""
         free_mat(self.ptr)
 
     def nrow(self) -> int:
         """Get number of rows.
 
         Returns:
-            int: number of rows.
+            int: Number of rows.
         """
         return extract_nrow(self.ptr)
 
@@ -50,7 +50,7 @@ class TatamiNumericPointer:
         """Get number of columns.
 
         Returns:
-            int: number of columns.
+            int: Number of columns.
         """
         return extract_ncol(self.ptr)
 
@@ -66,10 +66,10 @@ class TatamiNumericPointer:
         """Access a row from the tatami matrix.
 
         Args:
-            r (int): row to access.
+            r (int): Row to access.
 
         Returns:
-            Sequence[NumberTypes]: row from the matrix.
+            Sequence[NumberTypes]: Row from the matrix.
         """
         output = np.ndarray((self.ncol(),), dtype="float64")
         extract_row(self.ptr, r, output.ctypes.data)
@@ -79,10 +79,10 @@ class TatamiNumericPointer:
         """Access a column from the tatami matrix.
 
         Args:
-            c (int): column to access.
+            c (int): Column to access.
 
         Returns:
-            Sequence[NumberTypes]: column from the matrix.
+            Sequence[NumberTypes]: Column from the matrix.
         """
         output = np.ndarray((self.nrow(),), dtype="float64")
         extract_column(self.ptr, c, output.ctypes.data)
@@ -93,10 +93,10 @@ class TatamiNumericPointer:
         """Initialize class from a dense matrix.
 
         Args:
-            x (np.ndarray): input numpy array with 2 dimensions.
+            x (np.ndarray): Input numpy array with 2 dimensions.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         if len(x.shape) != 2:
@@ -128,10 +128,10 @@ class TatamiNumericPointer:
         """Initialize class from a compressed sparse column matrix.
 
         Args:
-            x (scipy.sparse.csc_array): input sparse matrix.
+            x (scipy.sparse.csc_array): Input sparse matrix.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         tmp = x.indptr.astype(np.uint64)
@@ -156,10 +156,10 @@ class TatamiNumericPointer:
         """Initialize class from a compressed sparse row matrix.
 
         Args:
-            x (scipy.sparse.csc_array): input sparse matrix.
+            x (scipy.sparse.csc_array): Input sparse matrix.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         tmp = x.indptr.astype(np.uint64)
