@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="mattress" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress - mattress 0.0.5 documentation</title>
+        <title>mattress - mattress 0.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">mattress 0.0.5 documentation</div></a>
+      <a href="index.html"><div class="brand">mattress 0.0.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.5 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.0.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -222,7 +222,8 @@
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
-<p><em><strong>Currently only supports dense matrices.</strong></em></p>
+<section id="dense-matrices">
+<h3>Dense matrices<a class="headerlink" href="#dense-matrices" title="Permalink to this heading">#</a></h3>
 <p>To convert a numpy dense matrix to tatami representation -</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">tatamize</span>
@@ -232,16 +233,28 @@
 <span class="n">tatamat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Permalink to this heading">#</a></h3>
 <p>Methods are available to access the matrix by <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">column</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tatamat</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">tatamat</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Additionally you can also specify if the input matrix is a column or row major.</p>
+<p>Also works if the matrix is row-major order.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
-<span class="n">tatamat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="n">tatamat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="is-your-matrix-sparse">
+<h3>Is your matrix sparse?<a class="headerlink" href="#is-your-matrix-sparse" title="Permalink to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">rand</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">tatamat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="developer-notes">
 <h2>Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this heading">#</a></h2>
@@ -255,6 +268,10 @@
 </div>
 <p>For typical development workflows, run this for tests</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tox
+</pre></div>
+</div>
+<p>To rebuild the <strong>ctypes</strong> bindings with <a class="reference external" href="https://github.com/BiocPy/ctypes-wrapper">the <code class="docutils literal notranslate"><span class="pre">wrap.py</span></code> helper</a></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wrap.py<span class="w"> </span>src/mattress/lib<span class="w"> </span>--py<span class="w"> </span>src/mattress/cpphelpers.py<span class="w"> </span>--cpp<span class="w"> </span>src/mattress/lib/bindings.cpp
 </pre></div>
 </div>
 <!-- pyscaffold-notes -->
@@ -323,7 +340,12 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
             <ul>
 <li><a class="reference internal" href="#">mattress</a><ul>
 <li><a class="reference internal" href="#install">Install</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#dense-matrices">Dense matrices</a></li>
+<li><a class="reference internal" href="#methods">Methods</a></li>
+<li><a class="reference internal" href="#is-your-matrix-sparse">Is your matrix sparse?</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#developer-notes">Developer Notes</a></li>
 <li><a class="reference internal" href="#note">Note</a></li>
 </ul>
@@ -337,7 +359,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=0a554088"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=3dadcae2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

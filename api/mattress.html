@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="mattress" href="modules.html" />
 
     <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress package - mattress 0.0.5 documentation</title>
+        <title>mattress package - mattress 0.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">mattress 0.0.5 documentation</div></a>
+      <a href="../index.html"><div class="brand">mattress 0.0.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.5 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.0.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -207,7 +207,7 @@
 <span id="mattress-tataminumericpointer-module"></span><h2>mattress.TatamiNumericPointer module<a class="headerlink" href="#module-mattress.TatamiNumericPointer" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.TatamiNumericPointer.</span></span><span class="sig-name descname"><span class="pre">TatamiNumericPointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lib.Mattress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Any" title="(in Python v3.9)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.TatamiNumericPointer.</span></span><span class="sig-name descname"><span class="pre">TatamiNumericPointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mattress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Any" title="(in Python v3.9)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Initialize a Tatami Numeric Ponter object.</p>
 <dl class="py method">
@@ -216,10 +216,10 @@
 <dd><p>Access a column from the tatami matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – column to access.</p>
+<dd class="field-odd"><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Column to access.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>column from the matrix.</p>
+<dd class="field-even"><p>Column from the matrix.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Sequence[NumberTypes]</p>
@@ -233,10 +233,10 @@
 <dd><p>Initialize class from a compressed sparse column matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_array.html#scipy.sparse.csc_array" title="(in SciPy v1.11.1)"><em>scipy.sparse.csc_array</em></a>) – input sparse matrix.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_array.html#scipy.sparse.csc_array" title="(in SciPy v1.11.1)"><em>scipy.sparse.csc_array</em></a>) – Input sparse matrix.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>instance of the class.</p>
+<dd class="field-even"><p>Instance of the class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer">TatamiNumericPointer</a></p>
@@ -250,10 +250,10 @@
 <dd><p>Initialize class from a compressed sparse row matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_array.html#scipy.sparse.csc_array" title="(in SciPy v1.11.1)"><em>scipy.sparse.csc_array</em></a>) – input sparse matrix.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_array.html#scipy.sparse.csc_array" title="(in SciPy v1.11.1)"><em>scipy.sparse.csc_array</em></a>) – Input sparse matrix.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>instance of the class.</p>
+<dd class="field-even"><p>Instance of the class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer">TatamiNumericPointer</a></p>
@@ -267,10 +267,10 @@
 <dd><p>Initialize class from a dense matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – input numpy array with 2 dimensions.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – Input numpy array with 2 dimensions.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>instance of the class.</p>
+<dd class="field-even"><p>Instance of the class.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer">TatamiNumericPointer</a></p>
@@ -284,7 +284,7 @@
 <dd><p>Get number of columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>number of columns.</p>
+<dd class="field-odd"><p>Number of columns.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a></p>
@@ -298,7 +298,7 @@
 <dd><p>Get number of rows.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>number of rows.</p>
+<dd class="field-odd"><p>Number of rows.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a></p>
@@ -312,10 +312,10 @@
 <dd><p>Access a row from the tatami matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – row to access.</p>
+<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Row to access.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>row from the matrix.</p>
+<dd class="field-even"><p>Row from the matrix.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Sequence[NumberTypes]</p>
@@ -346,33 +346,44 @@
 <section id="module-mattress.cpphelpers">
 <span id="mattress-cpphelpers-module"></span><h2>mattress.cpphelpers module<a class="headerlink" href="#module-mattress.cpphelpers" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="mattress.cpphelpers.includes">
-<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">includes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.includes" title="Permalink to this definition">#</a></dt>
-<dd><p>Provides access to C++ headers (including tatami) for downstream packages.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of paths to the header files.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="mattress.cpphelpers.extract_column">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">extract_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawmat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#extract_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.extract_column" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="mattress.cpphelpers.load_dll">
-<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">load_dll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/ctypes.html#ctypes.CDLL" title="(in Python v3.9)"><span class="pre">CDLL</span></a></span></span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#load_dll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.load_dll" title="Permalink to this definition">#</a></dt>
-<dd><p>load the shared library.</p>
-<p>usually starts with core.&lt;platform&gt;.&lt;so or dll&gt;.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>shared object.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>(ct.CDLL, optional)</p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="mattress.cpphelpers.extract_ncol">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">extract_ncol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#extract_ncol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.extract_ncol" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.extract_nrow">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">extract_nrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#extract_nrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.extract_nrow" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.extract_row">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">extract_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawmat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#extract_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.extract_row" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.extract_sparse">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">extract_sparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#extract_sparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.extract_sparse" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.free_mat">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">free_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#free_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.free_mat" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.initialize_compressed_sparse_matrix">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">initialize_compressed_sparse_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byrow</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#initialize_compressed_sparse_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.initialize_compressed_sparse_matrix" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.cpphelpers.initialize_dense_matrix">
+<span class="sig-prename descclassname"><span class="pre">mattress.cpphelpers.</span></span><span class="sig-name descname"><span class="pre">initialize_dense_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byrow</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/cpphelpers.html#initialize_dense_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.cpphelpers.initialize_dense_matrix" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-mattress.interface">
@@ -414,6 +425,20 @@
 <section id="module-mattress.utils">
 <span id="mattress-utils-module"></span><h2>mattress.utils module<a class="headerlink" href="#module-mattress.utils" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="mattress.utils.includes">
+<span class="sig-prename descclassname"><span class="pre">mattress.utils.</span></span><span class="sig-name descname"><span class="pre">includes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.List" title="(in Python v3.9)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/utils.html#includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.utils.includes" title="Permalink to this definition">#</a></dt>
+<dd><p>Provides access to C++ headers (including tatami) for downstream packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of paths to the header files.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="mattress.utils.map_axis_to_bool">
 <span class="sig-prename descclassname"><span class="pre">mattress.utils.</span></span><span class="sig-name descname"><span class="pre">map_axis_to_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mattress/utils.html#map_axis_to_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.utils.map_axis_to_bool" title="Permalink to this definition">#</a></dt>
 <dd><p>Validate and map axis to a boolean.</p>
@@ -439,7 +464,7 @@
 <dd><p>Validate and map order to a boolean.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – dense matrix representation, ‘C’, ‘F’,
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Dense matrix representation, ‘C’, ‘F’,
 row-major (C-style) or column-major (Fortran-style) order.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -525,8 +550,14 @@ row-major (C-style) or column-major (Fortran-style) order.</p>
 </li>
 <li><a class="reference internal" href="#mattress-core-module">mattress.core module</a></li>
 <li><a class="reference internal" href="#module-mattress.cpphelpers">mattress.cpphelpers module</a><ul>
-<li><a class="reference internal" href="#mattress.cpphelpers.includes"><code class="docutils literal notranslate"><span class="pre">includes()</span></code></a></li>
-<li><a class="reference internal" href="#mattress.cpphelpers.load_dll"><code class="docutils literal notranslate"><span class="pre">load_dll()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.extract_column"><code class="docutils literal notranslate"><span class="pre">extract_column()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.extract_ncol"><code class="docutils literal notranslate"><span class="pre">extract_ncol()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.extract_nrow"><code class="docutils literal notranslate"><span class="pre">extract_nrow()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.extract_row"><code class="docutils literal notranslate"><span class="pre">extract_row()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.extract_sparse"><code class="docutils literal notranslate"><span class="pre">extract_sparse()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.free_mat"><code class="docutils literal notranslate"><span class="pre">free_mat()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.initialize_compressed_sparse_matrix"><code class="docutils literal notranslate"><span class="pre">initialize_compressed_sparse_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.cpphelpers.initialize_dense_matrix"><code class="docutils literal notranslate"><span class="pre">initialize_dense_matrix()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-mattress.interface">mattress.interface module</a><ul>
@@ -535,6 +566,7 @@ row-major (C-style) or column-major (Fortran-style) order.</p>
 </li>
 <li><a class="reference internal" href="#module-mattress.types">mattress.types module</a></li>
 <li><a class="reference internal" href="#module-mattress.utils">mattress.utils module</a><ul>
+<li><a class="reference internal" href="#mattress.utils.includes"><code class="docutils literal notranslate"><span class="pre">includes()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.utils.map_axis_to_bool"><code class="docutils literal notranslate"><span class="pre">map_axis_to_bool()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.utils.map_order_to_bool"><code class="docutils literal notranslate"><span class="pre">map_order_to_bool()</span></code></a></li>
 </ul>
@@ -551,7 +583,7 @@ row-major (C-style) or column-major (Fortran-style) order.</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=0a554088"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3dadcae2"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress.TatamiNumericPointer - mattress 0.0.5 documentation</title>
+        <title>mattress.TatamiNumericPointer - mattress 0.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">mattress 0.0.5 documentation</div></a>
+      <a href="../../index.html"><div class="brand">mattress 0.0.6 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.5 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.0.6 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,7 +202,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
 
-<span class="kn">from</span> <span class="nn">.cpphelpers</span> <span class="kn">import</span> <span class="n">lib</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cpphelpers</span> <span class="k">as</span> <span class="n">lib</span>
 <span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">NumberTypes</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
@@ -213,35 +213,36 @@
 <div class="viewcode-block" id="TatamiNumericPointer"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer">[docs]</a><span class="k">class</span> <span class="nc">TatamiNumericPointer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a Tatami Numeric Ponter object.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="s2">&quot;lib.Mattress&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="s2">&quot;Mattress&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ptr (lib.Mattress): pointer to a tatami instance.</span>
-<span class="sd">            obj (Any): arbitrary Python object that is referenced by the tatami instance.</span>
-<span class="sd">                       This is stored here to avoid garbage collection.</span>
+<span class="sd">            ptr (Mattress): Pointer to a Mattress instance wrapping a tatami Matrix.</span>
+<span class="sd">            obj (Any): Arbitrary Python object that is referenced by the tatami instance.</span>
+<span class="sd">                This is stored here to avoid garbage collection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">lib</span><span class="o">.</span><span class="n">py_free_mat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Free the reference.&quot;&quot;&quot;</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">free_mat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TatamiNumericPointer.nrow"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.nrow">[docs]</a>    <span class="k">def</span> <span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of rows.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            int: number of rows.</span>
+<span class="sd">            int: Number of rows.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">py_extract_nrow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_nrow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TatamiNumericPointer.ncol"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.ncol">[docs]</a>    <span class="k">def</span> <span class="nf">ncol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of columns.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            int: number of columns.</span>
+<span class="sd">            int: Number of columns.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">py_extract_ncol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_ncol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TatamiNumericPointer.sparse"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.sparse">[docs]</a>    <span class="k">def</span> <span class="nf">sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the matrix sparse?</span>
@@ -249,32 +250,32 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if matrix is sparse.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">py_extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
 <div class="viewcode-block" id="TatamiNumericPointer.row"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row">[docs]</a>    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NumberTypes</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a row from the tatami matrix.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            r (int): row to access.</span>
+<span class="sd">            r (int): Row to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[NumberTypes]: row from the matrix.</span>
+<span class="sd">            Sequence[NumberTypes]: Row from the matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="n">lib</span><span class="o">.</span><span class="n">py_extract_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
 <div class="viewcode-block" id="TatamiNumericPointer.column"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column">[docs]</a>    <span class="k">def</span> <span class="nf">column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NumberTypes</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a column from the tatami matrix.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            c (int): column to access.</span>
+<span class="sd">            c (int): Column to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[NumberTypes]: column from the matrix.</span>
+<span class="sd">            Sequence[NumberTypes]: Column from the matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
-        <span class="n">lib</span><span class="o">.</span><span class="n">py_extract_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">extract_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
 <div class="viewcode-block" id="TatamiNumericPointer.from_dense_matrix"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.from_dense_matrix">[docs]</a>    <span class="nd">@classmethod</span>
@@ -282,10 +283,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a dense matrix.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (np.ndarray): input numpy array with 2 dimensions.</span>
+<span class="sd">            x (np.ndarray): Input numpy array with 2 dimensions.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: instance of the class.</span>
+<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
@@ -302,7 +303,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x&#39; must have contiguous storage for its arrays&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">py_initialize_dense_matrix</span><span class="p">(</span>
+            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_dense_matrix</span><span class="p">(</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
@@ -317,16 +318,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a compressed sparse column matrix.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (scipy.sparse.csc_array): input sparse matrix.</span>
+<span class="sd">            x (scipy.sparse.csc_array): Input sparse matrix.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: instance of the class.</span>
+<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">py_initialize_compressed_sparse_matrix</span><span class="p">(</span>
+            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
@@ -345,15 +346,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a compressed sparse row matrix.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (scipy.sparse.csc_array): input sparse matrix.</span>
+<span class="sd">            x (scipy.sparse.csc_array): Input sparse matrix.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: instance of the class.</span>
+<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">py_initialize_compressed_sparse_matrix</span><span class="p">(</span>
+            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
@@ -398,7 +399,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=0a554088"></script>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=3dadcae2"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
