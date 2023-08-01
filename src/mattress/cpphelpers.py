@@ -2,6 +2,20 @@
 
 import os
 import ctypes as ct
+from functools import wraps
+
+def catch_errors(f):
+    @wraps(f)
+    def wrapper(*args):
+        errcode___ = ct.c_int(0)
+        errmsg___ = ct.c_char_p(0)
+        output___ = f(*args, ct.byref(errcode___), ct.byref(errmsg___))
+        if errcode___.value != 0:
+            msg = errmsg___.value.decode('ascii')
+            lib.free_error_message(errmsg___)
+            raise RuntimeError(msg)
+        return output___
+    return wrapper
 
 # TODO: surely there's a better way than whatever this is.
 dirname = os.path.dirname(os.path.abspath(__file__))
@@ -85,83 +99,27 @@ lib.py_initialize_dense_matrix.argtypes = [
     ct.POINTER(ct.c_int),
     ct.POINTER(ct.c_char_p)
 ]
-
 def extract_column(rawmat, c, output):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_extract_column(rawmat, c, output, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_extract_column)(rawmat, c, output)
+    
 def extract_ncol(mat):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_extract_ncol(mat, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_extract_ncol)(mat)
+    
 def extract_nrow(mat):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_extract_nrow(mat, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_extract_nrow)(mat)
+    
 def extract_row(rawmat, r, output):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_extract_row(rawmat, r, output, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_extract_row)(rawmat, r, output)
+    
 def extract_sparse(mat):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_extract_sparse(mat, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_extract_sparse)(mat)
+    
 def free_mat(mat):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_free_mat(mat, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_free_mat)(mat)
+    
 def initialize_compressed_sparse_matrix(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_initialize_compressed_sparse_matrix(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
-
+    return catch_errors(lib.py_initialize_compressed_sparse_matrix)(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow)
+    
 def initialize_dense_matrix(nr, nc, type, ptr, byrow):
-    errcode___ = ct.c_int(0)
-    errmsg___ = ct.c_char_p(0)
-    output___ = lib.py_initialize_dense_matrix(nr, nc, type, ptr, byrow, ct.byref(errcode___), ct.byref(errmsg___))
-    if errcode___.value != 0:
-        msg = errmsg___.value.decode('ascii')
-        lib.free_error_message(errmsg___)
-        raise RuntimeError(msg)
-    return output___
+    return catch_errors(lib.py_initialize_dense_matrix)(nr, nc, type, ptr, byrow)
+    
