@@ -7,14 +7,14 @@ from functools import wraps
 def catch_errors(f):
     @wraps(f)
     def wrapper(*args):
-        errcode___ = ct.c_int(0)
-        errmsg___ = ct.c_char_p(0)
-        output___ = f(*args, ct.byref(errcode___), ct.byref(errmsg___))
-        if errcode___.value != 0:
-            msg = errmsg___.value.decode('ascii')
-            lib.free_error_message(errmsg___)
+        errcode = ct.c_int(0)
+        errmsg = ct.c_char_p(0)
+        output = f(*args, ct.byref(errcode), ct.byref(errmsg))
+        if errcode.value != 0:
+            msg = errmsg.value.decode('ascii')
+            lib.free_error_message(errmsg)
             raise RuntimeError(msg)
-        return output___
+        return output
     return wrapper
 
 # TODO: surely there's a better way than whatever this is.
