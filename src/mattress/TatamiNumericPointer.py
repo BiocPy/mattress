@@ -3,7 +3,7 @@ from typing import Any, Sequence
 import numpy as np
 import scipy.sparse as sp
 
-from .cpphelpers import lib
+from . import cpphelpers as lib
 from .types import NumberTypes
 
 __author__ = "ltla, jkanche"
@@ -14,35 +14,36 @@ __license__ = "MIT"
 class TatamiNumericPointer:
     """Initialize a Tatami Numeric Ponter object."""
 
-    def __init__(self, ptr: "lib.Mattress", obj: Any):
+    def __init__(self, ptr: "Mattress", obj: Any):
         """Initialize the class.
 
         Args:
-            ptr (lib.Mattress): pointer to a tatami instance.
-            obj (Any): arbitrary Python object that is referenced by the tatami instance.
-                       This is stored here to avoid garbage collection.
+            ptr (Mattress): Pointer to a Mattress instance wrapping a tatami Matrix.
+            obj (Any): Arbitrary Python object that is referenced by the tatami instance.
+                This is stored here to avoid garbage collection.
         """
         self.ptr = ptr
         self.obj = obj
 
     def __del__(self):
-        lib.py_free_mat(self.ptr)
+        """Free the reference."""
+        lib.free_mat(self.ptr)
 
     def nrow(self) -> int:
         """Get number of rows.
 
         Returns:
-            int: number of rows.
+            int: Number of rows.
         """
-        return lib.py_extract_nrow(self.ptr)
+        return lib.extract_nrow(self.ptr)
 
     def ncol(self) -> int:
         """Get number of columns.
 
         Returns:
-            int: number of columns.
+            int: Number of columns.
         """
-        return lib.py_extract_ncol(self.ptr)
+        return lib.extract_ncol(self.ptr)
 
     def sparse(self) -> bool:
         """Is the matrix sparse?
@@ -50,32 +51,32 @@ class TatamiNumericPointer:
         Returns:
             bool: True if matrix is sparse.
         """
-        return lib.py_extract_sparse(self.ptr) > 0
+        return lib.extract_sparse(self.ptr) > 0
 
     def row(self, r: int) -> Sequence[NumberTypes]:
         """Access a row from the tatami matrix.
 
         Args:
-            r (int): row to access.
+            r (int): Row to access.
 
         Returns:
-            Sequence[NumberTypes]: row from the matrix.
+            Sequence[NumberTypes]: Row from the matrix.
         """
         output = np.ndarray((self.ncol(),), dtype="float64")
-        lib.py_extract_row(self.ptr, r, output.ctypes.data)
+        lib.extract_row(self.ptr, r, output.ctypes.data)
         return output
 
     def column(self, c: int) -> Sequence[NumberTypes]:
         """Access a column from the tatami matrix.
 
         Args:
-            c (int): column to access.
+            c (int): Column to access.
 
         Returns:
-            Sequence[NumberTypes]: column from the matrix.
+            Sequence[NumberTypes]: Column from the matrix.
         """
         output = np.ndarray((self.nrow(),), dtype="float64")
-        lib.py_extract_column(self.ptr, c, output.ctypes.data)
+        lib.extract_column(self.ptr, c, output.ctypes.data)
         return output
 
     @classmethod
@@ -83,10 +84,10 @@ class TatamiNumericPointer:
         """Initialize class from a dense matrix.
 
         Args:
-            x (np.ndarray): input numpy array with 2 dimensions.
+            x (np.ndarray): Input numpy array with 2 dimensions.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         if len(x.shape) != 2:
@@ -103,7 +104,7 @@ class TatamiNumericPointer:
             raise ValueError("'x' must have contiguous storage for its arrays")
 
         return cls(
-            ptr=lib.py_initialize_dense_matrix(
+            ptr=lib.initialize_dense_matrix(
                 x.shape[0],
                 x.shape[1],
                 str(x.dtype).encode("utf-8"),
@@ -118,16 +119,16 @@ class TatamiNumericPointer:
         """Initialize class from a compressed sparse column matrix.
 
         Args:
-            x (scipy.sparse.csc_array): input sparse matrix.
+            x (scipy.sparse.csc_array): Input sparse matrix.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         tmp = x.indptr.astype(np.uint64)
 
         return cls(
-            ptr=lib.py_initialize_compressed_sparse_matrix(
+            ptr=lib.initialize_compressed_sparse_matrix(
                 x.shape[0],
                 x.shape[1],
                 len(x.data),
@@ -146,15 +147,15 @@ class TatamiNumericPointer:
         """Initialize class from a compressed sparse row matrix.
 
         Args:
-            x (scipy.sparse.csc_array): input sparse matrix.
+            x (scipy.sparse.csc_array): Input sparse matrix.
 
         Returns:
-            TatamiNumericPointer: instance of the class.
+            TatamiNumericPointer: Instance of the class.
         """
 
         tmp = x.indptr.astype(np.uint64)
         return cls(
-            ptr=lib.py_initialize_compressed_sparse_matrix(
+            ptr=lib.initialize_compressed_sparse_matrix(
                 x.shape[0],
                 x.shape[1],
                 len(x.data),

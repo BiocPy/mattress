@@ -37,10 +37,10 @@ def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
         x (np.ndarray): A numpy nd-array object.
 
     Raises:
-        NotImplementedError: if x is not supported.
+        NotImplementedError: If x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_dense_matrix(x)
 
@@ -53,10 +53,10 @@ def _tatamize_sparse_csr_array(x: sp.csr_array) -> TatamiNumericPointer:
         x (sp.csr_array): A scipy csr array.
 
     Raises:
-        NotImplementedError: if x is not supported.
+        NotImplementedError: If x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_csr_array(x)
 
@@ -69,10 +69,10 @@ def _tatamize_sparse_csr_matrix(x: sp.csr_matrix) -> TatamiNumericPointer:
         x (sp.csr_matrix): A scipy csr array.
 
     Raises:
-        NotImplementedError: if x is not supported.
+        NotImplementedError: If x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_csr_array(x)
 
@@ -85,10 +85,10 @@ def _tatamize_sparse_csc_array(x: sp.csc_array) -> TatamiNumericPointer:
         x (sp.csc_array): A scipy csc array.
 
     Raises:
-        NotImplementedError: if x is not supported.
+        NotImplementedError: If x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_csc_array(x)
 
@@ -101,9 +101,9 @@ def _tatamize_sparse_csc_matrix(x: sp.csc_matrix) -> TatamiNumericPointer:
         x (sp.csc_matrix): A scipy csc array.
 
     Raises:
-        NotImplementedError: if x is not supported.
+        NotImplementedError: If x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_csc_array(x)

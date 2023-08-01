@@ -1,3 +1,6 @@
+import os
+from typing import List
+
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -25,7 +28,7 @@ def map_order_to_bool(order: str) -> bool:
     """Validate and map order to a boolean.
 
     Args:
-        order (str): dense matrix representation, ‘C’, ‘F’,
+        order (str): Dense matrix representation, ‘C’, ‘F’,
             row-major (C-style) or column-major (Fortran-style) order.
 
     Raises:
@@ -38,3 +41,16 @@ def map_order_to_bool(order: str) -> bool:
         raise ValueError(f"Order must be 'C' or 'F', provided {order}")
 
     return True if order == "C" else False
+
+
+def includes() -> List[str]:
+    """Provides access to C++ headers (including tatami) for downstream packages.
+
+    Returns:
+        List[str]: List of paths to the header files.
+    """
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    return [
+        os.path.join(dirname, "extern", "tatami", "include"),
+        os.path.join(dirname, "include"),
+    ]

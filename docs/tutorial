@@ -1,7 +1,5 @@
 # Tutorial
 
-***Currently mattress only supports dense matrices. We are working on supporting sparse and delayed representations.***
-
 ## Dense matrices
 
 To convert a numpy dense matrix to tatami representation
@@ -16,11 +14,11 @@ tatamat = tatamize(y)
 ```
 
 ### Specify orientation
-Additionally you can also specify if the input matrix is a column or row major.
+Additionally you can also input a column or row major matrix.
 
 ```python
 x = np.ones((2, 3), order='F')
-tatamat = tatamize(y, order="F")
+tatamat = tatamize(y)
 ```
 
 ## Methods
@@ -31,4 +29,12 @@ tatamat.row(0)
 tatamat.column(1)
 ```
 
-and thats it for now. Stay tuned for more updates!!
+## Sparse Matrices
+
+Supports both "csr" and "csc" formatted sparse arrays.
+
+```python
+from scipy.sparse import rand
+m = rand(3, 4, density=0.25, format="csr", random_state=42)
+tatamat = tatamize(m)
+```

@@ -15,6 +15,6 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .cpphelpers import includes
+from .utils import includes
 from .interface import tatamize
 from .TatamiNumericPointer import TatamiNumericPointer
