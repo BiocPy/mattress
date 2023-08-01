@@ -1,7 +1,8 @@
 # mattress
 
-Mattress provides tatami representations for python matrices (numpy, scipy etc)
-
+The **mattress** package implements Python bindings to the [**tatami**](https://github.com/tatami-inc) C++ library for matrix representations.
+Downstream packages can use **mattress** to develop C++ extensions that are interoperable with many different matrix classes, e.g., dense, sparse, delayed or file-backed.
+It is based on the [**beachmat**](https://bioconductor/packages/beachmat) Bioconductor package, which does the same thing for R packages.
 
 ## Install
 
