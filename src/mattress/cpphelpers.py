@@ -101,30 +101,23 @@ lib.py_initialize_dense_matrix.argtypes = [
 def extract_column(rawmat, c, output):
     return catch_errors(lib.py_extract_column)(rawmat, c, output)
 
-
 def extract_ncol(mat):
     return catch_errors(lib.py_extract_ncol)(mat)
-
 
 def extract_nrow(mat):
     return catch_errors(lib.py_extract_nrow)(mat)
 
-
 def extract_row(rawmat, r, output):
     return catch_errors(lib.py_extract_row)(rawmat, r, output)
-
 
 def extract_sparse(mat):
     return catch_errors(lib.py_extract_sparse)(mat)
 
-
 def free_mat(mat):
     return catch_errors(lib.py_free_mat)(mat)
 
-
 def initialize_compressed_sparse_matrix(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow):
     return catch_errors(lib.py_initialize_compressed_sparse_matrix)(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow)
-
 
 def initialize_dense_matrix(nr, nc, type, ptr, byrow):
     return catch_errors(lib.py_initialize_dense_matrix)(nr, nc, type, ptr, byrow)
