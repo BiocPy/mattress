@@ -3,16 +3,7 @@ from typing import Any, Sequence
 import numpy as np
 import scipy.sparse as sp
 
-from .cpphelpers import (
-    extract_column,
-    extract_ncol,
-    extract_nrow,
-    extract_row,
-    extract_sparse,
-    free_mat,
-    initialize_compressed_sparse_matrix,
-    initialize_dense_matrix,
-)
+from . import cpphelpers as lib
 from .types import NumberTypes
 
 __author__ = "ltla, jkanche"
@@ -36,7 +27,7 @@ class TatamiNumericPointer:
 
     def __del__(self):
         """Free the reference."""
-        free_mat(self.ptr)
+        lib.free_mat(self.ptr)
 
     def nrow(self) -> int:
         """Get number of rows.
@@ -44,7 +35,7 @@ class TatamiNumericPointer:
         Returns:
             int: Number of rows.
         """
-        return extract_nrow(self.ptr)
+        return lib.extract_nrow(self.ptr)
 
     def ncol(self) -> int:
         """Get number of columns.
@@ -52,7 +43,7 @@ class TatamiNumericPointer:
         Returns:
             int: Number of columns.
         """
-        return extract_ncol(self.ptr)
+        return lib.extract_ncol(self.ptr)
 
     def sparse(self) -> bool:
         """Is the matrix sparse?
@@ -60,7 +51,7 @@ class TatamiNumericPointer:
         Returns:
             bool: True if matrix is sparse.
         """
-        return extract_sparse(self.ptr) > 0
+        return lib.extract_sparse(self.ptr) > 0
 
     def row(self, r: int) -> Sequence[NumberTypes]:
         """Access a row from the tatami matrix.
@@ -72,7 +63,7 @@ class TatamiNumericPointer:
             Sequence[NumberTypes]: Row from the matrix.
         """
         output = np.ndarray((self.ncol(),), dtype="float64")
-        extract_row(self.ptr, r, output.ctypes.data)
+        lib.extract_row(self.ptr, r, output.ctypes.data)
         return output
 
     def column(self, c: int) -> Sequence[NumberTypes]:
@@ -85,7 +76,7 @@ class TatamiNumericPointer:
             Sequence[NumberTypes]: Column from the matrix.
         """
         output = np.ndarray((self.nrow(),), dtype="float64")
-        extract_column(self.ptr, c, output.ctypes.data)
+        lib.extract_column(self.ptr, c, output.ctypes.data)
         return output
 
     @classmethod
@@ -113,7 +104,7 @@ class TatamiNumericPointer:
             raise ValueError("'x' must have contiguous storage for its arrays")
 
         return cls(
-            ptr=initialize_dense_matrix(
+            ptr=lib.initialize_dense_matrix(
                 x.shape[0],
                 x.shape[1],
                 str(x.dtype).encode("utf-8"),
@@ -137,7 +128,7 @@ class TatamiNumericPointer:
         tmp = x.indptr.astype(np.uint64)
 
         return cls(
-            ptr=initialize_compressed_sparse_matrix(
+            ptr=lib.initialize_compressed_sparse_matrix(
                 x.shape[0],
                 x.shape[1],
                 len(x.data),
@@ -164,7 +155,7 @@ class TatamiNumericPointer:
 
         tmp = x.indptr.astype(np.uint64)
         return cls(
-            ptr=initialize_compressed_sparse_matrix(
+            ptr=lib.initialize_compressed_sparse_matrix(
                 x.shape[0],
                 x.shape[1],
                 len(x.data),
