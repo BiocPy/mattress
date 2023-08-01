@@ -2,10 +2,8 @@
 
 import os
 import ctypes as ct
-from functools import wraps
 
 def catch_errors(f):
-    @wraps(f)
     def wrapper(*args):
         errcode = ct.c_int(0)
         errmsg = ct.c_char_p(0)
