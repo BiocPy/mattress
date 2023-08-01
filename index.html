@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="mattress" href="readme.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Python bindings for tatami" href="readme.html" />
 
     <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress 0.0.6 documentation</title>
+        <title>mattress 0.0.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">mattress 0.0.6 documentation</div></a>
+      <a href="#"><div class="brand">mattress 0.0.7 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.6 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.0.7 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,7 +200,9 @@
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="mattress">
 <h1>mattress<a class="headerlink" href="#mattress" title="Permalink to this heading">#</a></h1>
-<p>Mattress provides tatami representations for python matrices (numpy, scipy etc)</p>
+<p>The <strong>mattress</strong> package implements Python bindings to the <a class="reference external" href="https://github.com/tatami-inc"><strong>tatami</strong></a> C++ library for matrix representations.
+Downstream packages can use <strong>mattress</strong> to develop C++ extensions that are interoperable with many different matrix classes, e.g., dense, sparse, delayed or file-backed.
+It is based on the <a class="reference external" href="https://bioconductor/packages/beachmat"><strong>beachmat</strong></a> Bioconductor package, which does the same thing for R packages.</p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
 <p>Package is published to <a class="reference external" href="https://pypi.org/project/mattress/">PyPI</a></p>
@@ -213,8 +215,10 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="readme.html#install">Install</a></li>
-<li class="toctree-l2"><a class="reference internal" href="readme.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#instructions">Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#supported-matrices">Supported matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#utility-methods">Utility methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#developer-notes">Developer Notes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#note">Note</a></li>
 </ul>
@@ -259,7 +263,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">mattress</div>
+                <div class="title">Python bindings for tatami</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -309,7 +313,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=3dadcae2"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=99d54efb"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
