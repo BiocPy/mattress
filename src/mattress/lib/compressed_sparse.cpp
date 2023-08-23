@@ -5,7 +5,7 @@
 #include <cstdint>
 
 template<typename Data_, typename Index_>
-void* initialize_compressed_sparse_matrix_raw(int nr, int nc, uint64_t nz, const Data_* dptr, const Index_* iptr, void* indptr, uint8_t byrow) { 
+void* initialize_compressed_sparse_matrix_raw(int nr, int nc, uint64_t nz, const Data_* dptr, const Index_* iptr, void* indptr, uint8_t byrow) {
     tatami::ArrayView<Data_> dview(dptr, nz);
     tatami::ArrayView<Index_> iview(iptr, nz);
     tatami::ArrayView<uint64_t> pview(reinterpret_cast<uint64_t*>(indptr), (byrow ? nr : nc) + 1);
