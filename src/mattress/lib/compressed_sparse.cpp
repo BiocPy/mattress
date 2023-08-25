@@ -5,7 +5,7 @@
 #include <cstdint>
 
 template<typename Data_, typename Index_>
-void* initialize_compressed_sparse_matrix_raw(int nr, int nc, uint64_t nz, const Data_* dptr, const Index_* iptr, void* indptr, uint8_t byrow) {
+void* initialize_compressed_sparse_matrix_raw(int32_t nr, int32_t nc, uint64_t nz, const Data_* dptr, const Index_* iptr, void* indptr, uint8_t byrow) {
     tatami::ArrayView<Data_> dview(dptr, nz);
     tatami::ArrayView<Index_> iview(iptr, nz);
     tatami::ArrayView<uint64_t> pview(reinterpret_cast<uint64_t*>(indptr), (byrow ? nr : nc) + 1);
@@ -22,7 +22,7 @@ void* initialize_compressed_sparse_matrix_raw(int nr, int nc, uint64_t nz, const
 }
 
 template<typename Data_>
-void* initialize_compressed_sparse_matrix_itype(int nr, int nc, uint64_t nz, const Data_* dptr, const char* itype, void* iptr, void* indptr, uint8_t byrow) {
+void* initialize_compressed_sparse_matrix_itype(int32_t nr, int32_t nc, uint64_t nz, const Data_* dptr, const char* itype, void* iptr, void* indptr, uint8_t byrow) {
     if (std::strcmp(itype, "int64") == 0) {
         return initialize_compressed_sparse_matrix_raw(nr, nc, nz, dptr, reinterpret_cast< int64_t*>(iptr), indptr, byrow);
 
@@ -53,7 +53,7 @@ void* initialize_compressed_sparse_matrix_itype(int nr, int nc, uint64_t nz, con
 }
 
 //[[export]]
-void* initialize_compressed_sparse_matrix(int nr, int nc, uint64_t nz, const char* dtype, void* dptr, const char* itype, void* iptr, void* indptr, uint8_t byrow) {
+void* initialize_compressed_sparse_matrix(int32_t nr, int32_t nc, uint64_t nz, const char* dtype, void* dptr, const char* itype, void* iptr, void* indptr, uint8_t byrow) {
     if (std::strcmp(dtype, "float64") == 0) {
         return initialize_compressed_sparse_matrix_itype(nr, nc, nz, reinterpret_cast<  double*>(dptr), itype, iptr, indptr, byrow);
 

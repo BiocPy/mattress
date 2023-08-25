@@ -5,7 +5,7 @@
 #include <cstdint>
 
 template<typename T>
-void* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) {
+void* initialize_dense_matrix(int32_t nr, int32_t nc, const T* ptr, bool byrow) {
     tatami::ArrayView<T> view(ptr, static_cast<size_t>(nr) * static_cast<size_t>(nc));
 
     Mattress* output;
@@ -19,7 +19,7 @@ void* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) {
 }
 
 //[[export]]
-void* initialize_dense_matrix(int nr, int nc, const char* type, void* ptr, uint8_t byrow) {
+void* initialize_dense_matrix(int32_t nr, int32_t nc, const char* type, void* ptr, uint8_t byrow) {
     if (std::strcmp(type, "float64") == 0) {
         return initialize_dense_matrix(nr, nc, reinterpret_cast<double*>(ptr), byrow);
 

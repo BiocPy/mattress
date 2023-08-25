@@ -17,7 +17,7 @@ int extract_sparse(const void* mat) {
 }
 
 //[[export]]
-void extract_row(void* rawmat, int32_t r, double* output /** numpy */) {
+void extract_row(void* rawmat, int32_t r, double* output /** void_p */) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->byrow) {
         mat->byrow = mat->ptr->dense_row();
@@ -26,7 +26,7 @@ void extract_row(void* rawmat, int32_t r, double* output /** numpy */) {
 }
 
 //[[export]]
-void extract_column(void* rawmat, int32_t c, double* output /** numpy */) {
+void extract_column(void* rawmat, int32_t c, double* output /** void_p */) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->bycol) {
         mat->bycol = mat->ptr->dense_column();

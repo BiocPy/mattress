@@ -33,90 +33,86 @@ def tatamize(x: Any) -> TatamiNumericPointer:
 
 @tatamize.register
 def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
-    """Converts numpy representations to tatami.
+    if len(x.shape) != 2:
+        raise ValueError("'x' should be a 2-dimensional array")
 
-    Args:
-        x (np.ndarray): A numpy nd-array object.
+    byrow = None
+    if x.flags["C_CONTIGUOUS"]:
+        byrow = True
+    elif x.flags["F_CONTIGUOUS"]:
+        byrow = False
+    else:
+        # I don't think it's possible to hit this, as a (non-view) ndarray
+        # should be contiguous in at least one direction.
+        raise ValueError("'x' must have contiguous storage for its arrays")
 
-    Raises:
-        NotImplementedError: If x is not supported.
-
-    Returns:
-        TatamiNumericPointer: Pointer to tatami object.
-    """
-    return TatamiNumericPointer.from_dense_matrix(x)
+    return TatamiNumericPointer(
+        ptr=lib.initialize_dense_matrix(
+            x.shape[0],
+            x.shape[1],
+            str(x.dtype).encode("UTF-8"),
+            x.ctypes.data,
+            byrow,
+        ),
+        obj=x,
+    )
 
 
 @tatamize.register
 def _tatamize_sparse_csr_array(x: sp.csr_array) -> TatamiNumericPointer:
-    """Converts scipy's CSR representations to tatami.
-
-    Args:
-        x (sp.csr_array): A scipy csr array.
-
-    Raises:
-        NotImplementedError: If x is not supported.
-
-    Returns:
-        TatamiNumericPointer: Pointer to tatami object.
-    """
-    return TatamiNumericPointer.from_csr_array(x)
+    tmp = x.indptr.astype(np.uint64)
+    return TatamiNumericPointer(
+        ptr=lib.initialize_compressed_sparse_matrix(
+            x.shape[0],
+            x.shape[1],
+            len(x.data),
+            str(x.data.dtype).encode("UTF-8"),
+            x.data.ctypes.data,
+            str(x.indices.dtype).encode("UTF-8"),
+            x.indices.ctypes.data,
+            tmp.ctypes.data,
+            True,
+        ),
+        obj=[tmp, x],
+    )
 
 
 @tatamize.register
 def _tatamize_sparse_csr_matrix(x: sp.csr_matrix) -> TatamiNumericPointer:
-    """Converts scipy's CSR representations to tatami.
-
-    Args:
-        x (sp.csr_matrix): A scipy csr array.
-
-    Raises:
-        NotImplementedError: If x is not supported.
-
-    Returns:
-        TatamiNumericPointer: Pointer to tatami object.
-    """
-    return TatamiNumericPointer.from_csr_array(x)
+    return _tatamize_sparse_csr_array(x)
 
 
 @tatamize.register
 def _tatamize_sparse_csc_array(x: sp.csc_array) -> TatamiNumericPointer:
-    """Converts scipy's CSC representations to tatami.
-
-    Args:
-        x (sp.csc_array): A scipy csc array.
-
-    Raises:
-        NotImplementedError: If x is not supported.
-
-    Returns:
-        TatamiNumericPointer: Pointer to tatami object.
-    """
-    return TatamiNumericPointer.from_csc_array(x)
+    tmp = x.indptr.astype(np.uint64)
+    return TatamiNumericPointer(
+        ptr=lib.initialize_compressed_sparse_matrix(
+            x.shape[0],
+            x.shape[1],
+            len(x.data),
+            str(x.data.dtype).encode("UTF-8"),
+            x.data.ctypes.data,
+            str(x.indices.dtype).encode("UTF-8"),
+            x.indices.ctypes.data,
+            tmp.ctypes.data,
+            False,
+        ),
+        obj=[tmp, x],
+    )
 
 
 @tatamize.register
 def _tatamize_sparse_csc_matrix(x: sp.csc_matrix) -> TatamiNumericPointer:
-    """Converts scipy's CSC representations to tatami.
+    return _tatamize_sparse_csc_array(x)
 
-    Args:
-        x (sp.csc_matrix): A scipy csc array.
-
-    Raises:
-        NotImplementedError: If x is not supported.
-
-    Returns:
-        TatamiNumericPointer: Pointer to tatami object.
-    """
-    return TatamiNumericPointer.from_csc_array(x)
 
 @tatamize.register
 def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointer:
     return tatamize(x.seed)
+
 
 @tatamize.register
 def _tatamize_delayed_unary_isometric_op_simple(x: delayedarray.UnaryIsometricOpSimple) -> TatamiNumericPointer:
     components = tatamize(x.seed)
     ptr = lib.initialize_delayed_unary_isometric_op_simple(components.ptr, x.operation.encode("UTF-8"))
     return TatamiNumericPointer(ptr, components.obj)
-
