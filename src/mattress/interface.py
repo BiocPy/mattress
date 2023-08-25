@@ -112,7 +112,11 @@ def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointe
 
 
 @tatamize.register
-def _tatamize_delayed_unary_isometric_op_simple(x: delayedarray.UnaryIsometricOpSimple) -> TatamiNumericPointer:
+def _tatamize_delayed_unary_isometric_op_simple(
+    x: delayedarray.UnaryIsometricOpSimple,
+) -> TatamiNumericPointer:
     components = tatamize(x.seed)
-    ptr = lib.initialize_delayed_unary_isometric_op_simple(components.ptr, x.operation.encode("UTF-8"))
+    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+        components.ptr, x.operation.encode("UTF-8")
+    )
     return TatamiNumericPointer(ptr, components.obj)

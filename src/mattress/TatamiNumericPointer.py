@@ -11,8 +11,8 @@ class TatamiNumericPointer:
     """Initialize a Tatami Numeric Ponter object.
 
     Args:
-        ptr: Pointer to a Mattress instance wrapping a tatami matrix. This can be passed as 
-            a ``void *`` to C++ code and then cast to a ``Mattress *`` for consumption. 
+        ptr: Pointer to a Mattress instance wrapping a tatami matrix. This can be passed as
+            a ``void *`` to C++ code and then cast to a ``Mattress *`` for consumption.
 
         obj: Arbitrary Python object that is referenced by the tatami instance.
             This is stored here to avoid garbage collection.
@@ -56,7 +56,7 @@ class TatamiNumericPointer:
             r (int): Row to access.
 
         Returns:
-            ndarray: Row from the matrix. This is always in double-precision, 
+            ndarray: Row from the matrix. This is always in double-precision,
             regardless of the underlying representation.
         """
         output = ndarray((self.ncol(),), dtype="float64")

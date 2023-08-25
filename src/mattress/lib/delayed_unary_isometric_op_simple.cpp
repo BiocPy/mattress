@@ -16,24 +16,24 @@ void* initialize_delayed_unary_isometric_op_simple(void* ptr, const char* op) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedLogHelper(2.0)));
     } else if (std::strcmp(op, "log10") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedLogHelper(10.0)));
-    } else if (std::strcmp(op, "log1p") == 0) { 
+    } else if (std::strcmp(op, "log1p") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedLog1pHelper()));
 
-    } else if (std::strcmp(op, "sqrt") == 0) { 
+    } else if (std::strcmp(op, "sqrt") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedSqrtHelper()));
 
-    } else if (std::strcmp(op, "ceil") == 0) { 
+    } else if (std::strcmp(op, "ceil") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedCeilingHelper()));
-    } else if (std::strcmp(op, "floor") == 0) { 
+    } else if (std::strcmp(op, "floor") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedFloorHelper()));
-    } else if (std::strcmp(op, "trunc") == 0) { 
+    } else if (std::strcmp(op, "trunc") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedTruncHelper()));
-    } else if (std::strcmp(op, "round") == 0) { 
+    } else if (std::strcmp(op, "round") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedRoundHelper()));
 
-    } else if (std::strcmp(op, "exp") == 0) { 
+    } else if (std::strcmp(op, "exp") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedExpHelper()));
-    } else if (std::strcmp(op, "expm1") == 0) { 
+    } else if (std::strcmp(op, "expm1") == 0) {
         return new Mattress(tatami::make_DelayedUnaryIsometricOp(mat->ptr, tatami::DelayedExpm1Helper()));
 
     } else if (std::strcmp(op, "cos") == 0) {
