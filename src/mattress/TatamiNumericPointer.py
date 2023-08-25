@@ -2,6 +2,7 @@ from typing import Any, Sequence
 
 import numpy as np
 import scipy.sparse as sp
+import delayedarray as da
 
 from . import cpphelpers as lib
 from .types import NumberTypes

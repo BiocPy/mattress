@@ -3,8 +3,10 @@ from typing import Any
 
 import numpy as np
 import scipy.sparse as sp
+import delayedarray
 
 from .TatamiNumericPointer import TatamiNumericPointer
+from . import cpphelpers as lib
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -107,3 +109,14 @@ def _tatamize_sparse_csc_matrix(x: sp.csc_matrix) -> TatamiNumericPointer:
         TatamiNumericPointer: Pointer to tatami object.
     """
     return TatamiNumericPointer.from_csc_array(x)
+
+@tatamize.register
+def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointer:
+    return tatamize(x.seed)
+
+@tatamize.register
+def _tatamize_delayed_unary_isometric_op_simple(x: delayedarray.UnaryIsometricOpSimple) -> TatamiNumericPointer:
+    components = tatamize(x.seed)
+    ptr = lib.initialize_delayed_unary_isometric_op_simple(components.ptr, x.operation.encode("UTF-8"))
+    return TatamiNumericPointer(ptr, components.obj)
+
