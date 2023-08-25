@@ -1,4 +1,5 @@
 #include "Mattress.h"
+#include <cstdint>
 
 //[[export]]
 int extract_nrow(const void* mat) {
@@ -16,7 +17,7 @@ int extract_sparse(const void* mat) {
 }
 
 //[[export]]
-void extract_row(void* rawmat, int r, double* output) {
+void extract_row(void* rawmat, int32_t r, double* output /** void_p */) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->byrow) {
         mat->byrow = mat->ptr->dense_row();
@@ -25,7 +26,7 @@ void extract_row(void* rawmat, int r, double* output) {
 }
 
 //[[export]]
-void extract_column(void* rawmat, int c, double* output) {
+void extract_column(void* rawmat, int32_t c, double* output /** void_p */) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (!mat->bycol) {
         mat->bycol = mat->ptr->dense_column();
