@@ -120,3 +120,32 @@ def _tatamize_delayed_unary_isometric_op_simple(
         components.ptr, x.operation.encode("UTF-8")
     )
     return TatamiNumericPointer(ptr, components.obj)
+
+
+@tatamize.register
+def _tatamize_delayed_unary_isometric_op_with_args(
+    x: delayedarray.UnaryIsometricOpWithArgs,
+) -> TatamiNumericPointer:
+    components = tatamize(x.seed)
+    obj = components.obj
+
+    if isinstance(x.value, np.ndarray):
+        contents = x.value.astype(np.float64, copy=False)
+        ptr = lib.initialize_delayed_unary_isometric_op_with_vector(
+            components.ptr, 
+            x.operation.encode("UTF-8"), 
+            x.right,
+            x.along,
+            contents 
+        )
+        obj = [obj, contents]
+    else:
+        ptr = lib.initialize_delayed_unary_isometric_op_with_scalar(
+            components.ptr, 
+            x.operation.encode("UTF-8"), 
+            x.right,
+            x.value
+        )
+
+    return TatamiNumericPointer(ptr, obj)
+

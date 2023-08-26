@@ -33,6 +33,10 @@ void* initialize_compressed_sparse_matrix(int32_t, int32_t, uint64_t, const char
 
 void* initialize_delayed_unary_isometric_op_simple(void*, const char*);
 
+void* initialize_delayed_unary_isometric_op_with_scalar(void*, const char*, bool, double);
+
+void* initialize_delayed_unary_isometric_op_with_vector(void*, const char*, uint8_t, int32_t, const double*);
+
 void* initialize_dense_matrix(int32_t, int32_t, const char*, void*, uint8_t);
 
 extern "C" {
@@ -137,6 +141,34 @@ PYAPI void* py_initialize_delayed_unary_isometric_op_simple(void* ptr, const cha
     void* output = NULL;
     try {
         output = initialize_delayed_unary_isometric_op_simple(ptr, op);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+    return output;
+}
+
+PYAPI void* py_initialize_delayed_unary_isometric_op_with_scalar(void* ptr, const char* op, bool right, double arg, int32_t* errcode, char** errmsg) {
+    void* output = NULL;
+    try {
+        output = initialize_delayed_unary_isometric_op_with_scalar(ptr, op, right, arg);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+    return output;
+}
+
+PYAPI void* py_initialize_delayed_unary_isometric_op_with_vector(void* ptr, const char* op, uint8_t right, int32_t along, const double* args, int32_t* errcode, char** errmsg) {
+    void* output = NULL;
+    try {
+        output = initialize_delayed_unary_isometric_op_with_vector(ptr, op, right, along, args);
     } catch(std::exception& e) {
         *errcode = 1;
         *errmsg = copy_error_message(e.what());
