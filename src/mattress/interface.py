@@ -54,13 +54,13 @@ def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
             x.ctypes.data,
             byrow,
         ),
-        obj=x,
+        obj=[x],
     )
 
 
 @tatamize.register
 def _tatamize_sparse_csr_array(x: sp.csr_array) -> TatamiNumericPointer:
-    tmp = x.indptr.astype(np.uint64)
+    tmp = x.indptr.astype(np.uint64, copy=False)
     return TatamiNumericPointer(
         ptr=lib.initialize_compressed_sparse_matrix(
             x.shape[0],
@@ -84,7 +84,7 @@ def _tatamize_sparse_csr_matrix(x: sp.csr_matrix) -> TatamiNumericPointer:
 
 @tatamize.register
 def _tatamize_sparse_csc_array(x: sp.csc_array) -> TatamiNumericPointer:
-    tmp = x.indptr.astype(np.uint64)
+    tmp = x.indptr.astype(np.uint64, copy=False)
     return TatamiNumericPointer(
         ptr=lib.initialize_compressed_sparse_matrix(
             x.shape[0],
@@ -134,7 +134,7 @@ def _tatamize_delayed_unary_isometric_op_with_args(
         ptr = lib.initialize_delayed_unary_isometric_op_with_vector(
             components.ptr, x.operation.encode("UTF-8"), x.right, x.along, contents
         )
-        obj = [obj, contents]
+        obj.append(contents)
     else:
         ptr = lib.initialize_delayed_unary_isometric_op_with_scalar(
             components.ptr, x.operation.encode("UTF-8"), x.right, x.value
@@ -148,7 +148,7 @@ def _tatamize_delayed_subset(
     x: delayedarray.Subset,
 ) -> TatamiNumericPointer:
     components = tatamize(x.seed)
-    obj = [components.obj]
+    obj = components.obj
 
     for dim in range(2):
         current = x.subset[dim]
@@ -189,7 +189,7 @@ def _tatamize_delayed_combine(
         components = tatamize(x.seeds[i])
         converted.append(components)
         ptrs[i] = components.ptr
-        objects.append(components.obj)
+        objects += components.obj
 
     ptr = lib.initialize_delayed_combine(nseeds, ptrs.ctypes.data, x.along)
     return TatamiNumericPointer(ptr, objects)
@@ -219,4 +219,4 @@ def _tatamize_delayed_binary_isometric_op(
         lcomponents.ptr, rcomponents.ptr, x.operation.encode("UTF-8")
     )
 
-    return TatamiNumericPointer(ptr, [lcomponents.obj, rcomponents.obj])
+    return TatamiNumericPointer(ptr, lcomponents.obj + rcomponents.obj)

@@ -1,4 +1,3 @@
-from typing import Any
 from numpy import ndarray
 from . import cpphelpers as lib
 
@@ -10,15 +9,15 @@ __license__ = "MIT"
 class TatamiNumericPointer:
     """Initialize a Tatami Numeric Ponter object.
 
-    Args:
-        ptr: Pointer to a Mattress instance wrapping a tatami matrix. This can be passed as
-            a ``void *`` to C++ code and then cast to a ``Mattress *`` for consumption.
+    Attributes:
+        ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as
+            a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.
 
-        obj: Arbitrary Python object that is referenced by the tatami instance.
+        obj (list): List of Python objects referenced by the tatami instance.
             This is stored here to avoid garbage collection.
     """
 
-    def __init__(self, ptr: "Mattress", obj: Any):
+    def __init__(self, ptr: int, obj: list):
         self.ptr = ptr
         self.obj = obj
 
