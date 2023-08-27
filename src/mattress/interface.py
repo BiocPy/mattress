@@ -220,3 +220,20 @@ def _tatamize_delayed_binary_isometric_op(
     )
 
     return TatamiNumericPointer(ptr, lcomponents.obj + rcomponents.obj)
+
+
+@tatamize.register
+def _tatamize_delayed_round(
+    x: delayedarray.Round,
+) -> TatamiNumericPointer:
+    components = tatamize(x.seed)
+
+    if x.decimals != 0:
+        raise NotImplementedError("non-zero decimals in 'delayedarray.Round' is not yet supported")
+
+    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+        components.ptr, "round".encode("UTF-8")
+    )
+
+    return TatamiNumericPointer(ptr, components.obj)
+

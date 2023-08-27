@@ -80,12 +80,10 @@ def test_delayed_unary_isometric_int():
     assert all(ptr.row(0) == np.trunc(y[0, :]))
     assert all(ptr.column(1) == np.trunc(y[:, 1]))
 
-
-#   TODO: implement this.
-#    z = np.round(x)
-#    ptr = tatamize(z)
-#    assert all(ptr.row(0) == np.round(y[0, :]))
-#    assert all(ptr.column(1) == np.round(y[:, 1]))
+    z = np.round(x)
+    ptr = tatamize(z)
+    assert all(ptr.row(0) == np.round(y[0, :]))
+    assert all(ptr.column(1) == np.round(y[:, 1]))
 
 
 def test_delayed_unary_isometric_exp():
