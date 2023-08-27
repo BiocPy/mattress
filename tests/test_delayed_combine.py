@@ -7,7 +7,7 @@ __copyright__ = "ltla, jkanche"
 __license__ = "MIT"
 
 
-def test_delayed_unary_isometric_combine():
+def test_delayed_combine():
     y1 = np.random.rand(1000, 100)
     y2 = np.random.rand(1000, 50)
 

@@ -7,7 +7,7 @@ __copyright__ = "ltla, jkanche"
 __license__ = "MIT"
 
 
-def test_delayed_unary_isometric_subset():
+def test_delayed_subset():
     y = np.random.rand(1000, 100)
     x = da.DelayedArray(y)
 
