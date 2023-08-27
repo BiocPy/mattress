@@ -175,6 +175,7 @@ def _tatamize_delayed_subset(
             else:
                 current = current.astype(np.uint32, copy=False) 
             ptr = lib.initialize_delayed_subset(components.ptr, dim, current, len(current))
+            obj.append(current)
             components = TatamiNumericPointer(ptr, obj)
 
     return components
@@ -210,3 +211,19 @@ def _tatamize_delayed_transpose(
         components = TatamiNumericPointer(ptr, components.obj)
 
     return components
+
+
+@tatamize.register
+def _tatamize_delayed_binary_isometric_op(
+    x: delayedarray.BinaryIsometricOp,
+) -> TatamiNumericPointer:
+    lcomponents = tatamize(x.left)
+    rcomponents = tatamize(x.right)
+
+    ptr = lib.initialize_delayed_binary_isometric_op(
+        lcomponents.ptr, 
+        rcomponents.ptr, 
+        x.operation.encode("UTF-8")
+    )
+
+    return TatamiNumericPointer(ptr, [lcomponents.obj, rcomponents.obj])

@@ -101,6 +101,15 @@ lib.py_initialize_compressed_sparse_matrix.argtypes = [
     ct.POINTER(ct.c_char_p)
 ]
 
+lib.py_initialize_delayed_binary_isometric_op.restype = ct.c_void_p
+lib.py_initialize_delayed_binary_isometric_op.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_char_p,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p)
+]
+
 lib.py_initialize_delayed_combine.restype = ct.c_void_p
 lib.py_initialize_delayed_combine.argtypes = [
     ct.c_int32,
@@ -187,6 +196,9 @@ def free_mat(mat):
 
 def initialize_compressed_sparse_matrix(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow):
     return catch_errors(lib.py_initialize_compressed_sparse_matrix)(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow)
+
+def initialize_delayed_binary_isometric_op(left, right, op):
+    return catch_errors(lib.py_initialize_delayed_binary_isometric_op)(left, right, op)
 
 def initialize_delayed_combine(n, ptrs, dim):
     return catch_errors(lib.py_initialize_delayed_combine)(n, ptrs, dim)

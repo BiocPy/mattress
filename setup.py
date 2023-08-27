@@ -17,6 +17,7 @@ if __name__ == "__main__":
                     [
                         "src/mattress/lib/dense.cpp",
                         "src/mattress/lib/compressed_sparse.cpp",
+                        "src/mattress/lib/delayed_binary_isometric_op.cpp",
                         "src/mattress/lib/delayed_unary_isometric_op_simple.cpp",
                         "src/mattress/lib/delayed_unary_isometric_op_with_args.cpp",
                         "src/mattress/lib/delayed_subset.cpp",
