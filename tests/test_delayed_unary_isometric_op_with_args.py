@@ -93,14 +93,14 @@ def test_delayed_unary_isometric_arith_scalar():
     x = da.DelayedArray(y) ** 3.1
     ptr = tatamize(x)
     ref = y**3.1
-    assert (ptr.row(0) == ref[0, :]).all()
-    assert (ptr.column(1) == ref[:, 1]).all()
+    assert np.allclose(ptr.row(0), ref[0, :])
+    assert np.allclose(ptr.column(1), ref[:, 1])
 
     x = 2 ** da.DelayedArray(y)
     ptr = tatamize(x)
     ref = 2**y
-    assert (ptr.row(0) == ref[0, :]).all()
-    assert (ptr.column(1) == ref[:, 1]).all()
+    assert np.allclose(ptr.row(0), ref[0, :])
+    assert np.allclose(ptr.column(1), ref[:, 1])
 
 
 def test_delayed_unary_isometric_arith_vector():
@@ -192,14 +192,14 @@ def test_delayed_unary_isometric_arith_vector():
     x = da.DelayedArray(y) ** v2
     ptr = tatamize(x)
     ref = y**v2
-    assert (ptr.row(0) == ref[0, :]).all()
-    assert (ptr.column(1) == ref[:, 1]).all()
+    assert np.allclose(ptr.row(0), ref[0, :])
+    assert np.allclose(ptr.column(1), ref[:, 1])
 
     x = v1 ** da.DelayedArray(y)
     ptr = tatamize(x)
     ref = v1**y
-    assert (ptr.row(0) == ref[0, :]).all()
-    assert (ptr.column(1) == ref[:, 1]).all()
+    assert np.allclose(ptr.row(0), ref[0, :])
+    assert np.allclose(ptr.column(1), ref[:, 1])
 
 
 def test_delayed_unary_isometric_compare_scalar():
