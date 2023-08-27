@@ -149,3 +149,32 @@ def _tatamize_delayed_unary_isometric_op_with_args(
 
     return TatamiNumericPointer(ptr, obj)
 
+
+@tatamize.register
+def _tatamize_delayed_subset(
+    x: delayedarray.Subset,
+) -> TatamiNumericPointer:
+    components = tatamize(x.seed)
+    obj = [components.obj]
+
+    for dim in range(2):
+        current = x.subset[dim]
+
+        is_noop = True
+        if len(current) == x.shape[dim]:
+            for i in range(len(current)):
+                if i != current[i]:
+                    is_noop = False 
+                    break
+        else:
+            is_noop = False
+
+        if not is_noop:
+            if not isinstance(current, np.ndarray):
+                current = np.array(current, dtype=np.uint32)
+            else:
+                current = current.astype(np.uint32, copy=False) 
+            ptr = lib.initialize_delayed_subset(components.ptr, dim, current, len(current))
+            components = TatamiNumericPointer(ptr, obj)
+
+    return components
