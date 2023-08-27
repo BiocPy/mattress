@@ -15,16 +15,18 @@ def test_delayed_combine():
     ref = np.concatenate((y1, y2), axis=1)
     assert isinstance(com.seed, da.Combine)
     ptr = tatamize(com)
-    assert all(ptr.row(0) == ref[0,:])
-    assert all(ptr.column(1) == ref[:,1])
+    assert all(ptr.row(0) == ref[0, :])
+    assert all(ptr.column(1) == ref[:, 1])
 
     y1 = np.random.rand(1000, 10)
     y2 = np.random.rand(500, 10)
     y3 = np.random.rand(200, 10)
 
-    com = np.concatenate((da.DelayedArray(y1), da.DelayedArray(y2), da.DelayedArray(y3)))
+    com = np.concatenate(
+        (da.DelayedArray(y1), da.DelayedArray(y2), da.DelayedArray(y3))
+    )
     ref = np.concatenate((y1, y2, y3))
     assert isinstance(com.seed, da.Combine)
     ptr = tatamize(com)
-    assert all(ptr.row(0) == ref[0,:])
-    assert all(ptr.column(1) == ref[:,1])
+    assert all(ptr.row(0) == ref[0, :])
+    assert all(ptr.column(1) == ref[:, 1])

@@ -50,7 +50,7 @@ def test_delayed_binary_isometric_arith():
 
     x = da.DelayedArray(y1) ** da.DelayedArray(y2)
     ptr = tatamize(x)
-    ref = y1 ** y2
+    ref = y1**y2
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -101,7 +101,7 @@ def test_delayed_binary_isometric_logical():
     y1 = np.random.rand(1000, 100)
     y2 = np.random.rand(1000, 100)
 
-    x = np.logical_or(da.DelayedArray(y1), da.DelayedArray(y2)) 
+    x = np.logical_or(da.DelayedArray(y1), da.DelayedArray(y2))
     assert isinstance(x.seed, da.BinaryIsometricOp)
     ptr = tatamize(x)
     ref = np.logical_or(y1, y2)

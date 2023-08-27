@@ -13,11 +13,11 @@ def test_delayed_transpose():
 
     t = x.T
     ptr = tatamize(t)
-    assert all(ptr.row(0) == y[:,0])
-    assert all(ptr.column(1) == y[1,:])
+    assert all(ptr.row(0) == y[:, 0])
+    assert all(ptr.column(1) == y[1, :])
 
-    noop = np.transpose(x, axes=(0,1))
+    noop = np.transpose(x, axes=(0, 1))
     x2 = da.DelayedArray(noop)
     ptr = tatamize(x2)
-    assert all(ptr.row(0) == y[0,:])
-    assert all(ptr.column(1) == y[:,1])
+    assert all(ptr.row(0) == y[0, :])
+    assert all(ptr.column(1) == y[:, 1])

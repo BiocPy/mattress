@@ -80,6 +80,7 @@ def test_delayed_unary_isometric_int():
     assert all(ptr.row(0) == np.trunc(y[0, :]))
     assert all(ptr.column(1) == np.trunc(y[:, 1]))
 
+
 #   TODO: implement this.
 #    z = np.round(x)
 #    ptr = tatamize(z)
@@ -107,7 +108,18 @@ def test_delayed_unary_isometric_trig():
     y = np.random.rand(1000, 100)
     x = da.DelayedArray(y)
 
-    for op in ["cos", "sin", "tan", "cosh", "sinh", "tanh", "arccos", "arcsin", "arctan", "arctanh"]:
+    for op in [
+        "cos",
+        "sin",
+        "tan",
+        "cosh",
+        "sinh",
+        "tanh",
+        "arccos",
+        "arcsin",
+        "arctan",
+        "arctanh",
+    ]:
         fun = getattr(np, op)
         z = fun(x)
         assert isinstance(z.seed, da.UnaryIsometricOpSimple)
@@ -124,4 +136,3 @@ def test_delayed_unary_isometric_trig():
         ptr = tatamize(z)
         assert np.allclose(ptr.row(0), fun(y[0, :]))
         assert np.allclose(ptr.column(1), fun(y[:, 1]))
-

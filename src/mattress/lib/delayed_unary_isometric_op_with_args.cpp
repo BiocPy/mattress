@@ -52,13 +52,13 @@ void* initialize_delayed_unary_isometric_op_with_vector(void* ptr, const char* o
     auto mat = reinterpret_cast<Mattress*>(ptr);
     if (right) {
         if (along == 0) {
-            return initialize_delayed_unary_isometric_op_with_vector<true, 0>(mat, op, args); 
+            return initialize_delayed_unary_isometric_op_with_vector<true, 0>(mat, op, args);
         } else {
             return initialize_delayed_unary_isometric_op_with_vector<true, 1>(mat, op, args);
         }
     } else {
         if (along == 0) {
-            return initialize_delayed_unary_isometric_op_with_vector<false, 0>(mat, op, args); 
+            return initialize_delayed_unary_isometric_op_with_vector<false, 0>(mat, op, args);
         } else {
             return initialize_delayed_unary_isometric_op_with_vector<false, 1>(mat, op, args);
         }
@@ -112,8 +112,8 @@ void* initialize_delayed_unary_isometric_op_with_scalar(const Mattress* mat, con
 void* initialize_delayed_unary_isometric_op_with_scalar(void* ptr, const char* op, bool right, double arg) {
     auto mat = reinterpret_cast<Mattress*>(ptr);
     if (right) {
-        return initialize_delayed_unary_isometric_op_with_scalar<true>(mat, op, arg); 
+        return initialize_delayed_unary_isometric_op_with_scalar<true>(mat, op, arg);
     } else {
-        return initialize_delayed_unary_isometric_op_with_scalar<false>(mat, op, arg); 
+        return initialize_delayed_unary_isometric_op_with_scalar<false>(mat, op, arg);
     }
 }

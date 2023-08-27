@@ -132,19 +132,12 @@ def _tatamize_delayed_unary_isometric_op_with_args(
     if isinstance(x.value, np.ndarray):
         contents = x.value.astype(np.float64, copy=False)
         ptr = lib.initialize_delayed_unary_isometric_op_with_vector(
-            components.ptr, 
-            x.operation.encode("UTF-8"), 
-            x.right,
-            x.along,
-            contents 
+            components.ptr, x.operation.encode("UTF-8"), x.right, x.along, contents
         )
         obj = [obj, contents]
     else:
         ptr = lib.initialize_delayed_unary_isometric_op_with_scalar(
-            components.ptr, 
-            x.operation.encode("UTF-8"), 
-            x.right,
-            x.value
+            components.ptr, x.operation.encode("UTF-8"), x.right, x.value
         )
 
     return TatamiNumericPointer(ptr, obj)
@@ -164,7 +157,7 @@ def _tatamize_delayed_subset(
         if len(current) == x.shape[dim]:
             for i in range(len(current)):
                 if i != current[i]:
-                    is_noop = False 
+                    is_noop = False
                     break
         else:
             is_noop = False
@@ -173,8 +166,10 @@ def _tatamize_delayed_subset(
             if not isinstance(current, np.ndarray):
                 current = np.array(current, dtype=np.uint32)
             else:
-                current = current.astype(np.uint32, copy=False) 
-            ptr = lib.initialize_delayed_subset(components.ptr, dim, current, len(current))
+                current = current.astype(np.uint32, copy=False)
+            ptr = lib.initialize_delayed_subset(
+                components.ptr, dim, current, len(current)
+            )
             obj.append(current)
             components = TatamiNumericPointer(ptr, obj)
 
@@ -221,9 +216,7 @@ def _tatamize_delayed_binary_isometric_op(
     rcomponents = tatamize(x.right)
 
     ptr = lib.initialize_delayed_binary_isometric_op(
-        lcomponents.ptr, 
-        rcomponents.ptr, 
-        x.operation.encode("UTF-8")
+        lcomponents.ptr, rcomponents.ptr, x.operation.encode("UTF-8")
     )
 
     return TatamiNumericPointer(ptr, [lcomponents.obj, rcomponents.obj])

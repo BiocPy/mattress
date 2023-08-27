@@ -20,14 +20,14 @@ def test_delayed_unary_isometric_arith_scalar():
 
     x = 2 + da.DelayedArray(y)
     ptr = tatamize(x)
-    ref = y + 2 
+    ref = y + 2
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
     # Subtraction.
     x = da.DelayedArray(y) - 5.5
     ptr = tatamize(x)
-    ref = y - 5.5 
+    ref = y - 5.5
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -40,7 +40,7 @@ def test_delayed_unary_isometric_arith_scalar():
     # Multiplication.
     x = da.DelayedArray(y) * 3.5
     ptr = tatamize(x)
-    ref = y * 3.5 
+    ref = y * 3.5
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -92,13 +92,13 @@ def test_delayed_unary_isometric_arith_scalar():
     # Power.
     x = da.DelayedArray(y) ** 3.1
     ptr = tatamize(x)
-    ref = y ** 3.1
+    ref = y**3.1
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
     x = 2 ** da.DelayedArray(y)
     ptr = tatamize(x)
-    ref = 2 ** y
+    ref = 2**y
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -125,7 +125,7 @@ def test_delayed_unary_isometric_arith_vector():
     # Subtraction.
     x = da.DelayedArray(y) - v2
     ptr = tatamize(x)
-    ref = y - v2 
+    ref = y - v2
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -148,19 +148,19 @@ def test_delayed_unary_isometric_arith_vector():
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-#    TODO: fix the delayedarray.
-#    # Division.
-#    x = da.DelayedArray(y) / v1
-#    ptr = tatamize(x)
-#    ref = y / v1
-#    assert (ptr.row(0) == ref[0, :]).all()
-#    assert (ptr.column(1) == ref[:, 1]).all()
-#
-#    x = v2 / da.DelayedArray(y)
-#    ptr = tatamize(x)
-#    ref = v2 / y
-#    assert (ptr.row(0) == ref[0, :]).all()
-#    assert (ptr.column(1) == ref[:, 1]).all()
+    #    TODO: fix the delayedarray.
+    #    # Division.
+    #    x = da.DelayedArray(y) / v1
+    #    ptr = tatamize(x)
+    #    ref = y / v1
+    #    assert (ptr.row(0) == ref[0, :]).all()
+    #    assert (ptr.column(1) == ref[:, 1]).all()
+    #
+    #    x = v2 / da.DelayedArray(y)
+    #    ptr = tatamize(x)
+    #    ref = v2 / y
+    #    assert (ptr.row(0) == ref[0, :]).all()
+    #    assert (ptr.column(1) == ref[:, 1]).all()
 
     # Modulo.
     x = da.DelayedArray(y) % v2
@@ -191,20 +191,20 @@ def test_delayed_unary_isometric_arith_vector():
     # Power.
     x = da.DelayedArray(y) ** v2
     ptr = tatamize(x)
-    ref = y ** v2
+    ref = y**v2
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
     x = v1 ** da.DelayedArray(y)
     ptr = tatamize(x)
-    ref = v1 ** y
+    ref = v1**y
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
 
 def test_delayed_unary_isometric_compare_scalar():
     y = np.random.rand(1000, 100)
-    first = float(y[0,0])
+    first = float(y[0, 0])
 
     # Equality.
     x = da.DelayedArray(y) == first
@@ -214,7 +214,7 @@ def test_delayed_unary_isometric_compare_scalar():
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-    x = (first == da.DelayedArray(y))
+    x = first == da.DelayedArray(y)
     ptr = tatamize(x)
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
@@ -286,27 +286,27 @@ def test_delayed_unary_isometric_compare_scalar():
 
 def test_delayed_unary_isometric_compare_vector():
     y = np.random.rand(1000, 100)
-    v1 = y[:,[0]]
-    v2 = y[0,:]
+    v1 = y[:, [0]]
+    v2 = y[0, :]
 
     # Equality.
     x = da.DelayedArray(y) == v1
     assert isinstance(x.seed, da.UnaryIsometricOpWithArgs)
     ptr = tatamize(x)
-    ref = y == v1 
+    ref = y == v1
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-    x = (v2 == da.DelayedArray(y))
+    x = v2 == da.DelayedArray(y)
     ptr = tatamize(x)
-    ref = (v2 == y)
+    ref = v2 == y
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
     # Non-equality.
-    x = da.DelayedArray(y) != v2 
+    x = da.DelayedArray(y) != v2
     ptr = tatamize(x)
-    ref = y != v2 
+    ref = y != v2
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
@@ -373,14 +373,14 @@ def test_delayed_unary_isometric_logical_scalar():
     y = np.random.rand(1000, 100)
 
     # OR.
-    x = np.logical_or(da.DelayedArray(y), True) 
+    x = np.logical_or(da.DelayedArray(y), True)
     assert isinstance(x.seed, da.UnaryIsometricOpWithArgs)
     ptr = tatamize(x)
     ref = np.logical_or(y, True)
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-    x = np.logical_or(False, da.DelayedArray(y)) 
+    x = np.logical_or(False, da.DelayedArray(y))
     ptr = tatamize(x)
     ref = np.logical_or(False, y)
     assert (ptr.row(0) == ref[0, :]).all()
@@ -419,14 +419,14 @@ def test_delayed_unary_isometric_logical_vector():
     v2 = np.random.rand(1000, 1) > 0.5
 
     # OR.
-    x = np.logical_or(da.DelayedArray(y), v1) 
+    x = np.logical_or(da.DelayedArray(y), v1)
     assert isinstance(x.seed, da.UnaryIsometricOpWithArgs)
     ptr = tatamize(x)
     ref = np.logical_or(y, v1)
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-    x = np.logical_or(v2, da.DelayedArray(y)) 
+    x = np.logical_or(v2, da.DelayedArray(y))
     ptr = tatamize(x)
     ref = np.logical_or(v2, y)
     assert (ptr.row(0) == ref[0, :]).all()
