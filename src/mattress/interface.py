@@ -178,3 +178,22 @@ def _tatamize_delayed_subset(
             components = TatamiNumericPointer(ptr, obj)
 
     return components
+
+
+@tatamize.register
+def _tatamize_delayed_combine(
+    x: delayedarray.Combine,
+) -> TatamiNumericPointer:
+    nseeds = len(x.seeds)
+    objects = []
+    converted = []
+    ptrs = np.ndarray(nseeds, dtype=np.uintp)
+
+    for i in range(nseeds):
+        components = tatamize(x.seeds[i])
+        converted.append(components)
+        ptrs[i] = components.ptr
+        objects.append(components.obj)
+
+    ptr = lib.initialize_delayed_combine(nseeds, ptrs.ctypes.data, x.along)
+    return TatamiNumericPointer(ptr, objects)
