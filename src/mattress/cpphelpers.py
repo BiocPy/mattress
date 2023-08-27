@@ -120,6 +120,13 @@ lib.py_initialize_delayed_subset.argtypes = [
     ct.POINTER(ct.c_char_p)
 ]
 
+lib.py_initialize_delayed_transpose.restype = ct.c_void_p
+lib.py_initialize_delayed_transpose.argtypes = [
+    ct.c_void_p,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p)
+]
+
 lib.py_initialize_delayed_unary_isometric_op_simple.restype = ct.c_void_p
 lib.py_initialize_delayed_unary_isometric_op_simple.argtypes = [
     ct.c_void_p,
@@ -186,6 +193,9 @@ def initialize_delayed_combine(n, ptrs, dim):
 
 def initialize_delayed_subset(ptr, dim, subset, len):
     return catch_errors(lib.py_initialize_delayed_subset)(ptr, dim, np2ct(subset, np.uint32), len)
+
+def initialize_delayed_transpose(ptr):
+    return catch_errors(lib.py_initialize_delayed_transpose)(ptr)
 
 def initialize_delayed_unary_isometric_op_simple(ptr, op):
     return catch_errors(lib.py_initialize_delayed_unary_isometric_op_simple)(ptr, op)

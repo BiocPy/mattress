@@ -197,3 +197,16 @@ def _tatamize_delayed_combine(
 
     ptr = lib.initialize_delayed_combine(nseeds, ptrs.ctypes.data, x.along)
     return TatamiNumericPointer(ptr, objects)
+
+
+@tatamize.register
+def _tatamize_delayed_transpose(
+    x: delayedarray.Transpose,
+) -> TatamiNumericPointer:
+    components = tatamize(x.seed)
+
+    if x.perm == (1, 0):
+        ptr = lib.initialize_delayed_transpose(components.ptr)
+        components = TatamiNumericPointer(ptr, components.obj)
+
+    return components

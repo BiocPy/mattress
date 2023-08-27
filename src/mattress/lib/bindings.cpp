@@ -35,6 +35,8 @@ void* initialize_delayed_combine(int32_t, uintptr_t*, int32_t);
 
 void* initialize_delayed_subset(void*, int32_t, const uint32_t*, int32_t);
 
+void* initialize_delayed_transpose(void*);
+
 void* initialize_delayed_unary_isometric_op_simple(void*, const char*);
 
 void* initialize_delayed_unary_isometric_op_with_scalar(void*, const char*, bool, double);
@@ -159,6 +161,20 @@ PYAPI void* py_initialize_delayed_subset(void* ptr, int32_t dim, const uint32_t*
     void* output = NULL;
     try {
         output = initialize_delayed_subset(ptr, dim, subset, len);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+    return output;
+}
+
+PYAPI void* py_initialize_delayed_transpose(void* ptr, int32_t* errcode, char** errmsg) {
+    void* output = NULL;
+    try {
+        output = initialize_delayed_transpose(ptr);
     } catch(std::exception& e) {
         *errcode = 1;
         *errmsg = copy_error_message(e.what());
