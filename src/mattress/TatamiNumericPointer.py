@@ -80,7 +80,7 @@ class TatamiNumericPointer:
         """Compute row sums.
 
         Args:
-            n (int, optional): Number of threads. 
+            n (int, optional): Number of threads.
 
         Returns:
             ndarray: Array of row sums.
@@ -93,7 +93,7 @@ class TatamiNumericPointer:
         """Compute column sums.
 
         Args:
-            n (int, optional): Number of threads. 
+            n (int, optional): Number of threads.
 
         Returns:
             ndarray: Array of column sums.

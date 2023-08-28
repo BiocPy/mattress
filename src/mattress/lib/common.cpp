@@ -53,4 +53,3 @@ void compute_row_sums(void* rawmat, double* output /** void_p */, int32_t num_th
 void free_mat(void* mat) {
     delete reinterpret_cast<Mattress*>(mat);
 }
-
