@@ -164,9 +164,9 @@ def _tatamize_delayed_subset(
 
         if not is_noop:
             if not isinstance(current, np.ndarray):
-                current = np.array(current, dtype=np.uint32)
+                current = np.array(current, dtype=np.int32)
             else:
-                current = current.astype(np.uint32, copy=False)
+                current = current.astype(np.int32, copy=False)
             ptr = lib.initialize_delayed_subset(
                 components.ptr, dim, current, len(current)
             )
