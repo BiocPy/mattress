@@ -17,6 +17,10 @@ static char* copy_error_message(const char* original) {
     return copy;
 }
 
+void compute_column_sums(void*, double*, int32_t);
+
+void compute_row_sums(void*, double*, int32_t);
+
 void extract_column(void*, int32_t, double*);
 
 int extract_ncol(const void*);
@@ -51,6 +55,30 @@ extern "C" {
 
 PYAPI void free_error_message(char** msg) {
     delete [] *msg;
+}
+
+PYAPI void py_compute_column_sums(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_sums(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_sums(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_sums(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
 }
 
 PYAPI void py_extract_column(void* rawmat, int32_t c, double* output, int32_t* errcode, char** errmsg) {

@@ -12,6 +12,9 @@ def test_dense():
     assert all(ptr.row(0) == y[0, :])
     assert all(ptr.column(1) == y[:, 1])
 
+    assert np.allclose(ptr.row_sums(), y.sum(axis=1))
+    assert np.allclose(ptr.column_sums(), y.sum(axis=0))
+
 
 def test_numpy_with_dtype():
     y = (np.random.rand(50, 12) * 100).astype("i8")
