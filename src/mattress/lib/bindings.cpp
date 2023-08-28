@@ -35,7 +35,7 @@ void* initialize_delayed_binary_isometric_op(void*, void*, const char*);
 
 void* initialize_delayed_combine(int32_t, uintptr_t*, int32_t);
 
-void* initialize_delayed_subset(void*, int32_t, const uint32_t*, int32_t);
+void* initialize_delayed_subset(void*, int32_t, const int32_t*, int32_t);
 
 void* initialize_delayed_transpose(void*);
 
@@ -173,7 +173,7 @@ PYAPI void* py_initialize_delayed_combine(int32_t n, uintptr_t* ptrs, int32_t di
     return output;
 }
 
-PYAPI void* py_initialize_delayed_subset(void* ptr, int32_t dim, const uint32_t* subset, int32_t len, int32_t* errcode, char** errmsg) {
+PYAPI void* py_initialize_delayed_subset(void* ptr, int32_t dim, const int32_t* subset, int32_t len, int32_t* errcode, char** errmsg) {
     void* output = NULL;
     try {
         output = initialize_delayed_subset(ptr, dim, subset, len);

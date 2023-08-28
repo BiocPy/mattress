@@ -227,7 +227,7 @@ def initialize_delayed_combine(n, ptrs, dim):
 
 def initialize_delayed_subset(ptr, dim, subset, len):
     return catch_errors(lib.py_initialize_delayed_subset)(
-        ptr, dim, np2ct(subset, np.uint32), len
+        ptr, dim, np2ct(subset, np.int32), len
     )
 
 
