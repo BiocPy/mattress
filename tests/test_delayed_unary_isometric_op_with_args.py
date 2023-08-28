@@ -148,19 +148,18 @@ def test_delayed_unary_isometric_arith_vector():
     assert (ptr.row(0) == ref[0, :]).all()
     assert (ptr.column(1) == ref[:, 1]).all()
 
-    #    TODO: fix the delayedarray.
-    #    # Division.
-    #    x = da.DelayedArray(y) / v1
-    #    ptr = tatamize(x)
-    #    ref = y / v1
-    #    assert (ptr.row(0) == ref[0, :]).all()
-    #    assert (ptr.column(1) == ref[:, 1]).all()
-    #
-    #    x = v2 / da.DelayedArray(y)
-    #    ptr = tatamize(x)
-    #    ref = v2 / y
-    #    assert (ptr.row(0) == ref[0, :]).all()
-    #    assert (ptr.column(1) == ref[:, 1]).all()
+    # Division.
+    x = da.DelayedArray(y) / v1
+    ptr = tatamize(x)
+    ref = y / v1
+    assert (ptr.row(0) == ref[0, :]).all()
+    assert (ptr.column(1) == ref[:, 1]).all()
+
+    x = v2 / da.DelayedArray(y)
+    ptr = tatamize(x)
+    ref = v2 / y
+    assert (ptr.row(0) == ref[0, :]).all()
+    assert (ptr.column(1) == ref[:, 1]).all()
 
     # Modulo.
     x = da.DelayedArray(y) % v2
