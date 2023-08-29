@@ -1,4 +1,4 @@
-from numpy import ndarray
+from numpy import ndarray, float64
 from . import cpphelpers as lib
 
 __author__ = "ltla, jkanche"
@@ -74,4 +74,30 @@ class TatamiNumericPointer:
         """
         output = ndarray((self.nrow(),), dtype="float64")
         lib.extract_column(self.ptr, c, output.ctypes.data)
+        return output
+
+    def row_sums(self, num_threads: int = 1) -> ndarray:
+        """Compute row sums.
+
+        Args:
+            n (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of row sums.
+        """
+        output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_sums(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def column_sums(self, num_threads: int = 1) -> ndarray:
+        """Compute column sums.
+
+        Args:
+            n (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of column sums.
+        """
+        output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_sums(self.ptr, output.ctypes.data, num_threads)
         return output

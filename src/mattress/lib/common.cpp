@@ -1,5 +1,6 @@
 #include "Mattress.h"
 #include <cstdint>
+#include <algorithm>
 
 //[[export]]
 int extract_nrow(const void* mat) {
@@ -32,6 +33,20 @@ void extract_column(void* rawmat, int32_t c, double* output /** void_p */) {
         mat->bycol = mat->ptr->dense_column();
     }
     mat->bycol->fetch_copy(c, output);
+}
+
+//[[export]]
+void compute_column_sums(void* rawmat, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    auto res = tatami::column_sums(mat->ptr.get(), num_threads);
+    std::copy(res.begin(), res.end(), output);
+}
+
+//[[export]]
+void compute_row_sums(void* rawmat, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    auto res = tatami::row_sums(mat->ptr.get(), num_threads);
+    std::copy(res.begin(), res.end(), output);
 }
 
 //[[export]]

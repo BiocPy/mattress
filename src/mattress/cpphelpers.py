@@ -48,6 +48,24 @@ def np2ct(x, expected, contiguous=True):
     return x.ctypes.data
 
 
+lib.py_compute_column_sums.restype = None
+lib.py_compute_column_sums.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_sums.restype = None
+lib.py_compute_row_sums.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
 lib.py_extract_column.restype = None
 lib.py_extract_column.argtypes = [
     ct.c_void_p,
@@ -183,6 +201,14 @@ lib.py_initialize_dense_matrix.argtypes = [
     ct.POINTER(ct.c_int32),
     ct.POINTER(ct.c_char_p),
 ]
+
+
+def compute_column_sums(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_column_sums)(rawmat, output, num_threads)
+
+
+def compute_row_sums(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_row_sums)(rawmat, output, num_threads)
 
 
 def extract_column(rawmat, c, output):
