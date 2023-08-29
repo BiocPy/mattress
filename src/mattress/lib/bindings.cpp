@@ -17,9 +17,29 @@ static char* copy_error_message(const char* original) {
     return copy;
 }
 
+void compute_column_maxs(void*, double*, int32_t);
+
+void compute_column_medians(void*, double*, int32_t);
+
+void compute_column_mins(void*, double*, int32_t);
+
+void compute_column_ranges(void*, double*, double*, int32_t);
+
 void compute_column_sums(void*, double*, int32_t);
 
+void compute_column_variances(void*, double*, int32_t);
+
+void compute_row_maxs(void*, double*, int32_t);
+
+void compute_row_medians(void*, double*, int32_t);
+
+void compute_row_mins(void*, double*, int32_t);
+
+void compute_row_ranges(void*, double*, double*, int32_t);
+
 void compute_row_sums(void*, double*, int32_t);
+
+void compute_row_variances(void*, double*, int32_t);
 
 void extract_column(void*, int32_t, double*);
 
@@ -57,6 +77,54 @@ PYAPI void free_error_message(char** msg) {
     delete [] *msg;
 }
 
+PYAPI void py_compute_column_maxs(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_maxs(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_column_medians(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_medians(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_column_mins(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_mins(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_column_ranges(void* rawmat, double* min_output, double* max_output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_ranges(rawmat, min_output, max_output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
 PYAPI void py_compute_column_sums(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
     try {
         compute_column_sums(rawmat, output, num_threads);
@@ -69,9 +137,81 @@ PYAPI void py_compute_column_sums(void* rawmat, double* output, int32_t num_thre
     }
 }
 
+PYAPI void py_compute_column_variances(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_column_variances(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_maxs(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_maxs(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_medians(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_medians(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_mins(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_mins(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_ranges(void* rawmat, double* min_output, double* max_output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_ranges(rawmat, min_output, max_output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
 PYAPI void py_compute_row_sums(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
     try {
         compute_row_sums(rawmat, output, num_threads);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_compute_row_variances(void* rawmat, double* output, int32_t num_threads, int32_t* errcode, char** errmsg) {
+    try {
+        compute_row_variances(rawmat, output, num_threads);
     } catch(std::exception& e) {
         *errcode = 1;
         *errmsg = copy_error_message(e.what());
