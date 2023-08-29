@@ -137,10 +137,10 @@ For testing, we usually do:
 python setup.py build_ext --inplace && tox
 ```
 
-To rebuild the **ctypes** bindings with [the `wrap.py` helper](https://github.com/BiocPy/ctypes-wrapper):
+To rebuild the **ctypes** bindings with [**cpptypes**](https://github.com/BiocPy/ctypes-wrapper):
 
 ```shell
-wrap.py src/mattress/lib --py src/mattress/cpphelpers.py --cpp src/mattress/lib/bindings.cpp
+cpptypes src/mattress/lib --py src/mattress/cpphelpers.py --cpp src/mattress/lib/bindings.cpp
 ```
 
 <!-- pyscaffold-notes -->
