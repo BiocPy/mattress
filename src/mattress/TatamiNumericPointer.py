@@ -218,7 +218,9 @@ class TatamiNumericPointer:
         """
         min_output = ndarray((self.nrow(),), dtype=float64)
         max_output = ndarray((self.nrow(),), dtype=float64)
-        lib.compute_row_ranges(self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads)
+        lib.compute_row_ranges(
+            self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads
+        )
         return (min_output, max_output)
 
     def column_ranges(self, num_threads: int = 1) -> Tuple[ndarray, ndarray]:
@@ -232,5 +234,7 @@ class TatamiNumericPointer:
         """
         min_output = ndarray((self.ncol(),), dtype=float64)
         max_output = ndarray((self.ncol(),), dtype=float64)
-        lib.compute_column_ranges(self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads)
+        lib.compute_column_ranges(
+            self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads
+        )
         return (min_output, max_output)
