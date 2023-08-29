@@ -1,5 +1,6 @@
 from numpy import ndarray, float64
 from . import cpphelpers as lib
+from typing import Tuple
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -77,10 +78,10 @@ class TatamiNumericPointer:
         return output
 
     def row_sums(self, num_threads: int = 1) -> ndarray:
-        """Compute row sums.
+        """Convenience method to compute row sums.
 
         Args:
-            n (int, optional): Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             ndarray: Array of row sums.
@@ -90,10 +91,10 @@ class TatamiNumericPointer:
         return output
 
     def column_sums(self, num_threads: int = 1) -> ndarray:
-        """Compute column sums.
+        """Convenience method to compute column sums.
 
         Args:
-            n (int, optional): Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             ndarray: Array of column sums.
@@ -101,3 +102,139 @@ class TatamiNumericPointer:
         output = ndarray((self.ncol(),), dtype=float64)
         lib.compute_column_sums(self.ptr, output.ctypes.data, num_threads)
         return output
+
+    def row_variances(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute row variances.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of row variances.
+        """
+        output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_variances(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def column_variances(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute column variances.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of column variances.
+        """
+        output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_variances(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def row_medians(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute row medians.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of row medians.
+        """
+        output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_medians(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def column_medians(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute column medians.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of column medians.
+        """
+        output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_medians(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def row_mins(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute row minima.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of row minima.
+        """
+        output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_mins(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def column_mins(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute column minima.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of column mins.
+        """
+        output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_mins(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def row_maxs(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute row maxima.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of row maxima.
+        """
+        output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_maxs(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def column_maxs(self, num_threads: int = 1) -> ndarray:
+        """Convenience method to compute column maxima.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            ndarray: Array of column maxs.
+        """
+        output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_maxs(self.ptr, output.ctypes.data, num_threads)
+        return output
+
+    def row_ranges(self, num_threads: int = 1) -> Tuple[ndarray, ndarray]:
+        """Convenience method to compute row ranges.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            Tuple[ndarray, ndarray]: Tuple containing the row minima and maxima.
+        """
+        min_output = ndarray((self.nrow(),), dtype=float64)
+        max_output = ndarray((self.nrow(),), dtype=float64)
+        lib.compute_row_ranges(
+            self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads
+        )
+        return (min_output, max_output)
+
+    def column_ranges(self, num_threads: int = 1) -> Tuple[ndarray, ndarray]:
+        """Convenience method to compute column ranges.
+
+        Args:
+            num_threads (int, optional): Number of threads.
+
+        Returns:
+            Tuple[ndarray, ndarray]: Tuple containing the column minima and maxima.
+        """
+        min_output = ndarray((self.ncol(),), dtype=float64)
+        max_output = ndarray((self.ncol(),), dtype=float64)
+        lib.compute_column_ranges(
+            self.ptr, min_output.ctypes.data, max_output.ctypes.data, num_threads
+        )
+        return (min_output, max_output)

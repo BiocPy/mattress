@@ -14,6 +14,23 @@ def test_dense():
 
     assert np.allclose(ptr.row_sums(), y.sum(axis=1))
     assert np.allclose(ptr.column_sums(), y.sum(axis=0))
+    assert np.allclose(ptr.row_variances(), y.var(axis=1, ddof=1))
+    assert np.allclose(ptr.column_variances(), y.var(axis=0, ddof=1))
+
+    assert ptr.row_medians().shape == (1000,)
+    assert ptr.column_medians().shape == (100,)
+
+    assert (ptr.row_mins() == y.min(axis=1)).all()
+    assert (ptr.column_mins() == y.min(axis=0)).all()
+    assert (ptr.row_maxs() == y.max(axis=1)).all()
+    assert (ptr.column_maxs() == y.max(axis=0)).all()
+
+    mn, mx = ptr.row_ranges()
+    assert (mn == y.min(axis=1)).all()
+    assert (mx == y.max(axis=1)).all()
+    mn, mx = ptr.column_ranges()
+    assert (mn == y.min(axis=0)).all()
+    assert (mx == y.max(axis=0)).all()
 
 
 def test_numpy_with_dtype():

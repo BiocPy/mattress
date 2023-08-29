@@ -48,6 +48,43 @@ def np2ct(x, expected, contiguous=True):
     return x.ctypes.data
 
 
+lib.py_compute_column_maxs.restype = None
+lib.py_compute_column_maxs.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_column_medians.restype = None
+lib.py_compute_column_medians.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_column_mins.restype = None
+lib.py_compute_column_mins.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_column_ranges.restype = None
+lib.py_compute_column_ranges.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
 lib.py_compute_column_sums.restype = None
 lib.py_compute_column_sums.argtypes = [
     ct.c_void_p,
@@ -57,8 +94,63 @@ lib.py_compute_column_sums.argtypes = [
     ct.POINTER(ct.c_char_p),
 ]
 
+lib.py_compute_column_variances.restype = None
+lib.py_compute_column_variances.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_maxs.restype = None
+lib.py_compute_row_maxs.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_medians.restype = None
+lib.py_compute_row_medians.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_mins.restype = None
+lib.py_compute_row_mins.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_ranges.restype = None
+lib.py_compute_row_ranges.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
 lib.py_compute_row_sums.restype = None
 lib.py_compute_row_sums.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_compute_row_variances.restype = None
+lib.py_compute_row_variances.argtypes = [
     ct.c_void_p,
     ct.c_void_p,
     ct.c_int32,
@@ -203,12 +295,56 @@ lib.py_initialize_dense_matrix.argtypes = [
 ]
 
 
+def compute_column_maxs(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_column_maxs)(rawmat, output, num_threads)
+
+
+def compute_column_medians(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_column_medians)(rawmat, output, num_threads)
+
+
+def compute_column_mins(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_column_mins)(rawmat, output, num_threads)
+
+
+def compute_column_ranges(rawmat, min_output, max_output, num_threads):
+    return catch_errors(lib.py_compute_column_ranges)(
+        rawmat, min_output, max_output, num_threads
+    )
+
+
 def compute_column_sums(rawmat, output, num_threads):
     return catch_errors(lib.py_compute_column_sums)(rawmat, output, num_threads)
 
 
+def compute_column_variances(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_column_variances)(rawmat, output, num_threads)
+
+
+def compute_row_maxs(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_row_maxs)(rawmat, output, num_threads)
+
+
+def compute_row_medians(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_row_medians)(rawmat, output, num_threads)
+
+
+def compute_row_mins(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_row_mins)(rawmat, output, num_threads)
+
+
+def compute_row_ranges(rawmat, min_output, max_output, num_threads):
+    return catch_errors(lib.py_compute_row_ranges)(
+        rawmat, min_output, max_output, num_threads
+    )
+
+
 def compute_row_sums(rawmat, output, num_threads):
     return catch_errors(lib.py_compute_row_sums)(rawmat, output, num_threads)
+
+
+def compute_row_variances(rawmat, output, num_threads):
+    return catch_errors(lib.py_compute_row_variances)(rawmat, output, num_threads)
 
 
 def extract_column(rawmat, c, output):
