@@ -10,7 +10,7 @@
 
 [![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
 [![PyPI-Server](https://img.shields.io/pypi/v/mattress.svg)](https://pypi.org/project/mattress/)
-[![Monthly Downloads](https://pepy.tech/badge/mattress/month)](https://pepy.tech/project/mattress)
+[![Monthly Downloads](https://static.pepy.tech/badge/mattress/month)](https://pepy.tech/project/mattress)
 ![Unit tests](https://github.com/BiocPy/mattress/actions/workflows/pypi-test.yml/badge.svg)
 
 # Python bindings for tatami
