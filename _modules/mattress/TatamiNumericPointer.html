@@ -1,12 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress.TatamiNumericPointer - mattress 0.0.7 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+        <title>mattress.TatamiNumericPointer - mattress 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">mattress 0.0.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">mattress 0.1.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.7 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.1.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -197,38 +197,38 @@
         </div>
         <article role="main">
           <h1>Source code for mattress.TatamiNumericPointer</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
-
+<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">float64</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cpphelpers</span> <span class="k">as</span> <span class="n">lib</span>
-<span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">NumberTypes</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="TatamiNumericPointer"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer">[docs]</a><span class="k">class</span> <span class="nc">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a Tatami Numeric Ponter object.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TatamiNumericPointer">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer">[docs]</a>
+<span class="k">class</span> <span class="nc">TatamiNumericPointer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a Tatami Numeric Ponter object.</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="s2">&quot;Mattress&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the class.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as</span>
+<span class="sd">            a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            ptr (Mattress): Pointer to a Mattress instance wrapping a tatami Matrix.</span>
-<span class="sd">            obj (Any): Arbitrary Python object that is referenced by the tatami instance.</span>
-<span class="sd">                This is stored here to avoid garbage collection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        obj (list): List of Python objects referenced by the tatami instance.</span>
+<span class="sd">            This is stored here to avoid garbage collection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Free the reference.&quot;&quot;&quot;</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">free_mat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TatamiNumericPointer.nrow"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.nrow">[docs]</a>    <span class="k">def</span> <span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="TatamiNumericPointer.nrow">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.nrow">[docs]</a>
+    <span class="k">def</span> <span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of rows.</span>
 
 <span class="sd">        Returns:</span>
@@ -236,7 +236,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_nrow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TatamiNumericPointer.ncol"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.ncol">[docs]</a>    <span class="k">def</span> <span class="nf">ncol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<div class="viewcode-block" id="TatamiNumericPointer.ncol">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.ncol">[docs]</a>
+    <span class="k">def</span> <span class="nf">ncol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of columns.</span>
 
 <span class="sd">        Returns:</span>
@@ -244,7 +247,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_ncol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TatamiNumericPointer.sparse"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.sparse">[docs]</a>    <span class="k">def</span> <span class="nf">sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="TatamiNumericPointer.sparse">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.sparse">[docs]</a>
+    <span class="k">def</span> <span class="nf">sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the matrix sparse?</span>
 
 <span class="sd">        Returns:</span>
@@ -252,121 +258,239 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="TatamiNumericPointer.row"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row">[docs]</a>    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NumberTypes</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="TatamiNumericPointer.row">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row">[docs]</a>
+    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a row from the tatami matrix.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            r (int): Row to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[NumberTypes]: Row from the matrix.</span>
+<span class="sd">            ndarray: Row from the matrix. This is always in double-precision,</span>
+<span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
-<div class="viewcode-block" id="TatamiNumericPointer.column"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column">[docs]</a>    <span class="k">def</span> <span class="nf">column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NumberTypes</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="TatamiNumericPointer.column">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column">[docs]</a>
+    <span class="k">def</span> <span class="nf">column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a column from the tatami matrix.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            c (int): Column to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[NumberTypes]: Column from the matrix.</span>
+<span class="sd">            ndarray: Column from the matrix. This is always in double-precisino,</span>
+<span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">extract_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
-<div class="viewcode-block" id="TatamiNumericPointer.from_dense_matrix"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.from_dense_matrix">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_dense_matrix</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TatamiNumericPointer&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a dense matrix.</span>
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_sums">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_sums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row sums.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (np.ndarray): Input numpy array with 2 dimensions.</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
+<span class="sd">            ndarray: Array of row sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x&#39; should be a 2-dimensional array&quot;</span><span class="p">)</span>
 
-        <span class="n">byrow</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;C_CONTIGUOUS&quot;</span><span class="p">]:</span>
-            <span class="n">byrow</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;F_CONTIGUOUS&quot;</span><span class="p">]:</span>
-            <span class="n">byrow</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># I don&#39;t think it&#39;s possible to hit this, as a (non-view) ndarray</span>
-            <span class="c1"># should be contiguous in at least one direction.</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x&#39; must have contiguous storage for its arrays&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_dense_matrix</span><span class="p">(</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="n">byrow</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">obj</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="TatamiNumericPointer.from_csc_array"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.from_csc_array">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_csc_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csc_array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TatamiNumericPointer&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a compressed sparse column matrix.</span>
+<div class="viewcode-block" id="TatamiNumericPointer.column_sums">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_sums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column sums.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (scipy.sparse.csc_array): Input sparse matrix.</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
+<span class="sd">            ndarray: Array of column sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="kc">False</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">tmp</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="TatamiNumericPointer.from_csr_array"><a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.from_csr_array">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_csr_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TatamiNumericPointer&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class from a compressed sparse row matrix.</span>
+<div class="viewcode-block" id="TatamiNumericPointer.row_variances">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_variances">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_variances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row variances.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            x (scipy.sparse.csc_array): Input sparse matrix.</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TatamiNumericPointer: Instance of the class.</span>
+<span class="sd">            ndarray: Array of row variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="kc">True</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">tmp</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
-        <span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_variances">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_variances">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_variances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column variances.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of column variances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_medians">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_medians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row medians.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of row medians.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_medians">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_medians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column medians.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of column medians.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_mins">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_mins">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_mins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row minima.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of row minima.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_mins">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_mins">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_mins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column minima.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of column mins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_maxs">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_maxs">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_maxs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row maxima.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of row maxima.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_maxs">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_maxs">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_maxs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column maxima.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of column maxs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_ranges">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row ranges.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, ndarray]: Tuple containing the row minima and maxima.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">max_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_ranges</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">min_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">max_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_output</span><span class="p">,</span> <span class="n">max_output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_ranges">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column ranges.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, ndarray]: Tuple containing the column minima and maxima.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">max_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_ranges</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">min_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">max_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_output</span><span class="p">,</span> <span class="n">max_output</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -399,9 +523,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=99d54efb"></script>
+</div><script src="../../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

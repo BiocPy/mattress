@@ -1,12 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>mattress.interface - mattress 0.0.7 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b76e3c8a" />
+    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
+        <title>mattress.interface - mattress 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">mattress 0.0.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">mattress 0.1.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.0.7 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.1.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,15 +202,19 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">delayedarray</span>
 
 <span class="kn">from</span> <span class="nn">.TatamiNumericPointer</span> <span class="kn">import</span> <span class="n">TatamiNumericPointer</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cpphelpers</span> <span class="k">as</span> <span class="n">lib</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="tatamize"><a class="viewcode-back" href="../../api/mattress.html#mattress.interface.tatamize">[docs]</a><span class="nd">@singledispatch</span>
+<div class="viewcode-block" id="tatamize">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.interface.tatamize">[docs]</a>
+<span class="nd">@singledispatch</span>
 <span class="k">def</span> <span class="nf">tatamize</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts python matrix representations to tatami.</span>
 
@@ -228,84 +232,214 @@
     <span class="p">)</span></div>
 
 
+
 <span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_tatamize_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts numpy representations to tatami.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x&#39; should be a 2-dimensional array&quot;</span><span class="p">)</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        x (np.ndarray): A numpy nd-array object.</span>
+    <span class="n">byrow</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;C_CONTIGUOUS&quot;</span><span class="p">]:</span>
+        <span class="n">byrow</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;F_CONTIGUOUS&quot;</span><span class="p">]:</span>
+        <span class="n">byrow</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># I don&#39;t think it&#39;s possible to hit this, as a (non-view) ndarray</span>
+        <span class="c1"># should be contiguous in at least one direction.</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;x&#39; must have contiguous storage for its arrays&quot;</span><span class="p">)</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If x is not supported.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        TatamiNumericPointer: Pointer to tatami object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="o">.</span><span class="n">from_dense_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span>
+        <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_dense_matrix</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">byrow</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
+    <span class="p">)</span>
 
 
 <span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_tatamize_sparse_csr_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts scipy&#39;s CSR representations to tatami.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        x (sp.csr_array): A scipy csr array.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If x is not supported.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        TatamiNumericPointer: Pointer to tatami object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="o">.</span><span class="n">from_csr_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span>
+        <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">tmp</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
+    <span class="p">)</span>
 
 
 <span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_tatamize_sparse_csr_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts scipy&#39;s CSR representations to tatami.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        x (sp.csr_matrix): A scipy csr array.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If x is not supported.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        TatamiNumericPointer: Pointer to tatami object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="o">.</span><span class="n">from_csr_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_tatamize_sparse_csr_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 
 <span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_tatamize_sparse_csc_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csc_array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts scipy&#39;s CSC representations to tatami.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        x (sp.csc_array): A scipy csc array.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If x is not supported.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        TatamiNumericPointer: Pointer to tatami object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="o">.</span><span class="n">from_csc_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">indptr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span>
+        <span class="n">ptr</span><span class="o">=</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_compressed_sparse_matrix</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">tmp</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
+    <span class="p">)</span>
 
 
 <span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_tatamize_sparse_csc_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">sp</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts scipy&#39;s CSC representations to tatami.</span>
+    <span class="k">return</span> <span class="n">_tatamize_sparse_csc_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        x (sp.csc_matrix): A scipy csc array.</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If x is not supported.</span>
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">DelayedArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        TatamiNumericPointer: Pointer to tatami object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="o">.</span><span class="n">from_csc_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_unary_isometric_op_simple</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">UnaryIsometricOpSimple</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_unary_isometric_op_simple</span><span class="p">(</span>
+        <span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_unary_isometric_op_with_args</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">UnaryIsometricOpWithArgs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_unary_isometric_op_with_vector</span><span class="p">(</span>
+            <span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">along</span><span class="p">,</span> <span class="n">contents</span>
+        <span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_unary_isometric_op_with_scalar</span><span class="p">(</span>
+            <span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_subset</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">Subset</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span>
+
+    <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
+
+        <span class="n">is_noop</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">current</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">is_noop</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">is_noop</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_noop</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_subset</span><span class="p">(</span>
+                <span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">components</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_combine</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">Combine</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">nseeds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seeds</span><span class="p">)</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ptrs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">nseeds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uintp</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">):</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seeds</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">converted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+        <span class="n">ptrs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">components</span><span class="o">.</span><span class="n">ptr</span>
+        <span class="n">objects</span> <span class="o">+=</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span>
+
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_combine</span><span class="p">(</span><span class="n">nseeds</span><span class="p">,</span> <span class="n">ptrs</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">along</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">objects</span><span class="p">)</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_transpose</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">Transpose</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">perm</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_transpose</span><span class="p">(</span><span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">components</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_binary_isometric_op</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">BinaryIsometricOp</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">lcomponents</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+    <span class="n">rcomponents</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_binary_isometric_op</span><span class="p">(</span>
+        <span class="n">lcomponents</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">rcomponents</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">lcomponents</span><span class="o">.</span><span class="n">obj</span> <span class="o">+</span> <span class="n">rcomponents</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+
+
+<span class="nd">@tatamize</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">_tatamize_delayed_round</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">Round</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">decimals</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;non-zero decimals in &#39;delayedarray.Round&#39; is not yet supported&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">initialize_delayed_unary_isometric_op_simple</span><span class="p">(</span>
+        <span class="n">components</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="s2">&quot;round&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TatamiNumericPointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
@@ -338,9 +472,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=99d54efb"></script>
+</div><script src="../../_static/documentation_options.js?v=a58bc63e"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

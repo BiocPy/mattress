@@ -36,14 +36,6 @@ mattress.interface module
    :undoc-members:
    :show-inheritance:
 
-mattress.types module
----------------------
-
-.. automodule:: mattress.types
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 mattress.utils module
 ---------------------
 
