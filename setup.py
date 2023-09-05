@@ -6,6 +6,7 @@ Learn more under: https://pyscaffold.org/
 """
 from setuptools import setup
 from setuptools.extension import Extension
+import assorthead
 
 if __name__ == "__main__":
     try:
@@ -27,7 +28,7 @@ if __name__ == "__main__":
                         "src/mattress/lib/bindings.cpp",
                     ],
                     include_dirs=[
-                        "src/mattress/extern/tatami/include",
+                        assorthead.includes(),
                         "src/mattress/include",
                     ],
                     language="c++",

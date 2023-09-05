@@ -1,5 +1,7 @@
 import os
 from typing import List
+import assorthead
+import inspect
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -49,8 +51,8 @@ def includes() -> List[str]:
     Returns:
         List[str]: List of paths to the header files.
     """
-    dirname = os.path.dirname(os.path.abspath(__file__))
+    dirname = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     return [
-        os.path.join(dirname, "extern", "tatami", "include"),
+        assorthead.includes(),
         os.path.join(dirname, "include"),
     ]
