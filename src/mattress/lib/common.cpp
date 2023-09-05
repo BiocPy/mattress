@@ -1,5 +1,4 @@
 #include "Mattress.h"
-#include "tatami/stats/ranges.hpp" // oops.
 #include <cstdint>
 #include <algorithm>
 
