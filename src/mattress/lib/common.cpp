@@ -42,64 +42,55 @@ void extract_column(void* rawmat, int32_t c, double* output /** void_p */) {
 //[[export]]
 void compute_column_sums(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_sums(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::column_sums(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_row_sums(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::row_sums(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::row_sums(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_column_variances(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_variances(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::column_variances(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_row_variances(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::row_variances(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::row_variances(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_column_medians(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_medians(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::column_medians(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_row_medians(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::row_medians(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::row_medians(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_column_mins(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_mins(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::column_mins(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_row_mins(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::row_mins(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::row_mins(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
 void compute_column_maxs(void* rawmat, double* output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_maxs(mat->ptr.get(), num_threads);
-    std::copy(res.begin(), res.end(), output);
+    tatami::column_maxs(mat->ptr.get(), output, num_threads);
 }
 
 //[[export]]
@@ -112,17 +103,69 @@ void compute_row_maxs(void* rawmat, double* output /** void_p */, int32_t num_th
 //[[export]]
 void compute_column_ranges(void* rawmat, double* min_output /** void_p */, double* max_output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::column_ranges(mat->ptr.get(), num_threads);
-    std::copy(res.first.begin(), res.first.end(), min_output);
-    std::copy(res.second.begin(), res.second.end(), max_output);
+    tatami::column_ranges(mat->ptr.get(), min_output, max_output, num_threads);
 }
 
 //[[export]]
 void compute_row_ranges(void* rawmat, double* min_output /** void_p */, double* max_output /** void_p */, int32_t num_threads) {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
-    auto res = tatami::row_ranges(mat->ptr.get(), num_threads);
-    std::copy(res.first.begin(), res.first.end(), min_output);
-    std::copy(res.second.begin(), res.second.end(), max_output);
+    tatami::row_ranges(mat->ptr.get(), min_output, max_output, num_threads);
+}
+
+//[[export]]
+void compute_row_nan_counts(void* rawmat, int32_t* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    tatami::row_nan_counts(mat->ptr.get(), output, num_threads);
+}
+
+//[[export]]
+void compute_column_nan_counts(void* rawmat, int32_t* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    tatami::column_nan_counts(mat->ptr.get(), output, num_threads);
+}
+
+/** Grouped stats **/
+
+//[[export]]
+void compute_row_sums_by_group(void* rawmat, const int32_t* grouping /** void_p */, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+
+    // Unexported and liable to change; switch to tatami::stats::tabulate_groups
+    // in the next version.
+    auto group_sizes = tatami::tabulate_groups(grouping, mat->ptr->ncol());
+
+    tatami::row_sums_by_group(mat->ptr.get(), grouping, group_sizes, output, num_threads);
+}
+
+//[[export]]
+void compute_column_sums_by_group(void* rawmat, const int32_t* grouping /** void_p */, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+
+    // Unexported and liable to change.
+    auto group_sizes = tatami::tabulate_groups(grouping, mat->ptr->nrow());
+
+    tatami::column_sums_by_group(mat->ptr.get(), grouping, group_sizes, output, num_threads);
+}
+
+//[[export]]
+void compute_row_medians_by_group(void* rawmat, const int32_t* grouping /** void_p */, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+
+    // Unexported and liable to change; update to tatami::stats::tabulate_groups
+    // in the next version.
+    auto group_sizes = tatami::tabulate_groups(grouping, mat->ptr->ncol());
+
+    tatami::row_medians_by_group(mat->ptr.get(), grouping, group_sizes, output, num_threads);
+}
+
+//[[export]]
+void compute_column_medians_by_group(void* rawmat, const int32_t* grouping /** void_p */, double* output /** void_p */, int32_t num_threads) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+
+    // Unexported and liable to change.
+    auto group_sizes = tatami::tabulate_groups(grouping, mat->ptr->nrow());
+
+    tatami::column_medians_by_group(mat->ptr.get(), grouping, group_sizes, output, num_threads);
 }
 
 /** Freeing **/
