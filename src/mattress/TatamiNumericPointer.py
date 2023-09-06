@@ -20,14 +20,17 @@ def _factorize(group):
 
 
 class TatamiNumericPointer:
-    """Initialize a Tatami Numeric Ponter object.
+    """Pointer to a tatami numeric matrix allocated by C++ code. Instances of this class should only be created by
+    developers and used within package functions. They are expected to be transient within a Python session; they should
+    not be serialized, nor should they be visible to end users. Each instance will automatically free the C++-allocated
+    memory upon its own destruction.
 
     Attributes:
         ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as
             a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.
 
-        obj (list): List of Python objects referenced by the tatami instance.
-            This is stored here to avoid garbage collection.
+        obj (list): List of Python objects referenced by the tatami matrix object.
+            These are stored here to avoid garbage collection.
     """
 
     def __init__(self, ptr: int, obj: list):
@@ -62,7 +65,8 @@ class TatamiNumericPointer:
         return lib.extract_sparse(self.ptr) > 0
 
     def row(self, r: int) -> ndarray:
-        """Access a row from the tatami matrix.
+        """Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be
+        used to iterate over the matrix in production code. (Do that in C++ instead.)
 
         Args:
             r (int): Row to access.
@@ -76,7 +80,8 @@ class TatamiNumericPointer:
         return output
 
     def column(self, c: int) -> ndarray:
-        """Access a column from the tatami matrix.
+        """Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not
+        be used to iterate over the matrix in production code. (Do that in C++ instead.)
 
         Args:
             c (int): Column to access.

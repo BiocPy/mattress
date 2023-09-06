@@ -15,7 +15,7 @@ __license__ = "MIT"
 
 @singledispatch
 def tatamize(x: Any) -> TatamiNumericPointer:
-    """Converts python matrix representations to tatami.
+    """Converts Python matrix representations to a tatami pointer.
 
     Args:
         x (Any): Any matrix-like object.
@@ -230,7 +230,7 @@ def _tatamize_delayed_round(
 
     if x.decimals != 0:
         raise NotImplementedError(
-            "non-zero decimals in 'delayedarray.Round' is not yet supported"
+            "non-zero decimals in 'delayedarray.Round' are not yet supported"
         )
 
     ptr = lib.initialize_delayed_unary_isometric_op_simple(
