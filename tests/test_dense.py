@@ -51,10 +51,10 @@ def test_dense_column_major():
 
 def test_dense_nan_counts():
     y = np.random.rand(20, 10)
-    y[0,0] = np.NaN
-    y[1,2] = np.NaN
-    y[4,3] = np.NaN
-    y[2,3] = np.NaN
+    y[0, 0] = np.NaN
+    y[1, 2] = np.NaN
+    y[4, 3] = np.NaN
+    y[2, 3] = np.NaN
 
     ptr = tatamize(y)
     rnan = ptr.row_nan_counts()
@@ -75,7 +75,7 @@ def test_dense_grouped():
     rmed, rlev = ptr.row_medians_by_group(cgrouping)
     assert rmed.shape == (20, 4)
     assert len(rlev) == 4
-    assert (rmed[:,rlev.index("D")] == y[:,0]).all()
+    assert (rmed[:, rlev.index("D")] == y[:, 0]).all()
 
     cmed, clev = ptr.column_medians_by_group(rgrouping)
     assert cmed.shape == (3, 10)
@@ -85,14 +85,14 @@ def test_dense_grouped():
     for i, x in enumerate(rgrouping):
         if x == 1:
             keep.append(i)
-    ref = y[keep,:]
+    ref = y[keep, :]
     rptr = tatamize(ref)
-    assert (cmed[clev.index(1),:] == rptr.column_medians()).all()
+    assert (cmed[clev.index(1), :] == rptr.column_medians()).all()
 
     rsum, rlev = ptr.row_sums_by_group(cgrouping)
     assert rsum.shape == (20, 4)
     assert len(rlev) == 4
-    assert (rsum[:,rlev.index("D")] == y[:,0]).all()
+    assert (rsum[:, rlev.index("D")] == y[:, 0]).all()
 
     csum, clev = ptr.column_sums_by_group(rgrouping)
     assert csum.shape == (3, 10)
@@ -102,6 +102,6 @@ def test_dense_grouped():
     for i, x in enumerate(rgrouping):
         if x == 0:
             keep.append(i)
-    ref = y[keep,:]
+    ref = y[keep, :]
     rptr = tatamize(ref)
-    assert (csum[clev.index(0),:] == rptr.column_sums()).all()
+    assert (csum[clev.index(0), :] == rptr.column_sums()).all()

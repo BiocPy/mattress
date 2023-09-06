@@ -277,7 +277,9 @@ class TatamiNumericPointer:
         lib.compute_column_nan_counts(self.ptr, output.ctypes.data, num_threads)
         return output
 
-    def row_medians_by_group(self, group: Sequence, num_threads: int = 1) -> Tuple[ndarray, list]:
+    def row_medians_by_group(
+        self, group: Sequence, num_threads: int = 1
+    ) -> Tuple[ndarray, list]:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
@@ -285,23 +287,29 @@ class TatamiNumericPointer:
                 Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional): 
+            num_threads (int, optional):
                 Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents 
+            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
             a group and contains the row-wise medians for that group, across all rows of the matrix;
             and a list containing the unique levels of ``group`` represented by each column.
         """
         lev, ind = _factorize(group)
         if len(ind) != self.ncol():
-            raise ValueError("'group' should have length equal to the number of columns")
+            raise ValueError(
+                "'group' should have length equal to the number of columns"
+            )
 
         output = ndarray((self.nrow(), len(lev)), dtype=float64)
-        lib.compute_row_medians_by_group(self.ptr, ind.ctypes.data, output.ctypes.data, num_threads)
+        lib.compute_row_medians_by_group(
+            self.ptr, ind.ctypes.data, output.ctypes.data, num_threads
+        )
         return output, lev
 
-    def column_medians_by_group(self, group: Sequence, num_threads: int = 1) -> Tuple[ndarray, list]:
+    def column_medians_by_group(
+        self, group: Sequence, num_threads: int = 1
+    ) -> Tuple[ndarray, list]:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
@@ -309,11 +317,11 @@ class TatamiNumericPointer:
                 Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional): 
+            num_threads (int, optional):
                 Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents 
+            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
             a group and contains the column-wise medians for that group, across all columns of the matrix;
             and a list containing the unique levels of ``group`` represented by each row.
         """
@@ -322,10 +330,14 @@ class TatamiNumericPointer:
             raise ValueError("'group' should have length equal to the number of rows")
 
         output = ndarray((self.ncol(), len(lev)), dtype=float64)
-        lib.compute_column_medians_by_group(self.ptr, ind.ctypes.data, output.ctypes.data, num_threads)
+        lib.compute_column_medians_by_group(
+            self.ptr, ind.ctypes.data, output.ctypes.data, num_threads
+        )
         return output.T, lev
 
-    def row_sums_by_group(self, group: Sequence, num_threads: int = 1) -> Tuple[ndarray, list]:
+    def row_sums_by_group(
+        self, group: Sequence, num_threads: int = 1
+    ) -> Tuple[ndarray, list]:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
@@ -333,23 +345,29 @@ class TatamiNumericPointer:
                 Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional): 
+            num_threads (int, optional):
                 Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents 
+            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
             a group and contains the row-wise sums for that group, across all rows of the matrix;
             and a list containing the unique levels of ``group`` represented by each column.
         """
         lev, ind = _factorize(group)
         if len(ind) != self.ncol():
-            raise ValueError("'group' should have length equal to the number of columns")
+            raise ValueError(
+                "'group' should have length equal to the number of columns"
+            )
 
         output = ndarray((self.nrow(), len(lev)), dtype=float64)
-        lib.compute_row_sums_by_group(self.ptr, ind.ctypes.data, output.ctypes.data, num_threads)
+        lib.compute_row_sums_by_group(
+            self.ptr, ind.ctypes.data, output.ctypes.data, num_threads
+        )
         return output, lev
 
-    def column_sums_by_group(self, group: Sequence, num_threads: int = 1) -> Tuple[ndarray, list]:
+    def column_sums_by_group(
+        self, group: Sequence, num_threads: int = 1
+    ) -> Tuple[ndarray, list]:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
@@ -357,11 +375,11 @@ class TatamiNumericPointer:
                 Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional): 
+            num_threads (int, optional):
                 Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents 
+            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
             a group and contains the column-wise sums for that group, across all columns of the matrix;
             and a list containing the unique levels of ``group`` represented by each row.
         """
@@ -370,6 +388,7 @@ class TatamiNumericPointer:
             raise ValueError("'group' should have length equal to the number of rows")
 
         output = ndarray((self.ncol(), len(lev)), dtype=float64)
-        lib.compute_column_sums_by_group(self.ptr, ind.ctypes.data, output.ctypes.data, num_threads)
+        lib.compute_column_sums_by_group(
+            self.ptr, ind.ctypes.data, output.ctypes.data, num_threads
+        )
         return output.T, lev
-
