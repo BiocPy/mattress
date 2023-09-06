@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.4 and Furo 2023.08.19 -->
-        <title>mattress.TatamiNumericPointer - mattress 0.1.1 documentation</title>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>mattress.TatamiNumericPointer - mattress 0.1.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">mattress 0.1.1 documentation</div></a>
+      <a href="../../index.html"><div class="brand">mattress 0.1.2 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.1.1 documentation</span>
+  <span class="sidebar-brand-text">mattress 0.1.2 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -197,26 +197,41 @@
         </div>
         <article role="main">
           <h1>Source code for mattress.TatamiNumericPointer</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">float64</span>
+<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">float64</span><span class="p">,</span> <span class="n">int32</span><span class="p">,</span> <span class="n">zeros</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cpphelpers</span> <span class="k">as</span> <span class="n">lib</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
+<span class="k">def</span> <span class="nf">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+    <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),),</span> <span class="n">int32</span><span class="p">)</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">:</span>
+            <span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
+            <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">levels</span><span class="p">,</span> <span class="n">indices</span>
+
+
 <div class="viewcode-block" id="TatamiNumericPointer">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer">[docs]</a>
 <span class="k">class</span> <span class="nc">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a Tatami Numeric Ponter object.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pointer to a tatami numeric matrix allocated by C++ code. Instances of this class should only be created by</span>
+<span class="sd">    developers and used within package functions. They are expected to be transient within a Python session; they should</span>
+<span class="sd">    not be serialized, nor should they be visible to end users. Each instance will automatically free the C++-allocated</span>
+<span class="sd">    memory upon its own destruction.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as</span>
 <span class="sd">            a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.</span>
 
-<span class="sd">        obj (list): List of Python objects referenced by the tatami instance.</span>
-<span class="sd">            This is stored here to avoid garbage collection.</span>
+<span class="sd">        obj (list): List of Python objects referenced by the tatami matrix object.</span>
+<span class="sd">            These are stored here to avoid garbage collection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
@@ -262,7 +277,8 @@
 <div class="viewcode-block" id="TatamiNumericPointer.row">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row">[docs]</a>
     <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a row from the tatami matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be</span>
+<span class="sd">        used to iterate over the matrix in production code. (Do that in C++ instead.)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            r (int): Row to access.</span>
@@ -279,7 +295,8 @@
 <div class="viewcode-block" id="TatamiNumericPointer.column">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column">[docs]</a>
     <span class="k">def</span> <span class="nf">column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a column from the tatami matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not</span>
+<span class="sd">        be used to iterate over the matrix in production code. (Do that in C++ instead.)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            c (int): Column to access.</span>
@@ -304,7 +321,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ndarray: Array of row sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
@@ -320,7 +337,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ndarray: Array of column sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
@@ -336,7 +353,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ndarray: Array of row variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
@@ -352,7 +369,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            ndarray: Array of column variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
@@ -489,6 +506,166 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">min_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">max_output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">min_output</span><span class="p">,</span> <span class="n">max_output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_nan_counts">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_nan_counts">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to count the number of NaNs on each row.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of row NaN counts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_nan_counts">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_nan_counts">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to count the number of NaNs on each column.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_threads (int, optional): Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ndarray: Array of column NaN counts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_medians_by_group">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians_by_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_medians_by_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the row-wise median for each group of columns.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Sequence):</span>
+<span class="sd">                Sequence of length equal to the number of columns of the matrix,</span>
+<span class="sd">                containing the group assignment for each column.</span>
+
+<span class="sd">            num_threads (int, optional):</span>
+<span class="sd">                Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents</span>
+<span class="sd">            a group and contains the row-wise medians for that group, across all rows of the matrix;</span>
+<span class="sd">            and a list containing the unique levels of ``group`` represented by each column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;group&#39; should have length equal to the number of columns&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">lev</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians_by_group</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">lev</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_medians_by_group">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians_by_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_medians_by_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the column-wise median for each group of row.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Sequence):</span>
+<span class="sd">                Sequence of length equal to the number of row of the matrix,</span>
+<span class="sd">                containing the group assignment for each row.</span>
+
+<span class="sd">            num_threads (int, optional):</span>
+<span class="sd">                Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents</span>
+<span class="sd">            a group and contains the column-wise medians for that group, across all columns of the matrix;</span>
+<span class="sd">            and a list containing the unique levels of ``group`` represented by each row.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;group&#39; should have length equal to the number of rows&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">lev</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians_by_group</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lev</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.row_sums_by_group">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums_by_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">row_sums_by_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the row-wise median for each group of columns.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Sequence):</span>
+<span class="sd">                Sequence of length equal to the number of columns of the matrix,</span>
+<span class="sd">                containing the group assignment for each column.</span>
+
+<span class="sd">            num_threads (int, optional):</span>
+<span class="sd">                Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents</span>
+<span class="sd">            a group and contains the row-wise sums for that group, across all rows of the matrix;</span>
+<span class="sd">            and a list containing the unique levels of ``group`` represented by each column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;group&#39; should have length equal to the number of columns&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">lev</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums_by_group</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">lev</span></div>
+
+
+<div class="viewcode-block" id="TatamiNumericPointer.column_sums_by_group">
+<a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums_by_group">[docs]</a>
+    <span class="k">def</span> <span class="nf">column_sums_by_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the column-wise median for each group of row.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (Sequence):</span>
+<span class="sd">                Sequence of length equal to the number of row of the matrix,</span>
+<span class="sd">                containing the group assignment for each row.</span>
+
+<span class="sd">            num_threads (int, optional):</span>
+<span class="sd">                Number of threads.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents</span>
+<span class="sd">            a group and contains the column-wise sums for that group, across all columns of the matrix;</span>
+<span class="sd">            and a list containing the unique levels of ``group`` represented by each row.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;group&#39; should have length equal to the number of rows&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">lev</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums_by_group</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lev</span></div>
 </div>
 
 </pre></div>
@@ -523,7 +700,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=a58bc63e"></script>
+</div><script src="../../_static/documentation_options.js?v=92734c54"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
