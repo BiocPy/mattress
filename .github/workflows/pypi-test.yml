@@ -39,20 +39,22 @@ jobs:
         if: github.ref == 'refs/heads/master'
         run: tox
 
+      - name: Build docs
+        if: github.ref == 'refs/heads/master'
+        run: |
+          tox -e docs
+          touch ./docs/_build/html/.nojekyll
+
       - name: Set up ccache
         if: github.ref != 'refs/heads/master'
         uses: hendrikmuhs/ccache-action@v1.2
 
-      - name: Test with normal methods 
+      - name: Quickly build and test
         if: github.ref != 'refs/heads/master'
         run: |
           CC="ccache gcc" python setup.py install
           pytest
 
-      - name: Build docs
-        run: |
-          tox -e docs
-          touch ./docs/_build/html/.nojekyll
       - name: GH Pages Deployment
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         uses: JamesIves/github-pages-deploy-action@4.1.3
