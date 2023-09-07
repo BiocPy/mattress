@@ -20,21 +20,35 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
+
       - name: "Install dependencies"
         run: |
           sudo apt-get install zlib1g-dev
+
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest tox numpy assorthead
+
       - name: Test with tox
+        if: github.ref == 'refs/heads/master'
+        run: tox
+
+      - name: Set up ccache
+        if: github.ref != 'refs/heads/master'
+        uses: hendrikmuhs/ccache-action@v1.2
+
+      - name: Test with normal methods 
+        if: github.ref != 'refs/heads/master'
         run: |
-          python setup.py build_ext --inplace
-          tox
+          CC="ccache gcc" python setup.py install
+          pytest
+
       - name: Build docs
         run: |
           tox -e docs
