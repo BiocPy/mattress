@@ -8,7 +8,6 @@
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/mattress)
 -->
 
-[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
 [![PyPI-Server](https://img.shields.io/pypi/v/mattress.svg)](https://pypi.org/project/mattress/)
 [![Monthly Downloads](https://static.pepy.tech/badge/mattress/month)](https://pepy.tech/project/mattress)
 ![Unit tests](https://github.com/BiocPy/mattress/actions/workflows/pypi-test.yml/badge.svg)
@@ -19,7 +18,7 @@
 
 The **mattress** package implements Python bindings to the [**tatami**](https://github.com/tatami-inc) C++ library for matrix representations.
 Downstream packages can use **mattress** to develop C++ extensions that are interoperable with many different matrix classes, e.g., dense, sparse, delayed or file-backed.
-It is based on the [**beachmat**](https://bioconductor/packages/beachmat) Bioconductor package, which does the same thing for R packages.
+**mattress** is inspired by the [**beachmat**](https://bioconductor/packages/beachmat) Bioconductor package, which does the same thing for R packages.
 
 ## Instructions
 
@@ -71,6 +70,8 @@ def do_something_interesting(x):
     return do_something_interesting(x.ptr)
 ```
 
+Of course, any FFI that accepts a pointer address can be used here.
+
 ## Supported matrices
 
 Dense **numpy** matrices of varying numeric type:
@@ -87,7 +88,7 @@ tatamat2 = tatamize(ix)
 
 Compressed sparse matrices from **scipy** with varying index/data types:
 
-```py
+```python
 from scipy import sparse as sp
 from mattress import tatamize
 
@@ -98,10 +99,23 @@ xr = sp.random(100, 20, format="csc", dtype=np.uint8)
 tatamat2 = tatamize(xr)
 ```
 
+Delayed arrays from the [**delayedarray**](https://github.com/BiocPy/DelayedArray) package:
+
+```python
+from delayedarray import DelayedArray
+from scipy import sparse as sp
+from mattress import tatamize
+import numpy
+
+xd = DelayedArray(sp.random(100, 20, format="csc"))
+xd = numpy.log1p(xd * 5)
+
+tatada = tatamize(xd)
+```
+
 To be added:
 
 - File-backed matrices from the [**FileBackedArray**](https://github.com/BiocPy/FileBackedArray) package, including HDF5 and TileDB.
-- Delayed arrays equivalent to the [**DelayedArray**](https://bioconductor.org/packages/DelayedArray) Bioconductor package.
 - Arbitrary Python matrices?
 
 ## Utility methods
@@ -114,24 +128,37 @@ tatamat.column(1) // contents of column 1
 tatamat.sparse() // whether the matrix is sparse.
 ```
 
+It also has a few methods for computing common statistics:
+
+```python
+tatamat.row_sums()
+tatamat.column_variances(num_threads = 2)
+
+grouping = [i%3 for i in range(tatamat.ncol())]
+tatamat.row_medians_by_group(grouping)
+
+tatamat.row_nan_counts()
+tatamat.column_ranges()
+```
+
 These are mostly intended for non-intensive work or testing/debugging.
 It is expected that any serious computation should be performed by iterating over the matrix in C++.
 
 ## Developer Notes
 
-First, initialize the git submodules with:
-
-```bash
-git submodule update --init --recursive
-```
-
-Then, build the shared object file:
+Build the shared object file:
 
 ```shell
 python setup.py build_ext --inplace
 ```
 
-For testing, we usually do:
+For quick testing, we usually do:
+
+```shell
+pytest
+```
+
+For more complex testing, we do:
 
 ```shell
 python setup.py build_ext --inplace && tox
@@ -142,10 +169,3 @@ To rebuild the **ctypes** bindings with [**cpptypes**](https://github.com/BiocPy
 ```shell
 cpptypes src/mattress/lib --py src/mattress/cpphelpers.py --cpp src/mattress/lib/bindings.cpp
 ```
-
-<!-- pyscaffold-notes -->
-
-## Note
-
-This project has been set up using PyScaffold 4.5. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
