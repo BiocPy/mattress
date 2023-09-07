@@ -33,18 +33,22 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest tox numpy assorthead
+          pip install pytest pytest-cov numpy assorthead scipy delayedarray
 
+      # We do proper tests if we're on the master branch, or if we're creating a new release.
       - name: Test with tox
-        if: github.ref == 'refs/heads/master'
-        run: tox
+        if: github.ref == 'ref/heads/master' || startsWith(github.ref, 'refs/tags/')
+        run: |
+          pip install tox
+          tox
 
       - name: Build docs
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'ref/heads/master' || startsWith(github.ref, 'refs/tags/')
         run: |
           tox -e docs
           touch ./docs/_build/html/.nojekyll
 
+      # Otherwise we do some cached builds and tests for faster merging of PRs.
       - name: Set up ccache
         if: github.ref != 'refs/heads/master'
         uses: hendrikmuhs/ccache-action@v1.2
