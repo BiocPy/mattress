@@ -71,15 +71,15 @@ class TatamiNumericPointer:
         """Realize the underlying matrix into a dense NumPy array.
 
         Returns:
-            ndarray: Contents of the underlying matrix."""
+            ndarray: Contents of the underlying matrix.
+        """
         output = ndarray(self.shape, dtype=float64, order="C")
         lib.extract_dense_full(self.ptr, output.ctypes.data)
         return output
 
     def __DelayedArray_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
-        """Enable DelayedArray extraction of subsets of data from the matrix,
-        see :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__`
-        for details.
+        """Enable DelayedArray extraction of subsets of data from the matrix, see
+        :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
         """
         rfull = self.nrow()
         rnoop, rsub = _sanitize_subset(subset[0], rfull)
@@ -101,22 +101,16 @@ class TatamiNumericPointer:
 
         output = ndarray((rlen, clen), dtype=float64)
         lib.extract_dense_subset(
-            self.ptr,
-            rnoop,
-            roffset,
-            rlen,
-            cnoop,
-            coffset,
-            clen,
-            output.ctypes.data
+            self.ptr, rnoop, roffset, rlen, cnoop, coffset, clen, output.ctypes.data
         )
         return output
 
     def __DelayedArray_dask__(self) -> ndarray:
-        """Enable the use of the poiners with dask,
-        see :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__`
-        for details. This is largely a placeholder method for compatibility; it just
-        realizes the underlying matrix into a dense array under the hood.
+        """Enable the use of the poiners with dask, see
+        :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__` for details.
+
+        This is largely a placeholder method for compatibility; it just realizes the underlying matrix into a dense
+        array under the hood.
         """
         return self.__array___()
 

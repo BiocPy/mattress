@@ -105,11 +105,11 @@ def test_DelayedArray_rewrap():
     assert isinstance(da2.seed, TatamiNumericPointer)
     assert (np.array(da2) == y).all()
 
-    sub = da2[10:50,0:100:2]
-    assert (np.array(sub) == y[10:50,0:100:2]).all()
+    sub = da2[10:50, 0:100:2]
+    assert (np.array(sub) == y[10:50, 0:100:2]).all()
 
-    sub = da2[10:50,:]
-    assert (np.array(sub) == y[10:50,:]).all()
+    sub = da2[10:50, :]
+    assert (np.array(sub) == y[10:50, :]).all()
 
     sub = da2[:10:50]
     assert (np.array(sub) == y[:10:50]).all()

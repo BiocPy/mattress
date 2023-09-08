@@ -163,14 +163,14 @@ void extract_dense_full(void* rawmat, double* output /** void_p */) {
 }
 
 //[[export]]
-void extract_dense_subset(void* rawmat, 
-    uint8_t row_noop, 
-    const int32_t* row_sub /** void_p */, 
+void extract_dense_subset(void* rawmat,
+    uint8_t row_noop,
+    const int32_t* row_sub /** void_p */,
     int32_t row_len,
-    uint8_t col_noop, 
-    const int32_t* col_sub /** void_p */, 
+    uint8_t col_noop,
+    const int32_t* col_sub /** void_p */,
     int32_t col_len,
-    double* output /** void_p */) 
+    double* output /** void_p */)
 {
     auto mat = reinterpret_cast<Mattress*>(rawmat);
     if (row_noop && col_noop) {

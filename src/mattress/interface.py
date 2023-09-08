@@ -34,7 +34,7 @@ def tatamize(x: Any) -> TatamiNumericPointer:
 
 @tatamize.register
 def _tatamize_pointer(x: TatamiNumericPointer) -> TatamiNumericPointer:
-    return x # no-op
+    return x  # no-op
 
 
 @tatamize.register
