@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="mattress" href="index.html" />
 
     <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
-        <title>Python bindings for tatami - mattress 0.1.2 documentation</title>
+        <title>Python bindings for tatami - mattress unknown documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">mattress 0.1.2 documentation</div></a>
+      <a href="index.html"><div class="brand">mattress unknown documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">mattress 0.1.2 documentation</span>
+  <span class="sidebar-brand-text">mattress unknown documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -207,8 +207,7 @@
 [![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/mattress.svg)](https://anaconda.org/conda-forge/mattress)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/mattress)
 -->
-<p><a class="reference external" href="https://pyscaffold.org/"><img alt="Project generated with PyScaffold" src="https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold" /></a>
-<a class="reference external" href="https://pypi.org/project/mattress/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/mattress.svg" /></a>
+<p><a class="reference external" href="https://pypi.org/project/mattress/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/mattress.svg" /></a>
 <a class="reference external" href="https://pepy.tech/project/mattress"><img alt="Monthly Downloads" src="https://static.pepy.tech/badge/mattress/month" /></a>
 <img alt="Unit tests" src="https://github.com/BiocPy/mattress/actions/workflows/pypi-test.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="python-bindings-for-tatami">
@@ -217,7 +216,7 @@
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <p>The <strong>mattress</strong> package implements Python bindings to the <a class="reference external" href="https://github.com/tatami-inc"><strong>tatami</strong></a> C++ library for matrix representations.
 Downstream packages can use <strong>mattress</strong> to develop C++ extensions that are interoperable with many different matrix classes, e.g., dense, sparse, delayed or file-backed.
-It is based on the <a class="reference external" href="https://bioconductor/packages/beachmat"><strong>beachmat</strong></a> Bioconductor package, which does the same thing for R packages.</p>
+<strong>mattress</strong> is inspired by the <a class="reference external" href="https://bioconductor/packages/beachmat"><strong>beachmat</strong></a> Bioconductor package, which does the same thing for R packages.</p>
 </section>
 <section id="instructions">
 <h2>Instructions<a class="headerlink" href="#instructions" title="Link to this heading">#</a></h2>
@@ -263,6 +262,7 @@ which can then be passed to C++ code as an <code class="docutils literal notrans
     <span class="k">return</span> <span class="n">do_something_interesting</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Of course, any FFI that accepts a pointer address can be used here.</p>
 </section>
 <section id="supported-matrices">
 <h2>Supported matrices<a class="headerlink" href="#supported-matrices" title="Link to this heading">#</a></h2>
@@ -277,7 +277,7 @@ which can then be passed to C++ code as an <code class="docutils literal notrans
 </pre></div>
 </div>
 <p>Compressed sparse matrices from <strong>scipy</strong> with varying index/data types:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
 <span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">tatamize</span>
 
 <span class="n">xc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span><span class="p">)</span>
@@ -287,10 +287,21 @@ which can then be passed to C++ code as an <code class="docutils literal notrans
 <span class="n">tatamat2</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">xr</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Delayed arrays from the <a class="reference external" href="https://github.com/BiocPy/DelayedArray"><strong>delayedarray</strong></a> package:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">delayedarray</span> <span class="kn">import</span> <span class="n">DelayedArray</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">tatamize</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">xd</span> <span class="o">=</span> <span class="n">DelayedArray</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csc&quot;</span><span class="p">))</span>
+<span class="n">xd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">xd</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="n">tatada</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">xd</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>To be added:</p>
 <ul class="simple">
 <li><p>File-backed matrices from the <a class="reference external" href="https://github.com/BiocPy/FileBackedArray"><strong>FileBackedArray</strong></a> package, including HDF5 and TileDB.</p></li>
-<li><p>Delayed arrays equivalent to the <a class="reference external" href="https://bioconductor.org/packages/DelayedArray"><strong>DelayedArray</strong></a> Bioconductor package.</p></li>
 <li><p>Arbitrary Python matrices?</p></li>
 </ul>
 </section>
@@ -302,33 +313,55 @@ which can then be passed to C++ code as an <code class="docutils literal notrans
 <span class="n">tatamat</span><span class="o">.</span><span class="n">sparse</span><span class="p">()</span> <span class="o">//</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">matrix</span> <span class="ow">is</span> <span class="n">sparse</span><span class="o">.</span>
 </pre></div>
 </div>
+<p>It also has a few methods for computing common statistics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tatamat</span><span class="o">.</span><span class="n">row_sums</span><span class="p">()</span>
+<span class="n">tatamat</span><span class="o">.</span><span class="n">column_variances</span><span class="p">(</span><span class="n">num_threads</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">grouping</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="mi">3</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tatamat</span><span class="o">.</span><span class="n">ncol</span><span class="p">())]</span>
+<span class="n">tatamat</span><span class="o">.</span><span class="n">row_medians_by_group</span><span class="p">(</span><span class="n">grouping</span><span class="p">)</span>
+
+<span class="n">tatamat</span><span class="o">.</span><span class="n">row_nan_counts</span><span class="p">()</span>
+<span class="n">tatamat</span><span class="o">.</span><span class="n">column_ranges</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>These are mostly intended for non-intensive work or testing/debugging.
 It is expected that any serious computation should be performed by iterating over the matrix in C++.</p>
 </section>
-<section id="developer-notes">
-<h2>Developer Notes<a class="headerlink" href="#developer-notes" title="Link to this heading">#</a></h2>
-<p>First, initialize the git submodules with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<section id="operating-on-an-existing-pointer">
+<h2>Operating on an existing pointer<a class="headerlink" href="#operating-on-an-existing-pointer" title="Link to this heading">#</a></h2>
+<p>If we already have a <code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer</span></code>, we can easily apply additional operations by wrapping it in the relevant <strong>delayedarray</strong> layers and calling <code class="docutils literal notranslate"><span class="pre">tatamize()</span></code> afterwards.
+For example, if we want to add a scalar, we might do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">delayedarray</span> <span class="kn">import</span> <span class="n">DelayedArray</span>
+<span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">tatamize</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">tatamat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">wrapped</span> <span class="o">=</span> <span class="n">DelayedArray</span><span class="p">(</span><span class="n">tatamat</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">tatamat2</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">wrapped</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then, build the shared object file:</p>
+<p>This avoids relying on <code class="docutils literal notranslate"><span class="pre">x</span></code> and is more efficient as it re-uses the <code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer</span></code> generated from <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+</section>
+<section id="developer-notes">
+<h2>Developer Notes<a class="headerlink" href="#developer-notes" title="Link to this heading">#</a></h2>
+<p>Build the shared object file:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace
 </pre></div>
 </div>
-<p>For testing, we usually do:</p>
+<p>For quick testing, we usually do:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>For more complex testing, we do:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tox
 </pre></div>
 </div>
 <p>To rebuild the <strong>ctypes</strong> bindings with <a class="reference external" href="https://github.com/BiocPy/ctypes-wrapper"><strong>cpptypes</strong></a>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cpptypes<span class="w"> </span>src/mattress/lib<span class="w"> </span>--py<span class="w"> </span>src/mattress/cpphelpers.py<span class="w"> </span>--cpp<span class="w"> </span>src/mattress/lib/bindings.cpp
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cpptypes<span class="w"> </span>src/mattress/lib<span class="w"> </span>--py<span class="w"> </span>src/mattress/_cpphelpers.py<span class="w"> </span>--cpp<span class="w"> </span>src/mattress/lib/bindings.cpp<span class="w"> </span>--dll<span class="w"> </span>_core
 </pre></div>
 </div>
-<!-- pyscaffold-notes -->
-</section>
-<section id="note">
-<h2>Note<a class="headerlink" href="#note" title="Link to this heading">#</a></h2>
-<p>This project has been set up using PyScaffold 4.5. For details and usage
-information on PyScaffold see <a class="reference external" href="https://pyscaffold.org/">https://pyscaffold.org/</a>.</p>
 </section>
 </section>
 
@@ -392,8 +425,8 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
 <li><a class="reference internal" href="#instructions">Instructions</a></li>
 <li><a class="reference internal" href="#supported-matrices">Supported matrices</a></li>
 <li><a class="reference internal" href="#utility-methods">Utility methods</a></li>
+<li><a class="reference internal" href="#operating-on-an-existing-pointer">Operating on an existing pointer</a></li>
 <li><a class="reference internal" href="#developer-notes">Developer Notes</a></li>
-<li><a class="reference internal" href="#note">Note</a></li>
 </ul>
 </li>
 </ul>
@@ -405,7 +438,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=92734c54"></script>
+</div><script src="_static/documentation_options.js?v=3f1b9271"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

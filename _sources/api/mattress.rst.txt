@@ -12,22 +12,6 @@ mattress.TatamiNumericPointer module
    :undoc-members:
    :show-inheritance:
 
-mattress.core module
---------------------
-
-.. automodule:: mattress.core
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mattress.cpphelpers module
---------------------------
-
-.. automodule:: mattress.cpphelpers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 mattress.interface module
 -------------------------
 
