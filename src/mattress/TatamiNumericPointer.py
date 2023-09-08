@@ -30,8 +30,8 @@ class TatamiNumericPointer:
         ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as
             a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.
 
-        obj (list): List of Python objects referenced by the tatami matrix object.
-            These are stored here to avoid garbage collection.
+        obj (list): List of Python objects referenced by the tatami matrix object. These are stored here to avoid
+            garbage collection.
     """
 
     def __init__(self, ptr: int, obj: list):
@@ -78,8 +78,12 @@ class TatamiNumericPointer:
         return output
 
     def __DelayedArray_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
-        """Enable DelayedArray extraction of subsets of data from the matrix, see
-        :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
+        """Enable DelayedArray extraction of subsets of data from the matrix.
+
+        See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
+
+        Returns:
+            ndarray: Contents of the underlying matrix.
         """
         rfull = self.nrow()
         rnoop, rsub = _sanitize_subset(subset[0], rfull)
@@ -106,11 +110,15 @@ class TatamiNumericPointer:
         return output
 
     def __DelayedArray_dask__(self) -> ndarray:
-        """Enable the use of the poiners with dask, see
-        :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__` for details.
+        """Enable the use of the poiners with dask.
+
+        See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__` for details.
 
         This is largely a placeholder method for compatibility; it just realizes the underlying matrix into a dense
         array under the hood.
+
+        Returns:
+            ndarray: Contents of the underlying matrix.
         """
         return self.__array___()
 
@@ -346,12 +354,10 @@ class TatamiNumericPointer:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
-            group (Sequence):
-                Sequence of length equal to the number of columns of the matrix,
+            group (Sequence): Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional):
-                Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
@@ -376,12 +382,10 @@ class TatamiNumericPointer:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
-            group (Sequence):
-                Sequence of length equal to the number of row of the matrix,
+            group (Sequence): Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional):
-                Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
@@ -404,12 +408,10 @@ class TatamiNumericPointer:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
-            group (Sequence):
-                Sequence of length equal to the number of columns of the matrix,
+            group (Sequence): Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional):
-                Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
@@ -434,12 +436,10 @@ class TatamiNumericPointer:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
-            group (Sequence):
-                Sequence of length equal to the number of row of the matrix,
+            group (Sequence): Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional):
-                Number of threads.
+            num_threads (int, optional): Number of threads.
 
         Returns:
             Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
