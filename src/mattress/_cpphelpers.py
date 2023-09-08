@@ -2,8 +2,9 @@
 
 import os
 import ctypes as ct
+import numpy as np
 
-def catch_errors(f):
+def _catch_errors(f):
     def wrapper(*args):
         errcode = ct.c_int32(0)
         errmsg = ct.c_char_p(0)
@@ -29,8 +30,7 @@ if lib is None:
 
 lib.free_error_message.argtypes = [ ct.POINTER(ct.c_char_p) ]
 
-import numpy as np
-def np2ct(x, expected, contiguous=True):
+def _np2ct(x, expected, contiguous=True):
     if not isinstance(x, np.ndarray):
         raise ValueError('expected a NumPy array')
     if x.dtype != expected:
@@ -345,100 +345,100 @@ lib.py_initialize_dense_matrix.argtypes = [
 ]
 
 def compute_column_maxs(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_maxs)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_maxs)(rawmat, output, num_threads)
 
 def compute_column_medians(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_medians)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_medians)(rawmat, output, num_threads)
 
 def compute_column_medians_by_group(rawmat, grouping, output, num_threads):
-    return catch_errors(lib.py_compute_column_medians_by_group)(rawmat, grouping, output, num_threads)
+    return _catch_errors(lib.py_compute_column_medians_by_group)(rawmat, grouping, output, num_threads)
 
 def compute_column_mins(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_mins)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_mins)(rawmat, output, num_threads)
 
 def compute_column_nan_counts(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_nan_counts)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_nan_counts)(rawmat, output, num_threads)
 
 def compute_column_ranges(rawmat, min_output, max_output, num_threads):
-    return catch_errors(lib.py_compute_column_ranges)(rawmat, min_output, max_output, num_threads)
+    return _catch_errors(lib.py_compute_column_ranges)(rawmat, min_output, max_output, num_threads)
 
 def compute_column_sums(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_sums)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_sums)(rawmat, output, num_threads)
 
 def compute_column_sums_by_group(rawmat, grouping, output, num_threads):
-    return catch_errors(lib.py_compute_column_sums_by_group)(rawmat, grouping, output, num_threads)
+    return _catch_errors(lib.py_compute_column_sums_by_group)(rawmat, grouping, output, num_threads)
 
 def compute_column_variances(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_column_variances)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_column_variances)(rawmat, output, num_threads)
 
 def compute_row_maxs(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_maxs)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_maxs)(rawmat, output, num_threads)
 
 def compute_row_medians(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_medians)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_medians)(rawmat, output, num_threads)
 
 def compute_row_medians_by_group(rawmat, grouping, output, num_threads):
-    return catch_errors(lib.py_compute_row_medians_by_group)(rawmat, grouping, output, num_threads)
+    return _catch_errors(lib.py_compute_row_medians_by_group)(rawmat, grouping, output, num_threads)
 
 def compute_row_mins(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_mins)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_mins)(rawmat, output, num_threads)
 
 def compute_row_nan_counts(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_nan_counts)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_nan_counts)(rawmat, output, num_threads)
 
 def compute_row_ranges(rawmat, min_output, max_output, num_threads):
-    return catch_errors(lib.py_compute_row_ranges)(rawmat, min_output, max_output, num_threads)
+    return _catch_errors(lib.py_compute_row_ranges)(rawmat, min_output, max_output, num_threads)
 
 def compute_row_sums(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_sums)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_sums)(rawmat, output, num_threads)
 
 def compute_row_sums_by_group(rawmat, grouping, output, num_threads):
-    return catch_errors(lib.py_compute_row_sums_by_group)(rawmat, grouping, output, num_threads)
+    return _catch_errors(lib.py_compute_row_sums_by_group)(rawmat, grouping, output, num_threads)
 
 def compute_row_variances(rawmat, output, num_threads):
-    return catch_errors(lib.py_compute_row_variances)(rawmat, output, num_threads)
+    return _catch_errors(lib.py_compute_row_variances)(rawmat, output, num_threads)
 
 def extract_column(rawmat, c, output):
-    return catch_errors(lib.py_extract_column)(rawmat, c, output)
+    return _catch_errors(lib.py_extract_column)(rawmat, c, output)
 
 def extract_ncol(mat):
-    return catch_errors(lib.py_extract_ncol)(mat)
+    return _catch_errors(lib.py_extract_ncol)(mat)
 
 def extract_nrow(mat):
-    return catch_errors(lib.py_extract_nrow)(mat)
+    return _catch_errors(lib.py_extract_nrow)(mat)
 
 def extract_row(rawmat, r, output):
-    return catch_errors(lib.py_extract_row)(rawmat, r, output)
+    return _catch_errors(lib.py_extract_row)(rawmat, r, output)
 
 def extract_sparse(mat):
-    return catch_errors(lib.py_extract_sparse)(mat)
+    return _catch_errors(lib.py_extract_sparse)(mat)
 
 def free_mat(mat):
-    return catch_errors(lib.py_free_mat)(mat)
+    return _catch_errors(lib.py_free_mat)(mat)
 
 def initialize_compressed_sparse_matrix(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow):
-    return catch_errors(lib.py_initialize_compressed_sparse_matrix)(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow)
+    return _catch_errors(lib.py_initialize_compressed_sparse_matrix)(nr, nc, nz, dtype, dptr, itype, iptr, indptr, byrow)
 
 def initialize_delayed_binary_isometric_op(left, right, op):
-    return catch_errors(lib.py_initialize_delayed_binary_isometric_op)(left, right, op)
+    return _catch_errors(lib.py_initialize_delayed_binary_isometric_op)(left, right, op)
 
 def initialize_delayed_combine(n, ptrs, dim):
-    return catch_errors(lib.py_initialize_delayed_combine)(n, ptrs, dim)
+    return _catch_errors(lib.py_initialize_delayed_combine)(n, ptrs, dim)
 
 def initialize_delayed_subset(ptr, dim, subset, len):
-    return catch_errors(lib.py_initialize_delayed_subset)(ptr, dim, np2ct(subset, np.int32), len)
+    return _catch_errors(lib.py_initialize_delayed_subset)(ptr, dim, _np2ct(subset, np.int32), len)
 
 def initialize_delayed_transpose(ptr):
-    return catch_errors(lib.py_initialize_delayed_transpose)(ptr)
+    return _catch_errors(lib.py_initialize_delayed_transpose)(ptr)
 
 def initialize_delayed_unary_isometric_op_simple(ptr, op):
-    return catch_errors(lib.py_initialize_delayed_unary_isometric_op_simple)(ptr, op)
+    return _catch_errors(lib.py_initialize_delayed_unary_isometric_op_simple)(ptr, op)
 
 def initialize_delayed_unary_isometric_op_with_scalar(ptr, op, right, arg):
-    return catch_errors(lib.py_initialize_delayed_unary_isometric_op_with_scalar)(ptr, op, right, arg)
+    return _catch_errors(lib.py_initialize_delayed_unary_isometric_op_with_scalar)(ptr, op, right, arg)
 
 def initialize_delayed_unary_isometric_op_with_vector(ptr, op, right, along, args):
-    return catch_errors(lib.py_initialize_delayed_unary_isometric_op_with_vector)(ptr, op, right, along, np2ct(args, np.float64))
+    return _catch_errors(lib.py_initialize_delayed_unary_isometric_op_with_vector)(ptr, op, right, along, _np2ct(args, np.float64))
 
 def initialize_dense_matrix(nr, nc, type, ptr, byrow):
-    return catch_errors(lib.py_initialize_dense_matrix)(nr, nc, type, ptr, byrow)
+    return _catch_errors(lib.py_initialize_dense_matrix)(nr, nc, type, ptr, byrow)
