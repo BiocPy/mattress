@@ -55,6 +55,10 @@ void compute_row_variances(void*, double*, int32_t);
 
 void extract_column(void*, int32_t, double*);
 
+void extract_dense_full(void*, double*);
+
+void extract_dense_subset(void*, uint8_t, const int32_t*, int32_t, uint8_t, const int32_t*, int32_t, double*);
+
 int extract_ncol(const void*);
 
 int extract_nrow(const void*);
@@ -308,6 +312,30 @@ PYAPI void py_compute_row_variances(void* rawmat, double* output, int32_t num_th
 PYAPI void py_extract_column(void* rawmat, int32_t c, double* output, int32_t* errcode, char** errmsg) {
     try {
         extract_column(rawmat, c, output);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_extract_dense_full(void* rawmat, double* output, int32_t* errcode, char** errmsg) {
+    try {
+        extract_dense_full(rawmat, output);
+    } catch(std::exception& e) {
+        *errcode = 1;
+        *errmsg = copy_error_message(e.what());
+    } catch(...) {
+        *errcode = 1;
+        *errmsg = copy_error_message("unknown C++ exception");
+    }
+}
+
+PYAPI void py_extract_dense_subset(void* rawmat, uint8_t row_noop, const int32_t* row_sub, int32_t row_len, uint8_t col_noop, const int32_t* col_sub, int32_t col_len, double* output, int32_t* errcode, char** errmsg) {
+    try {
+        extract_dense_subset(rawmat, row_noop, row_sub, row_len, col_noop, col_sub, col_len, output);
     } catch(std::exception& e) {
         *errcode = 1;
         *errmsg = copy_error_message(e.what());

@@ -224,6 +224,28 @@ lib.py_extract_column.argtypes = [
     ct.POINTER(ct.c_char_p),
 ]
 
+lib.py_extract_dense_full.restype = None
+lib.py_extract_dense_full.argtypes = [
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
+lib.py_extract_dense_subset.restype = None
+lib.py_extract_dense_subset.argtypes = [
+    ct.c_void_p,
+    ct.c_uint8,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.c_uint8,
+    ct.c_void_p,
+    ct.c_int32,
+    ct.c_void_p,
+    ct.POINTER(ct.c_int32),
+    ct.POINTER(ct.c_char_p),
+]
+
 lib.py_extract_ncol.restype = ct.c_int
 lib.py_extract_ncol.argtypes = [
     ct.c_void_p,
@@ -438,6 +460,18 @@ def compute_row_variances(rawmat, output, num_threads):
 
 def extract_column(rawmat, c, output):
     return _catch_errors(lib.py_extract_column)(rawmat, c, output)
+
+
+def extract_dense_full(rawmat, output):
+    return _catch_errors(lib.py_extract_dense_full)(rawmat, output)
+
+
+def extract_dense_subset(
+    rawmat, row_noop, row_sub, row_len, col_noop, col_sub, col_len, output
+):
+    return _catch_errors(lib.py_extract_dense_subset)(
+        rawmat, row_noop, row_sub, row_len, col_noop, col_sub, col_len, output
+    )
 
 
 def extract_ncol(mat):

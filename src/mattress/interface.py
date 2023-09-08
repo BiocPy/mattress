@@ -7,6 +7,7 @@ import delayedarray
 
 from .TatamiNumericPointer import TatamiNumericPointer
 from . import _cpphelpers as lib
+from .utils import _sanitize_subset
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,6 +30,11 @@ def tatamize(x: Any) -> TatamiNumericPointer:
     raise NotImplementedError(
         f"tatamize is not supported for objects of class: {type(x)}"
     )
+
+
+@tatamize.register
+def _tatamize_pointer(x: TatamiNumericPointer) -> TatamiNumericPointer:
+    return x  # no-op
 
 
 @tatamize.register
@@ -152,21 +158,8 @@ def _tatamize_delayed_subset(
 
     for dim in range(2):
         current = x.subset[dim]
-
-        is_noop = True
-        if len(current) == x.shape[dim]:
-            for i in range(len(current)):
-                if i != current[i]:
-                    is_noop = False
-                    break
-        else:
-            is_noop = False
-
-        if not is_noop:
-            if not isinstance(current, np.ndarray):
-                current = np.array(current, dtype=np.int32)
-            else:
-                current = current.astype(np.int32, copy=False)
+        noop, current = _sanitize_subset(current, x.shape[dim])
+        if not noop:
             ptr = lib.initialize_delayed_subset(
                 components.ptr, dim, current, len(current)
             )

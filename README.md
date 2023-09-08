@@ -144,6 +144,25 @@ tatamat.column_ranges()
 These are mostly intended for non-intensive work or testing/debugging.
 It is expected that any serious computation should be performed by iterating over the matrix in C++.
 
+## Operating on an existing pointer
+
+If we already have a `TatamiNumericPointer`, we can easily apply additional operations by wrapping it in the relevant **delayedarray** layers and calling `tatamize()` afterwards.
+For example, if we want to add a scalar, we might do:
+
+```python
+from delayedarray import DelayedArray
+from mattress import tatamize
+import numpy
+
+x = numpy.random.rand(1000, 10)
+tatamat = tatamize(x)
+
+wrapped = DelayedArray(tatamat) + 1
+tatamat2 = tatamize(wrapped)
+```
+
+This avoids relying on `x` and is more efficient as it re-uses the `TatamiNumericPointer` generated from `x`.
+
 ## Developer Notes
 
 Build the shared object file:
