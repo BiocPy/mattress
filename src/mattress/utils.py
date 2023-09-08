@@ -41,7 +41,7 @@ def _sanitize_subset(
         subset = np.array(subset, dtype=np.int32)
     else:
         subset = subset.astype(
-            np.int32, copy=not (subset.flags.C_CONTIGUOUS or subset.flags.F_CONTIGUOUS)
+            np.int32, copy=not (subset.flags.c_contiguous or subset.flags.f_contiguous)
         )
 
     return False, subset
