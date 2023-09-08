@@ -1,6 +1,7 @@
-from numpy import ndarray, float64, int32, zeros
+from numpy import ndarray, float64, int32, zeros, dtype
 from . import _cpphelpers as lib
 from typing import Tuple, Sequence
+from .utils import _sanitize_subset
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -55,6 +56,69 @@ class TatamiNumericPointer:
             int: Number of columns.
         """
         return lib.extract_ncol(self.ptr)
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        """Shape of the matrix, to masquerade as a NumPy-like object."""
+        return (self.nrow(), self.ncol())
+
+    @property
+    def dtype(self) -> dtype:
+        """Type of the matrix, to masquerade as a NumPy-like object."""
+        return dtype("float64")
+
+    def __array__(self) -> ndarray:
+        """Realize the underlying matrix into a dense NumPy array.
+
+        Returns:
+            ndarray: Contents of the underlying matrix."""
+        output = ndarray(self.shape, dtype=float64, order="C")
+        lib.extract_dense_full(self.ptr, output.ctypes.data)
+        return output
+
+    def __DelayedArray_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
+        """Enable DelayedArray extraction of subsets of data from the matrix,
+        see :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__`
+        for details.
+        """
+        rfull = self.nrow()
+        rnoop, rsub = _sanitize_subset(subset[0], rfull)
+        roffset = 0
+        if rnoop:
+            rlen = rfull
+        else:
+            roffset = rsub.ctypes.data
+            rlen = len(rsub)
+
+        cfull = self.ncol()
+        cnoop, csub = _sanitize_subset(subset[1], cfull)
+        coffset = 0
+        if cnoop:
+            clen = cfull
+        else:
+            coffset = csub.ctypes.data
+            clen = len(csub)
+
+        output = ndarray((rlen, clen), dtype=float64)
+        lib.extract_dense_subset(
+            self.ptr,
+            rnoop,
+            roffset,
+            rlen,
+            cnoop,
+            coffset,
+            clen,
+            output.ctypes.data
+        )
+        return output
+
+    def __DelayedArray_dask__(self) -> ndarray:
+        """Enable the use of the poiners with dask,
+        see :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__`
+        for details. This is largely a placeholder method for compatibility; it just
+        realizes the underlying matrix into a dense array under the hood.
+        """
+        return self.__array___()
 
     def sparse(self) -> bool:
         """Is the matrix sparse?

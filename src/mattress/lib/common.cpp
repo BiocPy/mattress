@@ -154,6 +154,40 @@ void compute_column_medians_by_group(void* rawmat, const int32_t* grouping /** v
     tatami::column_medians_by_group(mat->ptr.get(), grouping, group_sizes, output, num_threads);
 }
 
+/** Extraction **/
+
+//[[export]]
+void extract_dense_full(void* rawmat, double* output /** void_p */) {
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    tatami::convert_to_dense<true>(mat->ptr.get(), output);
+}
+
+//[[export]]
+void extract_dense_subset(void* rawmat, 
+    uint8_t row_noop, 
+    const int32_t* row_sub /** void_p */, 
+    int32_t row_len,
+    uint8_t col_noop, 
+    const int32_t* col_sub /** void_p */, 
+    int32_t col_len,
+    double* output /** void_p */) 
+{
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    if (row_noop && col_noop) {
+        return tatami::convert_to_dense<true>(mat->ptr.get(), output);
+    }
+
+    auto ptr = mat->ptr;
+    if (!row_noop) {
+        ptr = tatami::make_DelayedSubset<0>(std::move(ptr), tatami::ArrayView<int32_t>(row_sub, row_len));
+    }
+    if (!col_noop) {
+        ptr = tatami::make_DelayedSubset<1>(std::move(ptr), tatami::ArrayView<int32_t>(col_sub, col_len));
+    }
+
+    tatami::convert_to_dense<true>(ptr.get(), output);
+}
+
 /** Freeing **/
 
 //[[export]]

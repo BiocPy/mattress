@@ -1,5 +1,6 @@
 import numpy as np
-from mattress import tatamize
+from mattress import tatamize, TatamiNumericPointer
+import delayedarray as da
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -11,6 +12,13 @@ def test_dense():
     ptr = tatamize(y)
     assert all(ptr.row(0) == y[0, :])
     assert all(ptr.column(1) == y[:, 1])
+    assert ptr.shape == (1000, 100)
+    assert ptr.dtype == np.float64
+
+
+def test_dense_stats():
+    y = np.random.rand(1000, 100)
+    ptr = tatamize(y)
 
     assert np.allclose(ptr.row_sums(), y.sum(axis=1))
     assert np.allclose(ptr.column_sums(), y.sum(axis=0))
@@ -105,3 +113,21 @@ def test_dense_grouped():
     ref = y[keep, :]
     rptr = tatamize(ref)
     assert (csum[clev.index(0), :] == rptr.column_sums()).all()
+
+
+def test_dense_DelayedArray():
+    y = np.random.rand(1000, 100)
+    ptr = tatamize(y)
+
+    da2 = da.DelayedArray(ptr)
+    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert (np.array(da2) == y).all()
+
+    sub = da2[10:50,0:100:2]
+    assert (np.array(sub) == y[10:50,0:100:2]).all()
+
+    sub = da2[10:50,:]
+    assert (np.array(sub) == y[10:50,:]).all()
+
+    sub = da2[:10:50]
+    assert (np.array(sub) == y[:10:50]).all()
