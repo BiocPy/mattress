@@ -14,7 +14,7 @@ if __name__ == "__main__":
             use_scm_version={"version_scheme": "no-guess-dev"},
             ext_modules=[
                 Extension(
-                    "mattress.core",
+                    "mattress._core",
                     [
                         "src/mattress/lib/dense.cpp",
                         "src/mattress/lib/compressed_sparse.cpp",

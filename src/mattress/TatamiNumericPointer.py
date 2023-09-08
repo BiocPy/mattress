@@ -1,5 +1,5 @@
 from numpy import ndarray, float64, int32, zeros
-from . import cpphelpers as lib
+from . import _cpphelpers as lib
 from typing import Tuple, Sequence
 
 __author__ = "ltla, jkanche"

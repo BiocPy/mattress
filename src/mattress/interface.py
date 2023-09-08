@@ -6,7 +6,7 @@ import scipy.sparse as sp
 import delayedarray
 
 from .TatamiNumericPointer import TatamiNumericPointer
-from . import cpphelpers as lib
+from . import _cpphelpers as lib
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
