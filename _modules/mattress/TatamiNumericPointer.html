@@ -222,17 +222,13 @@
 <div class="viewcode-block" id="TatamiNumericPointer">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.TatamiNumericPointer">[docs]</a>
 <span class="k">class</span> <span class="nc">TatamiNumericPointer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pointer to a tatami numeric matrix allocated by C++ code. Instances of this class should only be created by</span>
-<span class="sd">    developers and used within package functions. They are expected to be transient within a Python session; they should</span>
-<span class="sd">    not be serialized, nor should they be visible to end users. Each instance will automatically free the C++-allocated</span>
-<span class="sd">    memory upon its own destruction.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as</span>
-<span class="sd">            a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.</span>
-
-<span class="sd">        obj (list): List of Python objects referenced by the tatami matrix object. These are stored here to avoid</span>
-<span class="sd">            garbage collection.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pointer to a tatami numeric matrix allocated by C++ code. Instances of</span>
+<span class="sd">    this class should only be created by developers and used within package</span>
+<span class="sd">    functions; this is done by fetching the :py:attr:`~ptr` attribute and</span>
+<span class="sd">    casting it to a ``Mattress*`` in C++ code. Pointers are expected to be</span>
+<span class="sd">    transient within a Python session; they should not be serialized, nor</span>
+<span class="sd">    should they be visible to end users. Each instance will automatically free</span>
+<span class="sd">    the C++-allocated memory upon its own destruction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
@@ -248,7 +244,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of rows.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            int: Number of rows.</span>
+<span class="sd">            Number of rows.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_nrow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
@@ -259,7 +255,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of columns.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            int: Number of columns.</span>
+<span class="sd">            Number of columns.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_ncol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span></div>
 
@@ -278,7 +274,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Realize the underlying matrix into a dense NumPy array.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Contents of the underlying matrix.</span>
+<span class="sd">            Contents of the underlying matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">extract_dense_full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -290,7 +286,7 @@
 <span class="sd">        See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Contents of the underlying matrix.</span>
+<span class="sd">            Contents of the underlying matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rfull</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">()</span>
         <span class="n">rnoop</span><span class="p">,</span> <span class="n">rsub</span> <span class="o">=</span> <span class="n">_sanitize_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rfull</span><span class="p">)</span>
@@ -325,7 +321,7 @@
 <span class="sd">        array under the hood.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Contents of the underlying matrix.</span>
+<span class="sd">            Contents of the underlying matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__array___</span><span class="p">()</span>
 
@@ -335,7 +331,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the matrix sparse?</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: True if matrix is sparse.</span>
+<span class="sd">            True if matrix is sparse.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
@@ -347,10 +343,10 @@
 <span class="sd">        used to iterate over the matrix in production code. (Do that in C++ instead.)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            r (int): Row to access.</span>
+<span class="sd">            r: Row to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Row from the matrix. This is always in double-precision,</span>
+<span class="sd">            Row from the matrix. This is always in double-precision,</span>
 <span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
@@ -365,10 +361,10 @@
 <span class="sd">        be used to iterate over the matrix in production code. (Do that in C++ instead.)</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            c (int): Column to access.</span>
+<span class="sd">            c: Column to access.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Column from the matrix. This is always in double-precisino,</span>
+<span class="sd">            Column from the matrix. This is always in double-precisino,</span>
 <span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
@@ -382,10 +378,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row sums.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row sums.</span>
+<span class="sd">            Array of row sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -398,10 +394,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column sums.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column sums.</span>
+<span class="sd">            Array of column sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -414,10 +410,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row variances.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row variances.</span>
+<span class="sd">            Array of row variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -430,10 +426,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column variances.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column variances.</span>
+<span class="sd">            Array of column variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -446,10 +442,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row medians.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row medians.</span>
+<span class="sd">            Array of row medians.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -462,10 +458,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column medians.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column medians.</span>
+<span class="sd">            Array of column medians.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -478,10 +474,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row minima.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row minima.</span>
+<span class="sd">            Array of row minima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -494,10 +490,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column minima.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column mins.</span>
+<span class="sd">            Array of column mins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -510,10 +506,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row maxima.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row maxima.</span>
+<span class="sd">            Array of row maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -526,10 +522,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column maxima.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column maxs.</span>
+<span class="sd">            Array of column maxs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -542,10 +538,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute row ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, ndarray]: Tuple containing the row minima and maxima.</span>
+<span class="sd">            Tuple containing the row minima and maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">min_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">max_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
@@ -561,10 +557,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute column ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, ndarray]: Tuple containing the column minima and maxima.</span>
+<span class="sd">            Tuple containing the column minima and maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">min_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">max_output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
@@ -580,10 +576,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to count the number of NaNs on each row.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of row NaN counts.</span>
+<span class="sd">            Array of row NaN counts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -596,10 +592,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to count the number of NaNs on each column.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ndarray: Array of column NaN counts.</span>
+<span class="sd">            Array of column NaN counts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">(),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
@@ -614,13 +610,13 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the row-wise median for each group of columns.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            group (Sequence): Sequence of length equal to the number of columns of the matrix,</span>
+<span class="sd">            group: Sequence of length equal to the number of columns of the matrix,</span>
 <span class="sd">                containing the group assignment for each column.</span>
 
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents</span>
+<span class="sd">            Tuple containing a 2-dimensional array where each column represents</span>
 <span class="sd">            a group and contains the row-wise medians for that group, across all rows of the matrix;</span>
 <span class="sd">            and a list containing the unique levels of ``group`` represented by each column.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -645,15 +641,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the column-wise median for each group of row.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            group (Sequence): Sequence of length equal to the number of row of the matrix,</span>
+<span class="sd">            group: Sequence of length equal to the number of row of the matrix,</span>
 <span class="sd">                containing the group assignment for each row.</span>
 
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents</span>
-<span class="sd">            a group and contains the column-wise medians for that group, across all columns of the matrix;</span>
-<span class="sd">            and a list containing the unique levels of ``group`` represented by each row.</span>
+<span class="sd">            Tuple containing a 2-dimensional array where each row represents a</span>
+<span class="sd">            group and contains the column-wise medians for that group, across</span>
+<span class="sd">            all columns of the matrix; and a list containing the unique levels</span>
+<span class="sd">            of ``group`` represented by each row.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
@@ -674,15 +671,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the row-wise median for each group of columns.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            group (Sequence): Sequence of length equal to the number of columns of the matrix,</span>
+<span class="sd">            group: Sequence of length equal to the number of columns of the matrix,</span>
 <span class="sd">                containing the group assignment for each column.</span>
 
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents</span>
-<span class="sd">            a group and contains the row-wise sums for that group, across all rows of the matrix;</span>
-<span class="sd">            and a list containing the unique levels of ``group`` represented by each column.</span>
+<span class="sd">            Tuple containing a 2-dimensional array where each column represents</span>
+<span class="sd">            a group and contains the row-wise sums for that group, across all</span>
+<span class="sd">            rows of the matrix; and a list containing the unique levels of</span>
+<span class="sd">            ``group`` represented by each column.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">():</span>
@@ -705,15 +703,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience method to compute the column-wise median for each group of row.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            group (Sequence): Sequence of length equal to the number of row of the matrix,</span>
+<span class="sd">            group: Sequence of length equal to the number of row of the matrix,</span>
 <span class="sd">                containing the group assignment for each row.</span>
 
-<span class="sd">            num_threads (int, optional): Number of threads.</span>
+<span class="sd">            num_threads: Number of threads.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents</span>
-<span class="sd">            a group and contains the column-wise sums for that group, across all columns of the matrix;</span>
-<span class="sd">            and a list containing the unique levels of ``group`` represented by each row.</span>
+<span class="sd">            Tuple containing a 2-dimensional array where each row represents a</span>
+<span class="sd">            group and contains the column-wise sums for that group, across all</span>
+<span class="sd">            columns of the matrix; and a list containing the unique levels of</span>
+<span class="sd">            ``group`` represented by each row.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lev</span><span class="p">,</span> <span class="n">ind</span> <span class="o">=</span> <span class="n">_factorize</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>

@@ -207,216 +207,197 @@
 <span id="mattress-tataminumericpointer-module"></span><h2>mattress.TatamiNumericPointer module<a class="headerlink" href="#module-mattress.TatamiNumericPointer" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.TatamiNumericPointer.</span></span><span class="sig-name descname"><span class="pre">TatamiNumericPointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.TatamiNumericPointer.</span></span><span class="sig-name descname"><span class="pre">TatamiNumericPointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Pointer to a tatami numeric matrix allocated by C++ code. Instances of this class should only be created by
-developers and used within package functions. They are expected to be transient within a Python session; they should
-not be serialized, nor should they be visible to end users. Each instance will automatically free the C++-allocated
-memory upon its own destruction.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.ptr">
-<span class="sig-name descname"><span class="pre">ptr</span></span><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.ptr" title="Link to this definition">#</a></dt>
-<dd><p>Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as
-a <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*</span></code> to C++ code and then cast to a <code class="docutils literal notranslate"><span class="pre">Mattress</span> <span class="pre">*</span></code> for actual use.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.obj">
-<span class="sig-name descname"><span class="pre">obj</span></span><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.obj" title="Link to this definition">#</a></dt>
-<dd><p>List of Python objects referenced by the tatami matrix object. These are stored here to avoid
-garbage collection.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+<p>Pointer to a tatami numeric matrix allocated by C++ code. Instances of
+this class should only be created by developers and used within package
+functions; this is done by fetching the <code class="xref py py-attr docutils literal notranslate"><span class="pre">ptr</span></code> attribute and
+casting it to a <code class="docutils literal notranslate"><span class="pre">Mattress*</span></code> in C++ code. Pointers are expected to be
+transient within a Python session; they should not be serialized, nor
+should they be visible to end users. Each instance will automatically free
+the C++-allocated memory upon its own destruction.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column">
-<span class="sig-name descname"><span class="pre">column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column" title="Link to this definition">#</a></dt>
 <dd><p>Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not
 be used to iterate over the matrix in production code. (Do that in C++ instead.)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Column to access.</p>
+<dd class="field-odd"><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Column to access.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Column from the matrix. This is always in double-precisino,
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Column from the matrix. This is always in double-precisino,
 regardless of the underlying representation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_maxs">
-<span class="sig-name descname"><span class="pre">column_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_maxs" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_maxs" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column maxima.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column maxs.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column maxs.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians">
-<span class="sig-name descname"><span class="pre">column_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column medians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column medians.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column medians.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians_by_group">
-<span class="sig-name descname"><span class="pre">column_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians_by_group" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians_by_group" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute the column-wise median for each group of row.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group</strong> (<em>Sequence</em>) – Sequence of length equal to the number of row of the matrix,
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Sequence of length equal to the number of row of the matrix,
 containing the group assignment for each row.</p></li>
-<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p></li>
+<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing a 2-dimensional array where each row represents
-a group and contains the column-wise medians for that group, across all columns of the matrix;
-and a list containing the unique levels of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)">list</a>]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each row represents a
+group and contains the column-wise medians for that group, across
+all columns of the matrix; and a list containing the unique levels
+of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_mins">
-<span class="sig-name descname"><span class="pre">column_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_mins" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_mins" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column minima.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column mins.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column mins.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_nan_counts">
-<span class="sig-name descname"><span class="pre">column_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_nan_counts" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_nan_counts" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to count the number of NaNs on each column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column NaN counts.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column NaN counts.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_ranges">
-<span class="sig-name descname"><span class="pre">column_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_ranges" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_ranges" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column ranges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing the column minima and maxima.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, ndarray]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the column minima and maxima.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums">
-<span class="sig-name descname"><span class="pre">column_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column sums.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column sums.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column sums.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums_by_group">
-<span class="sig-name descname"><span class="pre">column_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums_by_group" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_sums_by_group" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute the column-wise median for each group of row.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group</strong> (<em>Sequence</em>) – Sequence of length equal to the number of row of the matrix,
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Sequence of length equal to the number of row of the matrix,
 containing the group assignment for each row.</p></li>
-<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p></li>
+<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing a 2-dimensional array where each row represents
-a group and contains the column-wise sums for that group, across all columns of the matrix;
-and a list containing the unique levels of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)">list</a>]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each row represents a
+group and contains the column-wise sums for that group, across all
+columns of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.column_variances">
-<span class="sig-name descname"><span class="pre">column_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_variances" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">column_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.column_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_variances" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute column variances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of column variances.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column variances.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -429,212 +410,213 @@ and a list containing the unique levels of <code class="docutils literal notrans
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.ncol">
-<span class="sig-name descname"><span class="pre">ncol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.ncol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.ncol" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ncol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.ncol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.ncol" title="Link to this definition">#</a></dt>
 <dd><p>Get number of columns.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of columns.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of columns.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.nrow">
-<span class="sig-name descname"><span class="pre">nrow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.nrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.nrow" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">nrow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.nrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.nrow" title="Link to this definition">#</a></dt>
 <dd><p>Get number of rows.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of rows.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of rows.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row">
-<span class="sig-name descname"><span class="pre">row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row" title="Link to this definition">#</a></dt>
 <dd><p>Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be
 used to iterate over the matrix in production code. (Do that in C++ instead.)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Row to access.</p>
+<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Row to access.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Row from the matrix. This is always in double-precision,
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Row from the matrix. This is always in double-precision,
 regardless of the underlying representation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_maxs">
-<span class="sig-name descname"><span class="pre">row_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_maxs" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_maxs" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row maxima.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row maxima.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row maxima.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians">
-<span class="sig-name descname"><span class="pre">row_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row medians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row medians.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row medians.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians_by_group">
-<span class="sig-name descname"><span class="pre">row_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians_by_group" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_medians_by_group" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute the row-wise median for each group of columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group</strong> (<em>Sequence</em>) – Sequence of length equal to the number of columns of the matrix,
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Sequence of length equal to the number of columns of the matrix,
 containing the group assignment for each column.</p></li>
-<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p></li>
+<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing a 2-dimensional array where each column represents
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each column represents
 a group and contains the row-wise medians for that group, across all rows of the matrix;
 and a list containing the unique levels of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)">list</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_mins">
-<span class="sig-name descname"><span class="pre">row_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_mins" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_mins" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row minima.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row minima.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row minima.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_nan_counts">
-<span class="sig-name descname"><span class="pre">row_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_nan_counts" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_nan_counts" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to count the number of NaNs on each row.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row NaN counts.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row NaN counts.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_ranges">
-<span class="sig-name descname"><span class="pre">row_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_ranges" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_ranges" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row ranges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing the row minima and maxima.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, ndarray]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the row minima and maxima.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums">
-<span class="sig-name descname"><span class="pre">row_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row sums.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row sums.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row sums.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums_by_group">
-<span class="sig-name descname"><span class="pre">row_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums_by_group" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_sums_by_group" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute the row-wise median for each group of columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group</strong> (<em>Sequence</em>) – Sequence of length equal to the number of columns of the matrix,
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – Sequence of length equal to the number of columns of the matrix,
 containing the group assignment for each column.</p></li>
-<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p></li>
+<li><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple containing a 2-dimensional array where each column represents
-a group and contains the row-wise sums for that group, across all rows of the matrix;
-and a list containing the unique levels of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[ndarray, <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)">list</a>]</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each column represents
+a group and contains the row-wise sums for that group, across all
+rows of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.row_variances">
-<span class="sig-name descname"><span class="pre">row_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_variances" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">row_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.row_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.row_variances" title="Link to this definition">#</a></dt>
 <dd><p>Convenience method to compute row variances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of threads.</p>
+<dd class="field-odd"><p><strong>num_threads</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of threads.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of row variances.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row variances.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -647,14 +629,14 @@ and a list containing the unique levels of <code class="docutils literal notrans
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.TatamiNumericPointer.TatamiNumericPointer.sparse">
-<span class="sig-name descname"><span class="pre">sparse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.sparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.sparse" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">sparse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/TatamiNumericPointer.html#TatamiNumericPointer.sparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.sparse" title="Link to this definition">#</a></dt>
 <dd><p>Is the matrix sparse?</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if matrix is sparse.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if matrix is sparse.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -666,48 +648,20 @@ and a list containing the unique levels of <code class="docutils literal notrans
 <span id="mattress-interface-module"></span><h2>mattress.interface module<a class="headerlink" href="#module-mattress.interface" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="mattress.interface.tatamize">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Any" title="(in Python v3.9)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span><a class="reference internal" href="../_modules/mattress/interface.html#tatamize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.interface.tatamize" title="Link to this definition">#</a></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array" title="(in SciPy v1.11.2)"><span class="pre">csr_array</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.2)"><span class="pre">csr_matrix</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_array.html#scipy.sparse.csc_array" title="(in SciPy v1.11.2)"><span class="pre">csc_array</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix" title="(in SciPy v1.11.2)"><span class="pre">csc_matrix</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DelayedArray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UnaryIsometricOpSimple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UnaryIsometricOpWithArgs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Subset</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Combine</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Transpose</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryIsometricOp</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Round</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><span class="pre">TatamiNumericPointer</span></a></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">mattress.interface.</span></span><span class="sig-name descname"><span class="pre">tatamize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/interface.html#tatamize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.interface.tatamize" title="Link to this definition">#</a></dt>
 <dd><p>Converts Python matrix representations to a tatami pointer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>Any</em>) – Any matrix-like object.</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Any" title="(in Python v3.9)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Any matrix-like object.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – if x is not supported.</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a pointer to tatami object.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TatamiNumericPointer</span></code></a></p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer" title="mattress.TatamiNumericPointer.TatamiNumericPointer">TatamiNumericPointer</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pointer to tatami object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -717,7 +671,7 @@ and a list containing the unique levels of <code class="docutils literal notrans
 <span id="mattress-utils-module"></span><h2>mattress.utils module<a class="headerlink" href="#module-mattress.utils" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="mattress.utils.includes">
-<span class="sig-prename descclassname"><span class="pre">mattress.utils.</span></span><span class="sig-name descname"><span class="pre">includes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mattress/utils.html#includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.utils.includes" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mattress.utils.</span></span><span class="sig-name descname"><span class="pre">includes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/utils.html#includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.utils.includes" title="Link to this definition">#</a></dt>
 <dd><p>Provides access to C++ headers (including tatami) for downstream packages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -786,8 +740,6 @@ and a list containing the unique levels of <code class="docutils literal notrans
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-mattress.TatamiNumericPointer">mattress.TatamiNumericPointer module</a><ul>
 <li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer</span></code></a><ul>
-<li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.ptr"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer.ptr</span></code></a></li>
-<li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.obj"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer.obj</span></code></a></li>
 <li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer.column()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_maxs"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer.column_maxs()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.TatamiNumericPointer.TatamiNumericPointer.column_medians"><code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer.column_medians()</span></code></a></li>
