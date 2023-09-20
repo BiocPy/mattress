@@ -21,17 +21,13 @@ def _factorize(group):
 
 
 class TatamiNumericPointer:
-    """Pointer to a tatami numeric matrix allocated by C++ code. Instances of this class should only be created by
-    developers and used within package functions. They are expected to be transient within a Python session; they should
-    not be serialized, nor should they be visible to end users. Each instance will automatically free the C++-allocated
-    memory upon its own destruction.
-
-    Attributes:
-        ptr (int): Pointer address to a Mattress instance wrapping a tatami matrix. This can be passed as
-            a ``void *`` to C++ code and then cast to a ``Mattress *`` for actual use.
-
-        obj (list): List of Python objects referenced by the tatami matrix object. These are stored here to avoid
-            garbage collection.
+    """Pointer to a tatami numeric matrix allocated by C++ code. Instances of
+    this class should only be created by developers and used within package
+    functions; this is done by fetching the :py:attr:`~ptr` attribute and
+    casting it to a ``Mattress*`` in C++ code. Pointers are expected to be
+    transient within a Python session; they should not be serialized, nor
+    should they be visible to end users. Each instance will automatically free
+    the C++-allocated memory upon its own destruction.
     """
 
     def __init__(self, ptr: int, obj: list):
@@ -45,7 +41,7 @@ class TatamiNumericPointer:
         """Get number of rows.
 
         Returns:
-            int: Number of rows.
+            Number of rows.
         """
         return lib.extract_nrow(self.ptr)
 
@@ -53,7 +49,7 @@ class TatamiNumericPointer:
         """Get number of columns.
 
         Returns:
-            int: Number of columns.
+            Number of columns.
         """
         return lib.extract_ncol(self.ptr)
 
@@ -71,7 +67,7 @@ class TatamiNumericPointer:
         """Realize the underlying matrix into a dense NumPy array.
 
         Returns:
-            ndarray: Contents of the underlying matrix.
+            Contents of the underlying matrix.
         """
         output = ndarray(self.shape, dtype=float64, order="C")
         lib.extract_dense_full(self.ptr, output.ctypes.data)
@@ -83,7 +79,7 @@ class TatamiNumericPointer:
         See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
 
         Returns:
-            ndarray: Contents of the underlying matrix.
+            Contents of the underlying matrix.
         """
         rfull = self.nrow()
         rnoop, rsub = _sanitize_subset(subset[0], rfull)
@@ -118,7 +114,7 @@ class TatamiNumericPointer:
         array under the hood.
 
         Returns:
-            ndarray: Contents of the underlying matrix.
+            Contents of the underlying matrix.
         """
         return self.__array___()
 
@@ -126,7 +122,7 @@ class TatamiNumericPointer:
         """Is the matrix sparse?
 
         Returns:
-            bool: True if matrix is sparse.
+            True if matrix is sparse.
         """
         return lib.extract_sparse(self.ptr) > 0
 
@@ -135,10 +131,10 @@ class TatamiNumericPointer:
         used to iterate over the matrix in production code. (Do that in C++ instead.)
 
         Args:
-            r (int): Row to access.
+            r: Row to access.
 
         Returns:
-            ndarray: Row from the matrix. This is always in double-precision,
+            Row from the matrix. This is always in double-precision,
             regardless of the underlying representation.
         """
         output = ndarray((self.ncol(),), dtype="float64")
@@ -150,10 +146,10 @@ class TatamiNumericPointer:
         be used to iterate over the matrix in production code. (Do that in C++ instead.)
 
         Args:
-            c (int): Column to access.
+            c: Column to access.
 
         Returns:
-            ndarray: Column from the matrix. This is always in double-precisino,
+            Column from the matrix. This is always in double-precisino,
             regardless of the underlying representation.
         """
         output = ndarray((self.nrow(),), dtype="float64")
@@ -164,10 +160,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row sums.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row sums.
+            Array of row sums.
         """
         output = zeros((self.nrow(),), dtype=float64)
         lib.compute_row_sums(self.ptr, output.ctypes.data, num_threads)
@@ -177,10 +173,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column sums.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column sums.
+            Array of column sums.
         """
         output = zeros((self.ncol(),), dtype=float64)
         lib.compute_column_sums(self.ptr, output.ctypes.data, num_threads)
@@ -190,10 +186,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row variances.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row variances.
+            Array of row variances.
         """
         output = zeros((self.nrow(),), dtype=float64)
         lib.compute_row_variances(self.ptr, output.ctypes.data, num_threads)
@@ -203,10 +199,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column variances.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column variances.
+            Array of column variances.
         """
         output = zeros((self.ncol(),), dtype=float64)
         lib.compute_column_variances(self.ptr, output.ctypes.data, num_threads)
@@ -216,10 +212,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row medians.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row medians.
+            Array of row medians.
         """
         output = ndarray((self.nrow(),), dtype=float64)
         lib.compute_row_medians(self.ptr, output.ctypes.data, num_threads)
@@ -229,10 +225,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column medians.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column medians.
+            Array of column medians.
         """
         output = ndarray((self.ncol(),), dtype=float64)
         lib.compute_column_medians(self.ptr, output.ctypes.data, num_threads)
@@ -242,10 +238,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row minima.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row minima.
+            Array of row minima.
         """
         output = ndarray((self.nrow(),), dtype=float64)
         lib.compute_row_mins(self.ptr, output.ctypes.data, num_threads)
@@ -255,10 +251,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column minima.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column mins.
+            Array of column mins.
         """
         output = ndarray((self.ncol(),), dtype=float64)
         lib.compute_column_mins(self.ptr, output.ctypes.data, num_threads)
@@ -268,10 +264,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row maxima.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row maxima.
+            Array of row maxima.
         """
         output = ndarray((self.nrow(),), dtype=float64)
         lib.compute_row_maxs(self.ptr, output.ctypes.data, num_threads)
@@ -281,10 +277,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column maxima.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column maxs.
+            Array of column maxs.
         """
         output = ndarray((self.ncol(),), dtype=float64)
         lib.compute_column_maxs(self.ptr, output.ctypes.data, num_threads)
@@ -294,10 +290,10 @@ class TatamiNumericPointer:
         """Convenience method to compute row ranges.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, ndarray]: Tuple containing the row minima and maxima.
+            Tuple containing the row minima and maxima.
         """
         min_output = ndarray((self.nrow(),), dtype=float64)
         max_output = ndarray((self.nrow(),), dtype=float64)
@@ -310,10 +306,10 @@ class TatamiNumericPointer:
         """Convenience method to compute column ranges.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, ndarray]: Tuple containing the column minima and maxima.
+            Tuple containing the column minima and maxima.
         """
         min_output = ndarray((self.ncol(),), dtype=float64)
         max_output = ndarray((self.ncol(),), dtype=float64)
@@ -326,10 +322,10 @@ class TatamiNumericPointer:
         """Convenience method to count the number of NaNs on each row.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of row NaN counts.
+            Array of row NaN counts.
         """
         output = ndarray((self.nrow(),), dtype=int32)
         lib.compute_row_nan_counts(self.ptr, output.ctypes.data, num_threads)
@@ -339,10 +335,10 @@ class TatamiNumericPointer:
         """Convenience method to count the number of NaNs on each column.
 
         Args:
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            ndarray: Array of column NaN counts.
+            Array of column NaN counts.
         """
         output = ndarray((self.ncol(),), dtype=int32)
         lib.compute_column_nan_counts(self.ptr, output.ctypes.data, num_threads)
@@ -354,13 +350,13 @@ class TatamiNumericPointer:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
-            group (Sequence): Sequence of length equal to the number of columns of the matrix,
+            group: Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
+            Tuple containing a 2-dimensional array where each column represents
             a group and contains the row-wise medians for that group, across all rows of the matrix;
             and a list containing the unique levels of ``group`` represented by each column.
         """
@@ -382,15 +378,16 @@ class TatamiNumericPointer:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
-            group (Sequence): Sequence of length equal to the number of row of the matrix,
+            group: Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
-            a group and contains the column-wise medians for that group, across all columns of the matrix;
-            and a list containing the unique levels of ``group`` represented by each row.
+            Tuple containing a 2-dimensional array where each row represents a
+            group and contains the column-wise medians for that group, across
+            all columns of the matrix; and a list containing the unique levels
+            of ``group`` represented by each row.
         """
         lev, ind = _factorize(group)
         if len(ind) != self.nrow():
@@ -408,15 +405,16 @@ class TatamiNumericPointer:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
-            group (Sequence): Sequence of length equal to the number of columns of the matrix,
+            group: Sequence of length equal to the number of columns of the matrix,
                 containing the group assignment for each column.
 
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each column represents
-            a group and contains the row-wise sums for that group, across all rows of the matrix;
-            and a list containing the unique levels of ``group`` represented by each column.
+            Tuple containing a 2-dimensional array where each column represents
+            a group and contains the row-wise sums for that group, across all
+            rows of the matrix; and a list containing the unique levels of
+            ``group`` represented by each column.
         """
         lev, ind = _factorize(group)
         if len(ind) != self.ncol():
@@ -436,15 +434,16 @@ class TatamiNumericPointer:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
-            group (Sequence): Sequence of length equal to the number of row of the matrix,
+            group: Sequence of length equal to the number of row of the matrix,
                 containing the group assignment for each row.
 
-            num_threads (int, optional): Number of threads.
+            num_threads: Number of threads.
 
         Returns:
-            Tuple[ndarray, list]: Tuple containing a 2-dimensional array where each row represents
-            a group and contains the column-wise sums for that group, across all columns of the matrix;
-            and a list containing the unique levels of ``group`` represented by each row.
+            Tuple containing a 2-dimensional array where each row represents a
+            group and contains the column-wise sums for that group, across all
+            columns of the matrix; and a list containing the unique levels of
+            ``group`` represented by each row.
         """
         lev, ind = _factorize(group)
         if len(ind) != self.nrow():

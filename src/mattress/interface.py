@@ -19,13 +19,13 @@ def tatamize(x: Any) -> TatamiNumericPointer:
     """Converts Python matrix representations to a tatami pointer.
 
     Args:
-        x (Any): Any matrix-like object.
+        x: Any matrix-like object.
 
     Raises:
         NotImplementedError: if x is not supported.
 
     Returns:
-        TatamiNumericPointer: a pointer to tatami object.
+        A pointer to tatami object.
     """
     raise NotImplementedError(
         f"tatamize is not supported for objects of class: {type(x)}"
