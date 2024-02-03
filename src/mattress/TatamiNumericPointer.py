@@ -2,6 +2,7 @@ from numpy import ndarray, float64, int32, zeros, dtype
 from . import _cpphelpers as lib
 from typing import Tuple, Sequence
 from .utils import _sanitize_subset
+from delayedarray import is_sparse, extract_dense_array, extract_sparse_array
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -73,7 +74,7 @@ class TatamiNumericPointer:
         lib.extract_dense_full(self.ptr, output.ctypes.data)
         return output
 
-    def __DelayedArray_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
+    def __generic_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
         """Enable DelayedArray extraction of subsets of data from the matrix.
 
         See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
@@ -454,3 +455,20 @@ class TatamiNumericPointer:
             self.ptr, ind.ctypes.data, output.ctypes.data, num_threads
         )
         return output.T, lev
+
+
+@is_sparse.register
+def is_sparse_tatami(x: TatamiNumericPointer):
+    return x.sparse()
+
+
+@extract_dense_array.register
+def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> TatamiNumericPointer:
+    """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
+    return x.__generic_extract__(subset=subset)
+
+
+@extract_sparse_array.register
+def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> TatamiNumericPointer:
+    """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
+    return x.__generic_extract__(subset=subset)

@@ -1,5 +1,5 @@
 import os
-from typing import Union, Tuple, Sequence
+from typing import Union, Tuple, Sequence, List
 import assorthead
 import inspect
 import numpy as np
@@ -9,11 +9,11 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def includes() -> list[str]:
+def includes() -> List[str]:
     """Provides access to C++ headers (including tatami) for downstream packages.
 
     Returns:
-        list[str]: List of paths to the header files.
+        List of paths to the header files.
     """
     dirname = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     return [
