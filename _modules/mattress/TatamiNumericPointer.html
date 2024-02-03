@@ -201,7 +201,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_cpphelpers</span> <span class="k">as</span> <span class="n">lib</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_sanitize_subset</span>
-<span class="kn">from</span> <span class="nn">delayedarray</span> <span class="kn">import</span> <span class="n">is_sparse</span><span class="p">,</span> <span class="n">extract_dense_array</span><span class="p">,</span> <span class="n">extract_sparse_array</span><span class="p">,</span> <span class="n">is_masked</span><span class="p">,</span> <span class="n">chunk_grid</span><span class="p">,</span> <span class="n">SimpleGrid</span><span class="p">,</span> <span class="n">chunk_shape_to_grid</span>
+<span class="kn">from</span> <span class="nn">delayedarray</span> <span class="kn">import</span> <span class="n">is_sparse</span><span class="p">,</span> <span class="n">extract_dense_array</span><span class="p">,</span> <span class="n">extract_sparse_array</span><span class="p">,</span> <span class="n">is_masked</span><span class="p">,</span> <span class="n">chunk_grid</span><span class="p">,</span> <span class="n">SimpleGrid</span><span class="p">,</span> <span class="n">chunk_shape_to_grid</span><span class="p">,</span> <span class="n">SparseNdarray</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
@@ -279,38 +279,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
         <span class="n">lib</span><span class="o">.</span><span class="n">extract_dense_full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-
-    <span class="k">def</span> <span class="nf">__generic_extract__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable DelayedArray extraction of subsets of data from the matrix.</span>
-
-<span class="sd">        See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Contents of the underlying matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rfull</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">()</span>
-        <span class="n">rnoop</span><span class="p">,</span> <span class="n">rsub</span> <span class="o">=</span> <span class="n">_sanitize_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rfull</span><span class="p">)</span>
-        <span class="n">roffset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">rnoop</span><span class="p">:</span>
-            <span class="n">rlen</span> <span class="o">=</span> <span class="n">rfull</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">roffset</span> <span class="o">=</span> <span class="n">rsub</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
-            <span class="n">rlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsub</span><span class="p">)</span>
-
-        <span class="n">cfull</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">()</span>
-        <span class="n">cnoop</span><span class="p">,</span> <span class="n">csub</span> <span class="o">=</span> <span class="n">_sanitize_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cfull</span><span class="p">)</span>
-        <span class="n">coffset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">cnoop</span><span class="p">:</span>
-            <span class="n">clen</span> <span class="o">=</span> <span class="n">cfull</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">coffset</span> <span class="o">=</span> <span class="n">csub</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
-            <span class="n">clen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csub</span><span class="p">)</span>
-
-        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="n">rlen</span><span class="p">,</span> <span class="n">clen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">lib</span><span class="o">.</span><span class="n">extract_dense_subset</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">rnoop</span><span class="p">,</span> <span class="n">roffset</span><span class="p">,</span> <span class="n">rlen</span><span class="p">,</span> <span class="n">cnoop</span><span class="p">,</span> <span class="n">coffset</span><span class="p">,</span> <span class="n">clen</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
-        <span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span>
 
     <span class="k">def</span> <span class="nf">__DelayedArray_dask__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -736,22 +704,66 @@
 
 
 
+<span class="k">def</span> <span class="nf">_extract_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">TatamiNumericPointer</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span> 
+    <span class="n">rfull</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">nrow</span><span class="p">()</span>
+    <span class="n">rnoop</span><span class="p">,</span> <span class="n">rsub</span> <span class="o">=</span> <span class="n">_sanitize_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rfull</span><span class="p">)</span>
+    <span class="n">roffset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">rnoop</span><span class="p">:</span>
+        <span class="n">rlen</span> <span class="o">=</span> <span class="n">rfull</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">roffset</span> <span class="o">=</span> <span class="n">rsub</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">rlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsub</span><span class="p">)</span>
+
+    <span class="n">cfull</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ncol</span><span class="p">()</span>
+    <span class="n">cnoop</span><span class="p">,</span> <span class="n">csub</span> <span class="o">=</span> <span class="n">_sanitize_subset</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cfull</span><span class="p">)</span>
+    <span class="n">coffset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">cnoop</span><span class="p">:</span>
+        <span class="n">clen</span> <span class="o">=</span> <span class="n">cfull</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">coffset</span> <span class="o">=</span> <span class="n">csub</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">clen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csub</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sparse</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">ndarray</span><span class="p">((</span><span class="n">rlen</span><span class="p">,</span> <span class="n">clen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">extract_dense_subset</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">rnoop</span><span class="p">,</span> <span class="n">roffset</span><span class="p">,</span> <span class="n">rlen</span><span class="p">,</span> <span class="n">cnoop</span><span class="p">,</span> <span class="n">coffset</span><span class="p">,</span> <span class="n">clen</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">output_values</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">rlen</span><span class="p">,</span> <span class="n">clen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="n">output_indices</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">rlen</span><span class="p">,</span> <span class="n">clen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="n">output_counts</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">clen</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse_subset</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">rnoop</span><span class="p">,</span> <span class="n">roffset</span><span class="p">,</span> <span class="n">rlen</span><span class="p">,</span> <span class="n">cnoop</span><span class="p">,</span> <span class="n">coffset</span><span class="p">,</span> <span class="n">clen</span><span class="p">,</span> 
+            <span class="n">output_counts</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> 
+            <span class="n">output_indices</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> 
+            <span class="n">output_values</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">clen</span><span class="p">):</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">output_counts</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">output_indices</span><span class="p">[:</span><span class="n">count</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">output_values</span><span class="p">[:</span><span class="n">count</span><span class="p">,</span><span class="n">c</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">SparseNdarray</span><span class="p">((</span><span class="n">rlen</span><span class="p">,</span> <span class="n">clen</span><span class="p">),</span> <span class="n">contents</span><span class="o">=</span><span class="n">contents</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">),</span> <span class="n">index_dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">),</span> <span class="n">is_masked</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
 <div class="viewcode-block" id="extract_dense_array_tatami">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.extract_dense_array_tatami">[docs]</a>
 <span class="nd">@extract_dense_array</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">extract_dense_array_tatami</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">TatamiNumericPointer</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">extract_dense_array_tatami</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">TatamiNumericPointer</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">__generic_extract__</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span></div>
-
+    <span class="k">return</span> <span class="n">_extract_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="extract_sparse_array_tatami">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.TatamiNumericPointer.extract_sparse_array_tatami">[docs]</a>
 <span class="nd">@extract_sparse_array</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">extract_sparse_array_tatami</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">TatamiNumericPointer</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TatamiNumericPointer</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">extract_sparse_array_tatami</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">TatamiNumericPointer</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SparseNdarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">__generic_extract__</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span></div>
-
+    <span class="k">return</span> <span class="n">_extract_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_masked_tatami">
