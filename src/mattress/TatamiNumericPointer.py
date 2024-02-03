@@ -2,7 +2,7 @@ from numpy import ndarray, float64, int32, zeros, dtype
 from . import _cpphelpers as lib
 from typing import Tuple, Sequence
 from .utils import _sanitize_subset
-from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked, chunk_grid, SimpleGrid, chunk_shape_to_grid
+from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked, chunk_grid, SimpleGrid, chunk_shape_to_grid, SparseNdarray
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -72,38 +72,6 @@ class TatamiNumericPointer:
         """
         output = ndarray(self.shape, dtype=float64, order="C")
         lib.extract_dense_full(self.ptr, output.ctypes.data)
-        return output
-
-    def __generic_extract__(self, subset: Tuple[Sequence[int], ...]) -> ndarray:
-        """Enable DelayedArray extraction of subsets of data from the matrix.
-
-        See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_extract__` for details.
-
-        Returns:
-            Contents of the underlying matrix.
-        """
-        rfull = self.nrow()
-        rnoop, rsub = _sanitize_subset(subset[0], rfull)
-        roffset = 0
-        if rnoop:
-            rlen = rfull
-        else:
-            roffset = rsub.ctypes.data
-            rlen = len(rsub)
-
-        cfull = self.ncol()
-        cnoop, csub = _sanitize_subset(subset[1], cfull)
-        coffset = 0
-        if cnoop:
-            clen = cfull
-        else:
-            coffset = csub.ctypes.data
-            clen = len(csub)
-
-        output = ndarray((rlen, clen), dtype=float64)
-        lib.extract_dense_subset(
-            self.ptr, rnoop, roffset, rlen, cnoop, coffset, clen, output.ctypes.data
-        )
         return output
 
     def __DelayedArray_dask__(self) -> ndarray:
@@ -462,17 +430,61 @@ def is_sparse_tatami(x: TatamiNumericPointer):
     return x.sparse()
 
 
-@extract_dense_array.register
-def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> TatamiNumericPointer:
-    """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
-    return x.__generic_extract__(subset=subset)
+def _extract_array(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...], sparse: bool): 
+    rfull = x.nrow()
+    rnoop, rsub = _sanitize_subset(subset[0], rfull)
+    roffset = 0
+    if rnoop:
+        rlen = rfull
+    else:
+        roffset = rsub.ctypes.data
+        rlen = len(rsub)
 
+    cfull = x.ncol()
+    cnoop, csub = _sanitize_subset(subset[1], cfull)
+    coffset = 0
+    if cnoop:
+        clen = cfull
+    else:
+        coffset = csub.ctypes.data
+        clen = len(csub)
+
+    if not sparse:
+        output = ndarray((rlen, clen), dtype=float64)
+        lib.extract_dense_subset(
+            x.ptr, rnoop, roffset, rlen, cnoop, coffset, clen, output.ctypes.data
+        )
+        return output
+    else:
+        output_values = zeros((rlen, clen), dtype=float64, order="F")
+        output_indices = zeros((rlen, clen), dtype=int32, order="F")
+        output_counts = zeros((clen), dtype=int32)
+        lib.extract_sparse_subset(
+            x.ptr, rnoop, roffset, rlen, cnoop, coffset, clen, 
+            output_counts.ctypes.data, 
+            output_indices.ctypes.data, 
+            output_values.ctypes.data
+        )
+
+        contents = []
+        for c in range(clen):
+            count = output_counts[c]
+            if count == 0:
+                contents.append(None)
+            else:
+                contents.append((output_indices[:count,c], output_values[:count,c]))
+
+        return SparseNdarray((rlen, clen), contents=contents, dtype=dtype("float64"), index_dtype=dtype("int32"), is_masked=False, check=False)
+
+@extract_dense_array.register
+def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> ndarray:
+    """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
+    return _extract_array(x, subset, False)
 
 @extract_sparse_array.register
-def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> TatamiNumericPointer:
+def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> SparseNdarray:
     """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
-    return x.__generic_extract__(subset=subset)
-
+    return _extract_array(x, subset, True)
 
 @is_masked.register
 def is_masked_tatami(x: TatamiNumericPointer) -> bool:

@@ -188,6 +188,57 @@ void extract_dense_subset(void* rawmat,
     tatami::convert_to_dense<true>(ptr.get(), output);
 }
 
+//[[export]]
+void extract_sparse_subset(void* rawmat,
+    uint8_t row_noop,
+    const int32_t* row_sub /** void_p */,
+    int32_t row_len,
+    uint8_t col_noop,
+    const int32_t* col_sub /** void_p */,
+    int32_t col_len,
+    int32_t* output_count /** void_p */,
+    int32_t* output_indices /** void_p */,
+    double* output_values /** void_p */)
+{
+    auto mat = reinterpret_cast<Mattress*>(rawmat);
+    auto ptr = mat->ptr;
+
+    if (!row_noop) {
+        ptr = tatami::make_DelayedSubset<0>(std::move(ptr), tatami::ArrayView<int32_t>(row_sub, row_len));
+    }
+    if (!col_noop) {
+        ptr = tatami::make_DelayedSubset<1>(std::move(ptr), tatami::ArrayView<int32_t>(col_sub, col_len));
+    }
+
+    auto NC = ptr->ncol();
+    auto NR = ptr->nrow();
+
+    if (ptr->prefer_rows()) {
+        auto ext = tatami::consecutive_extractor<true, true>(ptr.get(), 0, NR);
+        std::vector<double> vbuffer(NC);
+        std::vector<int32_t> ibuffer(NC);
+        std::fill(output_count, output_count + NC, 0); // avoid adding to an uninitialized count.
+
+        for (int32_t r = 0; r < NR; ++r) {
+            auto info = ext->fetch(r, vbuffer.data(), ibuffer.data());
+            for (int32_t i = 0; i < info.number; ++i) {
+                auto c = info.index[i];
+                auto& count = output_count[c];
+                auto offset = count + static_cast<size_t>(c) * NR;
+                output_indices[offset] = r;
+                output_values[offset] = info.value[i];
+                ++count;
+            }
+        }
+    } else {
+        auto ext = tatami::consecutive_extractor<false, true>(ptr.get(), 0, NC);
+        for (int32_t c = 0; c < NC; ++c, output_values += NR, output_indices += NR) {
+            auto info = ext->fetch_copy(c, output_values, output_indices);
+            output_count[c] = info.number;
+        }
+    }
+}
+
 /** Freeing **/
 
 //[[export]]

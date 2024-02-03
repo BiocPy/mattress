@@ -1,6 +1,7 @@
 import numpy as np
 from mattress import tatamize, TatamiNumericPointer
 import delayedarray as da
+import scipy
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -97,7 +98,7 @@ def test_grouped_stats():
     assert (csum[clev.index(0), :] == rptr.column_sums()).all()
 
 
-def test_DelayedArray_rewrap():
+def test_DelayedArray_rewrap_dense():
     y = np.random.rand(1000, 100)
     ptr = tatamize(y)
 
@@ -105,11 +106,58 @@ def test_DelayedArray_rewrap():
     assert isinstance(da2.seed, TatamiNumericPointer)
     assert (np.array(da2) == y).all()
 
+    # These all indirectly call extract_dense_array().
     sub = da2[10:50, 0:100:2]
     assert (np.array(sub) == y[10:50, 0:100:2]).all()
 
     sub = da2[10:50, :]
     assert (np.array(sub) == y[10:50, :]).all()
 
-    sub = da2[:10:50]
-    assert (np.array(sub) == y[:10:50]).all()
+    sub = da2[:, 10:50]
+    assert (np.array(sub) == y[:, 10:50]).all()
+
+
+def test_DelayedArray_rewrap_sparse_csc():
+    y = scipy.sparse.random(200, 500, 0.1).tocsc()
+    ptr = tatamize(y)
+
+    da2 = da.DelayedArray(ptr)
+    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert da.is_sparse(da2)
+
+    full = da.to_sparse_array(da2)
+    assert isinstance(full, da.SparseNdarray)
+    assert (np.array(full) == y.toarray()).all()
+
+    # These all indirectly call TatamiNumericPointer's extract_dense_array().
+    sub = da.extract_sparse_array(da2, (range(10, 50), range(0, 100, 2)))
+    assert (np.array(sub) == y[10:50, 0:100:2].toarray()).all()
+
+    sub = da.extract_sparse_array(da2, (range(10, 50), range(y.shape[1])))
+    assert (np.array(sub) == y[10:50, :].toarray()).all()
+
+    sub = da.extract_sparse_array(da2, (range(y.shape[0]), range(10, 50)))
+    assert (np.array(sub) == y[:, 10:50].toarray()).all()
+
+
+def test_DelayedArray_rewrap_sparse_csr():
+    y = scipy.sparse.random(200, 500, 0.1).tocsr()
+    ptr = tatamize(y)
+
+    da2 = da.DelayedArray(ptr)
+    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert da.is_sparse(da2)
+
+    full = da.to_sparse_array(da2)
+    assert isinstance(full, da.SparseNdarray)
+    assert (np.array(full) == y.toarray()).all()
+
+    # These all indirectly call TatamiNumericPointer's extract_dense_array().
+    sub = da.extract_sparse_array(da2, (range(10, 50), range(0, 100, 2)))
+    assert (np.array(sub) == y[10:50, 0:100:2].toarray()).all()
+
+    sub = da.extract_sparse_array(da2, (range(10, 50), range(y.shape[1])))
+    assert (np.array(sub) == y[10:50, :].toarray()).all()
+
+    sub = da.extract_sparse_array(da2, (range(y.shape[0]), range(10, 50)))
+    assert (np.array(sub) == y[:, 10:50].toarray()).all()
