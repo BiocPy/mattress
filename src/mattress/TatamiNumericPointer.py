@@ -2,7 +2,7 @@ from numpy import ndarray, float64, int32, zeros, dtype
 from . import _cpphelpers as lib
 from typing import Tuple, Sequence
 from .utils import _sanitize_subset
-from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked
+from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked, chunk_grid, SimpleGrid, chunk_shape_to_grid
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -478,3 +478,8 @@ def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[
 def is_masked_tatami(x: TatamiNumericPointer) -> bool:
     """See :py:meth:`~delayedarray.is_masked.is_masked`."""
     return False
+
+@chunk_grid.register
+def chunk_grid_tatami(x: TatamiNumericPointer) -> bool:
+    """See :py:meth:`~delayedarray.chunk_grid.chunk_grid`."""
+    return chunk_shape_to_grid((1, 1), x.shape, cost_factor=1)
