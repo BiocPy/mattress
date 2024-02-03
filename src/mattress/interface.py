@@ -2,8 +2,9 @@ from functools import singledispatch
 from typing import Any
 
 import numpy as np
-import scipy.sparse as sp
 import delayedarray
+from biocutils.package_utils import is_package_installed
+
 
 from .TatamiNumericPointer import TatamiNumericPointer
 from . import _cpphelpers as lib
@@ -63,53 +64,55 @@ def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
         obj=[x],
     )
 
+if is_package_installed("scipy"):
+    import scipy.sparse
 
-@tatamize.register
-def _tatamize_sparse_csr_array(x: sp.csr_array) -> TatamiNumericPointer:
-    tmp = x.indptr.astype(np.uint64, copy=False)
-    return TatamiNumericPointer(
-        ptr=lib.initialize_compressed_sparse_matrix(
-            x.shape[0],
-            x.shape[1],
-            len(x.data),
-            str(x.data.dtype).encode("UTF-8"),
-            x.data.ctypes.data,
-            str(x.indices.dtype).encode("UTF-8"),
-            x.indices.ctypes.data,
-            tmp.ctypes.data,
-            True,
-        ),
-        obj=[tmp, x],
-    )
-
-
-@tatamize.register
-def _tatamize_sparse_csr_matrix(x: sp.csr_matrix) -> TatamiNumericPointer:
-    return _tatamize_sparse_csr_array(x)
+    @tatamize.register
+    def _tatamize_sparse_csr_array(x: scipy.sparse.csr_array) -> TatamiNumericPointer:
+        tmp = x.indptr.astype(np.uint64, copy=False)
+        return TatamiNumericPointer(
+            ptr=lib.initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
+                len(x.data),
+                str(x.data.dtype).encode("UTF-8"),
+                x.data.ctypes.data,
+                str(x.indices.dtype).encode("UTF-8"),
+                x.indices.ctypes.data,
+                tmp.ctypes.data,
+                True,
+            ),
+            obj=[tmp, x],
+        )
 
 
-@tatamize.register
-def _tatamize_sparse_csc_array(x: sp.csc_array) -> TatamiNumericPointer:
-    tmp = x.indptr.astype(np.uint64, copy=False)
-    return TatamiNumericPointer(
-        ptr=lib.initialize_compressed_sparse_matrix(
-            x.shape[0],
-            x.shape[1],
-            len(x.data),
-            str(x.data.dtype).encode("UTF-8"),
-            x.data.ctypes.data,
-            str(x.indices.dtype).encode("UTF-8"),
-            x.indices.ctypes.data,
-            tmp.ctypes.data,
-            False,
-        ),
-        obj=[tmp, x],
-    )
+    @tatamize.register
+    def _tatamize_sparse_csr_matrix(x: scipy.sparse.csr_matrix) -> TatamiNumericPointer:
+        return _tatamize_sparse_csr_array(x)
 
 
-@tatamize.register
-def _tatamize_sparse_csc_matrix(x: sp.csc_matrix) -> TatamiNumericPointer:
-    return _tatamize_sparse_csc_array(x)
+    @tatamize.register
+    def _tatamize_sparse_csc_array(x: scipy.sparse.csc_array) -> TatamiNumericPointer:
+        tmp = x.indptr.astype(np.uint64, copy=False)
+        return TatamiNumericPointer(
+            ptr=lib.initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
+                len(x.data),
+                str(x.data.dtype).encode("UTF-8"),
+                x.data.ctypes.data,
+                str(x.indices.dtype).encode("UTF-8"),
+                x.indices.ctypes.data,
+                tmp.ctypes.data,
+                False,
+            ),
+            obj=[tmp, x],
+        )
+
+
+    @tatamize.register
+    def _tatamize_sparse_csc_matrix(x: scipy.sparse.csc_matrix) -> TatamiNumericPointer:
+        return _tatamize_sparse_csc_array(x)
 
 
 @tatamize.register
