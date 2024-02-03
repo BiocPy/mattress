@@ -2,7 +2,7 @@ from numpy import ndarray, float64, int32, zeros, dtype
 from . import _cpphelpers as lib
 from typing import Tuple, Sequence
 from .utils import _sanitize_subset
-from delayedarray import is_sparse, extract_dense_array, extract_sparse_array
+from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -472,3 +472,9 @@ def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[i
 def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> TatamiNumericPointer:
     """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
     return x.__generic_extract__(subset=subset)
+
+
+@is_masked.register
+def is_masked_tatami(x: TatamiNumericPointer) -> bool:
+    """See :py:meth:`~delayedarray.is_masked.is_masked`."""
+    return False
