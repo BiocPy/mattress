@@ -1,7 +1,9 @@
 # Changelog
 
-## Version 0.1 (development)
+## Version 0.2.0
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
+Compatibility with NumPy 2.0
+
+## Version 0.1 - 0.1.6
+
+Bindings to the mattress package.
