@@ -42,10 +42,10 @@ def test_simple_stats():
 
 def test_nan_counts():
     y = np.random.rand(20, 10)
-    y[0, 0] = np.NaN
-    y[1, 2] = np.NaN
-    y[4, 3] = np.NaN
-    y[2, 3] = np.NaN
+    y[0, 0] = np.nan
+    y[1, 2] = np.nan
+    y[4, 3] = np.nan
+    y[2, 3] = np.nan
 
     ptr = tatamize(y)
     rnan = ptr.row_nan_counts()
