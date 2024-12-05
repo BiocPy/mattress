@@ -9,19 +9,6 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def includes() -> List[str]:
-    """Provides access to C++ headers (including tatami) for downstream packages.
-
-    Returns:
-        List of paths to the header files.
-    """
-    dirname = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    return [
-        assorthead.includes(),
-        os.path.join(dirname, "include"),
-    ]
-
-
 def _sanitize_subset(
     subset: Sequence[int], full: int
 ) -> Tuple[bool, Union[np.ndarray, None]]:
