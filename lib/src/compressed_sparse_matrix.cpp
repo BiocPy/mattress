@@ -73,6 +73,6 @@ MatrixPointer initialize_compressed_sparse_matrix(MatrixIndex nr, MatrixValue nc
     return MatrixPointer();
 }
 
-void init_compressed_sparse(pybind11::module& m) {
+void init_compressed_sparse_matrix(pybind11::module& m) {
     m.def("initialize_compressed_sparse_matrix", &initialize_compressed_sparse_matrix);
 }

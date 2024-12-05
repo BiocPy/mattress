@@ -47,6 +47,6 @@ MatrixPointer initialize_dense_matrix(MatrixIndex nr, MatrixIndex nc, const pybi
     return MatrixPointer();
 }
 
-void init_dense(pybind11::module& m) {
+void init_dense_matrix(pybind11::module& m) {
     m.def("initialize_dense_matrix", &initialize_dense_matrix);
 }

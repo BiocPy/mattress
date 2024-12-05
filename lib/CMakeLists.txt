@@ -29,8 +29,8 @@ find_package(pybind11 CONFIG)
 # pybind11 method:
 pybind11_add_module(mattress
     src/common.cpp
-    src/dense.cpp
-    src/compressed_sparse.cpp
+    src/dense_matrix.cpp
+    src/compressed_sparse_matrix.cpp
     src/delayed_binary_isometric_operation.cpp
     src/init.cpp
 )
