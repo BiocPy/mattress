@@ -22,13 +22,13 @@ def _sanitize_subset(
         is_noop = False
 
     if is_noop:
-        return True, None
+        return True, np.ndarray(0, dtype=np.uint32)
 
     if not isinstance(subset, np.ndarray):
-        subset = np.array(subset, dtype=np.int32)
+        subset = np.array(subset, dtype=np.uint32)
     else:
         subset = subset.astype(
-            np.int32, copy=not (subset.flags.c_contiguous or subset.flags.f_contiguous)
+            np.uint32, copy=not (subset.flags.c_contiguous or subset.flags.f_contiguous)
         )
 
     return False, subset

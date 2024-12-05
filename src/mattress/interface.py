@@ -7,7 +7,7 @@ from biocutils.package_utils import is_package_installed
 
 
 from .TatamiNumericPointer import TatamiNumericPointer
-from . import _cpphelpers as lib
+from . import lib_mattress as lib
 from .utils import _sanitize_subset
 
 __author__ = "jkanche"
@@ -43,25 +43,17 @@ def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
     if len(x.shape) != 2:
         raise ValueError("'x' should be a 2-dimensional array")
 
-    byrow = None
+    byrow = True
     if x.flags["C_CONTIGUOUS"]:
-        byrow = True
+        pass
     elif x.flags["F_CONTIGUOUS"]:
         byrow = False
     else:
-        # I don't think it's possible to hit this, as a (non-view) ndarray
-        # should be contiguous in at least one direction.
-        raise ValueError("'x' must have contiguous storage for its arrays")
+        x = x.copy()
 
     return TatamiNumericPointer(
-        ptr=lib.initialize_dense_matrix(
-            x.shape[0],
-            x.shape[1],
-            str(x.dtype).encode("UTF-8"),
-            x.ctypes.data,
-            byrow,
-        ),
-        obj=[x],
+        ptr=lib.initialize_dense_matrix(x.shape[0], x.shape[1], x, byrow),
+        obj=[x]
     )
 
 if is_package_installed("scipy"):

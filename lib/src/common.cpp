@@ -126,7 +126,7 @@ pybind11::array_t<MatrixValue> compute_row_maxs(const MatrixPointer& mat, int nu
     return output;
 }
 
-pybind11::list compute_row_ranges(const MatrixPointer& mat, int num_threads) {
+pybind11::tuple compute_row_ranges(const MatrixPointer& mat, int num_threads) {
     pybind11::array_t<MatrixValue> mnout(mat->nrow()), mxout(mat->nrow());
     auto mnptr = static_cast<MatrixValue*>(mnout.request().ptr);
     auto mxptr = static_cast<MatrixValue*>(mxout.request().ptr);
@@ -134,13 +134,13 @@ pybind11::list compute_row_ranges(const MatrixPointer& mat, int num_threads) {
     opt.num_threads = num_threads;
     tatami_stats::ranges::apply(true, mat.get(), mnptr, mxptr, opt);
 
-    pybind11::list output(2);
+    pybind11::tuple output(2);
     output[0] = mnout;
     output[1] = mxout;
     return output;
 }
 
-pybind11::list compute_column_ranges(const MatrixPointer& mat, int num_threads) {
+pybind11::tuple compute_column_ranges(const MatrixPointer& mat, int num_threads) {
     pybind11::array_t<MatrixValue> mnout(mat->ncol()), mxout(mat->ncol());
     auto mnptr = static_cast<MatrixValue*>(mnout.request().ptr);
     auto mxptr = static_cast<MatrixValue*>(mxout.request().ptr);
@@ -148,7 +148,7 @@ pybind11::list compute_column_ranges(const MatrixPointer& mat, int num_threads) 
     opt.num_threads = num_threads;
     tatami_stats::ranges::apply(false, mat.get(), mnptr, mxptr, opt);
 
-    pybind11::list output(2);
+    pybind11::tuple output(2);
     output[0] = mnout;
     output[1] = mxout;
     return output;
@@ -290,8 +290,7 @@ pybind11::array_t<MatrixValue> compute_column_medians_by_group(const MatrixPoint
 
 pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
     bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
-    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub,
-    int num_threads) 
+    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub)
 {
     if (!row_noop) {
         auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
@@ -305,14 +304,13 @@ pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
     size_t NR = mat->nrow(), NC = mat->ncol();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ NR, NC });
     auto optr = static_cast<MatrixValue*>(output.request().ptr);
-    tatami::convert_to_dense(mat.get(), false, optr, num_threads);
+    tatami::convert_to_dense(mat.get(), false, optr);
     return output;
 }
 
 pybind11::array_t<MatrixValue> extract_sparse_subset(MatrixPointer mat,
     bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
-    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub,
-    int num_threads)
+    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub)
 {
     if (!row_noop) {
         auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
@@ -411,4 +409,6 @@ void init_common(pybind11::module& m) {
 
     m.def("extract_dense_subset", &extract_dense_subset);
     m.def("extract_sparse_subset", &extract_sparse_subset);
+
+    pybind11::class_<tatami::Matrix<MatrixValue, MatrixIndex>, MatrixPointer>(m, "Matrix");
 }
