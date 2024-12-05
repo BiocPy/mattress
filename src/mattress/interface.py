@@ -173,13 +173,13 @@ def _tatamize_delayed_transpose(
 
 
 @tatamize.register
-def _tatamize_delayed_binary_isometric_op(
+def _tatamize_delayed_binary_isometric_operation(
     x: delayedarray.BinaryIsometricOp,
 ) -> TatamiNumericPointer:
     lcomponents = tatamize(x.left)
     rcomponents = tatamize(x.right)
 
-    ptr = lib.initialize_delayed_binary_isometric_op(
+    ptr = lib.initialize_delayed_binary_isometric_operation(
         lcomponents.ptr, rcomponents.ptr, x.operation.encode("UTF-8")
     )
 

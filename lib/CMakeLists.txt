@@ -31,6 +31,7 @@ pybind11_add_module(mattress
     src/common.cpp
     src/dense.cpp
     src/compressed_sparse.cpp
+    src/delayed_binary_isometric_operation.cpp
     src/init.cpp
 )
 
