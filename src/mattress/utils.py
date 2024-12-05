@@ -32,3 +32,10 @@ def _sanitize_subset(
         )
 
     return False, subset
+
+
+def _contiguify(x: np.ndarray):
+    if x.flags["C_CONTIGUOUS"] or x.flags["F_CONTIGUOUS"]:
+        return x
+    else:
+        return x.copy('C')

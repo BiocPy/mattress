@@ -6,6 +6,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <cstdint>
 
 template<typename Type_>
 MatrixPointer initialize_dense_matrix_internal(MatrixIndex nr, MatrixIndex nc, const Type_* ptr, bool byrow) {
@@ -13,11 +14,12 @@ MatrixPointer initialize_dense_matrix_internal(MatrixIndex nr, MatrixIndex nc, c
     return MatrixPointer(new tatami::DenseMatrix<MatrixValue, MatrixIndex, decltype(view)>(nr, nc, std::move(view), byrow));
 }
 
-MatrixPointer initialize_dense_matrix(MatrixIndex nr, MatrixIndex nc, const pybind11::array& buffer, bool byrow) {
+MatrixPointer initialize_dense_matrix(MatrixIndex nr, MatrixIndex nc, const pybind11::array& buffer) {
     // Don't make any kind of copy of buffer to coerce the type or storage
     // order, as this should be handled by the caller; we don't provide any
-    // GC protection here.
+    // protection from GC for the arrays referenced by the views. 
     auto dtype = buffer.dtype();
+    bool byrow = buffer.flags() & pybind11::array::c_style;
 
     if (dtype.is(pybind11::dtype::of<double>())) {
         return initialize_dense_matrix_internal(nr, nc, reinterpret_cast<const double*>(buffer.request().ptr), byrow);

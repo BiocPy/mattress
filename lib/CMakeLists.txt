@@ -30,6 +30,7 @@ find_package(pybind11 CONFIG)
 pybind11_add_module(mattress
     src/common.cpp
     src/dense.cpp
+    src/compressed_sparse.cpp
     src/init.cpp
 )
 

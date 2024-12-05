@@ -8,7 +8,7 @@ from biocutils.package_utils import is_package_installed
 
 from .TatamiNumericPointer import TatamiNumericPointer
 from . import lib_mattress as lib
-from .utils import _sanitize_subset
+from .utils import _sanitize_subset, _contiguify
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -42,17 +42,9 @@ def _tatamize_pointer(x: TatamiNumericPointer) -> TatamiNumericPointer:
 def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
     if len(x.shape) != 2:
         raise ValueError("'x' should be a 2-dimensional array")
-
-    byrow = True
-    if x.flags["C_CONTIGUOUS"]:
-        pass
-    elif x.flags["F_CONTIGUOUS"]:
-        byrow = False
-    else:
-        x = x.copy()
-
+    x = _contiguify(x)
     return TatamiNumericPointer(
-        ptr=lib.initialize_dense_matrix(x.shape[0], x.shape[1], x, byrow),
+        ptr=lib.initialize_dense_matrix(x.shape[0], x.shape[1], x),
         obj=[x]
     )
 
@@ -61,20 +53,12 @@ if is_package_installed("scipy"):
 
     @tatamize.register
     def _tatamize_sparse_csr_array(x: scipy.sparse.csr_array) -> TatamiNumericPointer:
-        tmp = x.indptr.astype(np.uint64, copy=False)
+        dtmp = _contiguify(x.data)
+        itmp = _contiguify(x.indices)
+        indtmp = x.indptr.astype(np.uint64, copy=False)
         return TatamiNumericPointer(
-            ptr=lib.initialize_compressed_sparse_matrix(
-                x.shape[0],
-                x.shape[1],
-                len(x.data),
-                str(x.data.dtype).encode("UTF-8"),
-                x.data.ctypes.data,
-                str(x.indices.dtype).encode("UTF-8"),
-                x.indices.ctypes.data,
-                tmp.ctypes.data,
-                True,
-            ),
-            obj=[tmp, x],
+            ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, True),
+            obj=[dtmp, itmp, indtmp],
         )
 
 
@@ -85,20 +69,12 @@ if is_package_installed("scipy"):
 
     @tatamize.register
     def _tatamize_sparse_csc_array(x: scipy.sparse.csc_array) -> TatamiNumericPointer:
-        tmp = x.indptr.astype(np.uint64, copy=False)
+        dtmp = _contiguify(x.data)
+        itmp = _contiguify(x.indices)
+        indtmp = x.indptr.astype(np.uint64, copy=False)
         return TatamiNumericPointer(
-            ptr=lib.initialize_compressed_sparse_matrix(
-                x.shape[0],
-                x.shape[1],
-                len(x.data),
-                str(x.data.dtype).encode("UTF-8"),
-                x.data.ctypes.data,
-                str(x.indices.dtype).encode("UTF-8"),
-                x.indices.ctypes.data,
-                tmp.ctypes.data,
-                False,
-            ),
-            obj=[tmp, x],
+            ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, False),
+            obj=[dtmp, itmp, indtmp],
         )
 
 
