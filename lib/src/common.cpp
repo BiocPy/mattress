@@ -1,33 +1,34 @@
-#include "tatami/tatami.hpp"
-#include "tatami_stats/tatami_stats.hpp"
+#include "def.h"
+
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
 
-int extract_nrow(const std::shared_ptr<tatami::NumericMatrix>& mat) {
-    return mat->nrow();
+#include "tatami_stats/tatami_stats.hpp"
+
+pybind11::tuple extract_dim(const MatrixPointer& mat) {
+    pybind11::tuple output(2);
+    output[0] = mat->nrow();
+    output[1] = mat->ncol();
+    return output;
 }
 
-int extract_ncol(const std::shared_ptr<tatami::NumericMatrix>& mat) {
-    return mat->ncol();
-}
-
-bool extract_sparse(const std::shared_ptr<tatami::NumericMatrix>& mat) {
+bool extract_sparse(const MatrixPointer& mat) {
     return mat->is_sparse();
 }
 
-pybind11::array_t<double> extract_row(const std::shared_ptr<tatami::NumericMatrix>& mat, int r) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
-    auto ext = tatami::consecutive_extractor<false>(mat.get(), true, r, 1);
+pybind11::array_t<MatrixValue> extract_row(const MatrixPointer& mat, MatrixIndex r) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    auto ext = tatami::consecutive_extractor<false, MatrixValue, MatrixIndex>(mat.get(), true, r, 1);
     auto out = ext->fetch(optr);
     tatami::copy_n(out, output.size(), optr);
     return output;
 }
 
-pybind11::array_t<double> extract_column(const std::shared_ptr<tatami::NumericMatrix>& mat, int c) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
-    auto ext = tatami::consecutive_extractor<false>(mat.get(), false, c, 1);
+pybind11::array_t<MatrixValue> extract_column(const MatrixPointer& mat, MatrixIndex c) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    auto ext = tatami::consecutive_extractor<false, MatrixValue, MatrixIndex>(mat.get(), false, c, 1);
     auto out = ext->fetch(optr);
     tatami::copy_n(out, output.size(), optr);
     return output;
@@ -35,100 +36,100 @@ pybind11::array_t<double> extract_column(const std::shared_ptr<tatami::NumericMa
 
 /** Stats **/
 
-pybind11::array_t<double> compute_column_sums(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_sums(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::sums::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::sums::apply(false, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_row_sums(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_sums(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::sums::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::sums::apply(true, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_column_variances(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_variances(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::variances::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::variances::apply(false, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_row_variances(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_variances(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::variances::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::variances::apply(true, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_column_medians(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_medians(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::medians::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::medians::apply(false, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_row_medians(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_medians(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::medians::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::medians::apply(true, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<double> compute_column_mins(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_mins(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
-    tatami_stats::ranges::apply(false, mat.get(), optr, static_cast<double*>(NULL), opt);
+    tatami_stats::ranges::apply(false, mat.get(), optr, static_cast<MatrixValue*>(NULL), opt);
     return output;
 }
 
-pybind11::array_t<double> compute_row_mins(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_mins(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
-    tatami_stats::ranges::apply(true, mat.get(), optr, static_cast<double*>(NULL), opt);
+    tatami_stats::ranges::apply(true, mat.get(), optr, static_cast<MatrixValue*>(NULL), opt);
     return output;
 }
 
-pybind11::array_t<double> compute_column_maxs(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->ncol());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_maxs(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->ncol());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
-    tatami_stats::ranges::apply(false, mat.get(), optr, static_cast<double*>(NULL), opt);
+    tatami_stats::ranges::apply(false, mat.get(), optr, static_cast<MatrixValue*>(NULL), opt);
     return output;
 }
 
-pybind11::array_t<double> compute_row_maxs(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> output(mat->nrow());
-    auto optr = static_cast<double*>(output.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_maxs(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> output(mat->nrow());
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
-    tatami_stats::ranges::apply(true, mat.get(), static_cast<double*>(NULL), optr, opt);
+    tatami_stats::ranges::apply(true, mat.get(), static_cast<MatrixValue*>(NULL), optr, opt);
     return output;
 }
 
-pybind11::list compute_row_ranges(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> mnout(mat->nrow()), mxout(mat->nrow());
-    auto mnptr = static_cast<double*>(mnout.request().ptr);
-    auto mxptr = static_cast<double*>(mxout.request().ptr);
+pybind11::list compute_row_ranges(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> mnout(mat->nrow()), mxout(mat->nrow());
+    auto mnptr = static_cast<MatrixValue*>(mnout.request().ptr);
+    auto mxptr = static_cast<MatrixValue*>(mxout.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::ranges::apply(true, mat.get(), mnptr, mxptr, opt);
@@ -139,10 +140,10 @@ pybind11::list compute_row_ranges(const std::shared_ptr<tatami::NumericMatrix>& 
     return output;
 }
 
-pybind11::list compute_column_ranges(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<double> mnout(mat->ncol()), mxout(mat->ncol());
-    auto mnptr = static_cast<double*>(mnout.request().ptr);
-    auto mxptr = static_cast<double*>(mxout.request().ptr);
+pybind11::list compute_column_ranges(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixValue> mnout(mat->ncol()), mxout(mat->ncol());
+    auto mnptr = static_cast<MatrixValue*>(mnout.request().ptr);
+    auto mxptr = static_cast<MatrixValue*>(mxout.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::ranges::apply(false, mat.get(), mnptr, mxptr, opt);
@@ -153,18 +154,18 @@ pybind11::list compute_column_ranges(const std::shared_ptr<tatami::NumericMatrix
     return output;
 }
 
-pybind11::array_t<int32_t> compute_row_nan_counts(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<int32_t> output(mat->nrow());
-    auto optr = static_cast<int32_t*>(output.request().ptr);
+pybind11::array_t<MatrixIndex> compute_row_nan_counts(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixIndex> output(mat->nrow());
+    auto optr = static_cast<MatrixIndex*>(output.request().ptr);
     tatami_stats::counts::nan::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::counts::nan::apply(true, mat.get(), optr, opt);
     return output;
 }
 
-pybind11::array_t<int32_t> compute_column_nan_counts(const std::shared_ptr<tatami::NumericMatrix>& mat, int num_threads) {
-    pybind11::array_t<int32_t> output(mat->ncol());
-    auto optr = static_cast<int32_t*>(output.request().ptr);
+pybind11::array_t<MatrixIndex> compute_column_nan_counts(const MatrixPointer& mat, int num_threads) {
+    pybind11::array_t<MatrixIndex> output(mat->ncol());
+    auto optr = static_cast<MatrixIndex*>(output.request().ptr);
     tatami_stats::counts::nan::Options opt;
     opt.num_threads = num_threads;
     tatami_stats::counts::nan::apply(false, mat.get(), optr, opt);
@@ -173,14 +174,14 @@ pybind11::array_t<int32_t> compute_column_nan_counts(const std::shared_ptr<tatam
 
 /** Grouped stats **/
 
-pybind11::array_t<double> compute_row_sums_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_sums_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     size_t ngroups = tatami_stats::total_groups(gptr, mat->ncol());
     size_t nrow = mat->nrow();
-    pybind11::array_t<double, pybind11::array::f_style> output({ nrow, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * nrow;
     }
@@ -191,14 +192,14 @@ pybind11::array_t<double> compute_row_sums_by_group(const std::shared_ptr<tatami
     return output;
 }
 
-pybind11::array_t<double> compute_column_sums_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_sums_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     size_t ngroups = tatami_stats::total_groups(gptr, mat->nrow());
     size_t ncol = mat->ncol();
-    pybind11::array_t<double, pybind11::array::f_style> output({ ncol, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * ncol;
     }
@@ -209,15 +210,15 @@ pybind11::array_t<double> compute_column_sums_by_group(const std::shared_ptr<tat
     return output;
 }
 
-pybind11::array_t<double> compute_row_variances_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_variances_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
     size_t ngroups = group_sizes.size();
     size_t nrow = mat->nrow();
-    pybind11::array_t<double, pybind11::array::f_style> output({ nrow, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * nrow;
     }
@@ -228,15 +229,15 @@ pybind11::array_t<double> compute_row_variances_by_group(const std::shared_ptr<t
     return output;
 }
 
-pybind11::array_t<double> compute_column_variances_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_variances_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
     size_t ngroups = group_sizes.size();
     size_t ncol = mat->ncol();
-    pybind11::array_t<double, pybind11::array::f_style> output({ ncol, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * ncol;
     }
@@ -247,15 +248,15 @@ pybind11::array_t<double> compute_column_variances_by_group(const std::shared_pt
     return output;
 }
 
-pybind11::array_t<double> compute_row_medians_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_row_medians_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
     size_t ngroups = group_sizes.size();
     size_t nrow = mat->nrow();
-    pybind11::array_t<double, pybind11::array::f_style> output({ nrow, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * nrow;
     }
@@ -266,15 +267,15 @@ pybind11::array_t<double> compute_row_medians_by_group(const std::shared_ptr<tat
     return output;
 }
 
-pybind11::array_t<double> compute_column_medians_by_group(const std::shared_ptr<tatami::NumericMatrix>& mat, const pybind11::array_t<int32_t>& grouping, int num_threads) {
-    auto gptr = static_cast<const int32_t*>(grouping.request().ptr);
+pybind11::array_t<MatrixValue> compute_column_medians_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
+    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
     auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
     size_t ngroups = group_sizes.size();
     size_t ncol = mat->ncol();
-    pybind11::array_t<double, pybind11::array::f_style> output({ ncol, ngroups });
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
 
-    auto optr = static_cast<double*>(output.request().ptr);
-    std::vector<double*> ptrs(ngroups);
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
+    std::vector<MatrixValue*> ptrs(ngroups);
     for (size_t g = 0; g < ngroups; ++g) {
         ptrs[g] = optr + g * ncol;
     }
@@ -287,38 +288,38 @@ pybind11::array_t<double> compute_column_medians_by_group(const std::shared_ptr<
 
 /** Extraction **/
 
-pybind11::array_t<double> extract_dense_subset(std::shared_ptr<tatami::NumericMatrix> mat,
-    bool row_noop, const pybind11::array_t<int32_t>& row_sub,
-    bool col_noop, const pybind11::array_t<int32_t>& col_sub,
+pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
+    bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
+    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub,
     int num_threads) 
 {
     if (!row_noop) {
-        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<int32_t>(row_sub.data(), row_sub.size()));
+        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
         mat.swap(tmp);
     }
     if (!col_noop) {
-        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<int32_t>(col_sub.data(), col_sub.size()));
+        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(col_sub.data(), col_sub.size()));
         mat.swap(tmp);
     }
 
     size_t NR = mat->nrow(), NC = mat->ncol();
-    pybind11::array_t<double, pybind11::array::f_style> output({ NR, NC });
-    auto optr = static_cast<double*>(output.request().ptr);
+    pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ NR, NC });
+    auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami::convert_to_dense(mat.get(), false, optr, num_threads);
     return output;
 }
 
-pybind11::array_t<double> extract_sparse_subset(std::shared_ptr<tatami::NumericMatrix> mat,
-    bool row_noop, const pybind11::array_t<int32_t>& row_sub,
-    bool col_noop, const pybind11::array_t<int32_t>& col_sub,
+pybind11::array_t<MatrixValue> extract_sparse_subset(MatrixPointer mat,
+    bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
+    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub,
     int num_threads)
 {
     if (!row_noop) {
-        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<int32_t>(row_sub.data(), row_sub.size()));
+        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
         mat.swap(tmp);
     }
     if (!col_noop) {
-        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<int32_t>(col_sub.data(), col_sub.size()));
+        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(col_sub.data(), col_sub.size()));
         mat.swap(tmp);
     }
 
@@ -327,12 +328,12 @@ pybind11::array_t<double> extract_sparse_subset(std::shared_ptr<tatami::NumericM
     pybind11::list content(NC);
 
     if (mat->prefer_rows()) {
-        std::vector<std::vector<double> > vcollection(NC);
-        std::vector<std::vector<int32_t> > icollection(NC);
+        std::vector<std::vector<MatrixValue> > vcollection(NC);
+        std::vector<std::vector<MatrixIndex> > icollection(NC);
 
-        auto ext = tatami::consecutive_extractor<true>(mat.get(), true, 0, NR);
-        std::vector<double> vbuffer(NC);
-        std::vector<int> ibuffer(NC);
+        auto ext = tatami::consecutive_extractor<true, MatrixValue, MatrixIndex>(mat.get(), true, 0, NR);
+        std::vector<MatrixValue> vbuffer(NC);
+        std::vector<MatrixIndex> ibuffer(NC);
 
         for (int r = 0; r < NR; ++r) {
             auto info = ext->fetch(vbuffer.data(), ibuffer.data());
@@ -344,23 +345,31 @@ pybind11::array_t<double> extract_sparse_subset(std::shared_ptr<tatami::NumericM
         }
 
         for (int c = 0; c < NC; ++c) {
-            pybind11::list tmp(2);
-            tmp[0] = pybind11::array_t<double>(vcollection[c].size(), vcollection[c].data());
-            tmp[1] = pybind11::array_t<int32_t>(icollection[c].size(), icollection[c].data());
-            content[c] = std::move(tmp);
+            if (vcollection[c].size()) {
+                pybind11::list tmp(2);
+                tmp[0] = pybind11::array_t<MatrixValue>(vcollection[c].size(), vcollection[c].data());
+                tmp[1] = pybind11::array_t<MatrixIndex>(icollection[c].size(), icollection[c].data());
+                content[c] = std::move(tmp);
+            } else {
+                content[c] = pybind11::none();
+            }
         }
 
     } else {
-        auto ext = tatami::consecutive_extractor<true>(mat.get(), false, 0, NC);
-        std::vector<double> vbuffer(NC);
-        std::vector<int> ibuffer(NC);
+        auto ext = tatami::consecutive_extractor<true, MatrixValue, MatrixIndex>(mat.get(), false, 0, NC);
+        std::vector<MatrixValue> vbuffer(NC);
+        std::vector<MatrixIndex> ibuffer(NC);
 
         for (int c = 0; c < NC; ++c) {
             auto info = ext->fetch(vbuffer.data(), ibuffer.data());
-            pybind11::list tmp(2);
-            tmp[0] = pybind11::array_t<double>(info.number, info.value);
-            tmp[1] = pybind11::array_t<int32_t>(info.number, info.index);
-            content[c] = std::move(tmp);
+            if (info.number) {
+                pybind11::list tmp(2);
+                tmp[0] = pybind11::array_t<MatrixValue>(info.number, info.value);
+                tmp[1] = pybind11::array_t<MatrixIndex>(info.number, info.index);
+                content[c] = std::move(tmp);
+            } else {
+                content[c] = pybind11::none();
+            }
         }
     }
 
@@ -368,5 +377,38 @@ pybind11::array_t<double> extract_sparse_subset(std::shared_ptr<tatami::NumericM
     shape[0] = NR;
     shape[1] = NC;
     pybind11::module bu = pybind11::module::import("delayedarray");
-    return bu.attr("SparseNdarray")(shape, content, pybind11::dtype("float64"), pybind11::dtype("int32"), false, false);
+    return bu.attr("SparseNdarray")(shape, content, pybind11::dtype("float64"), pybind11::dtype("uint32"), false, false);
+}
+
+void init_common(pybind11::module& m) {
+    m.def("extract_dim", &extract_dim);
+    m.def("extract_sparse", &extract_sparse);
+
+    m.def("extract_row", &extract_row);
+    m.def("extract_column", &extract_column);
+
+    m.def("compute_column_sums", &compute_column_sums);
+    m.def("compute_row_sums", &compute_row_sums);
+    m.def("compute_column_variances", &compute_column_variances);
+    m.def("compute_row_variances", &compute_row_variances);
+    m.def("compute_column_medians", &compute_column_medians);
+    m.def("compute_row_medians", &compute_row_medians);
+    m.def("compute_column_mins", &compute_column_mins);
+    m.def("compute_row_mins", &compute_row_mins);
+    m.def("compute_column_maxs", &compute_column_maxs);
+    m.def("compute_row_maxs", &compute_row_maxs);
+    m.def("compute_column_ranges", &compute_column_ranges);
+    m.def("compute_row_ranges", &compute_row_ranges);
+    m.def("compute_column_nan_counts", &compute_column_nan_counts);
+    m.def("compute_row_nan_counts", &compute_row_nan_counts);
+
+    m.def("compute_row_sums_by_group", &compute_row_sums_by_group);
+    m.def("compute_column_sums_by_group", &compute_column_sums_by_group);
+    m.def("compute_row_variances_by_group", &compute_row_variances_by_group);
+    m.def("compute_column_variances_by_group", &compute_column_variances_by_group);
+    m.def("compute_row_medians_by_group", &compute_row_medians_by_group);
+    m.def("compute_column_medians_by_group", &compute_column_medians_by_group);
+
+    m.def("extract_dense_subset", &extract_dense_subset);
+    m.def("extract_sparse_subset", &extract_sparse_subset);
 }

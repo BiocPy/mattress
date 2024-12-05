@@ -29,6 +29,7 @@ find_package(pybind11 CONFIG)
 # pybind11 method:
 pybind11_add_module(mattress
     src/common.cpp
+    src/init.cpp
 )
 
 set_property(TARGET mattress PROPERTY CXX_STANDARD 17)
