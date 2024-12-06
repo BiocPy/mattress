@@ -7,19 +7,13 @@ __license__ = "MIT"
 
 
 def test_dense():
-    y = np.random.rand(1000, 100)
-    ptr = tatamize(y)
-    assert all(ptr.row(0) == y[0, :])
-    assert all(ptr.column(1) == y[:, 1])
-    assert ptr.shape == (1000, 100)
-    assert ptr.dtype == np.float64
-
-
-def test_numpy_with_dtype():
-    y = (np.random.rand(50, 12) * 100).astype("i8")
-    ptr = tatamize(y)
-    assert all(ptr.row(0) == y[0, :])
-    assert all(ptr.column(1) == y[:, 1])
+    for dt in [np.float64, np.float32, np.int64, np.int32, np.int16, np.int8, np.uint64, np.uint32, np.uint16, np.uint8]:
+        y = (np.random.rand(1000, 100) * 100).astype(dt, order="C")
+        ptr = tatamize(y)
+        assert all(ptr.row(0) == y[0, :])
+        assert all(ptr.column(1) == y[:, 1])
+        assert ptr.shape == (1000, 100)
+        assert ptr.dtype == np.float64
 
 
 def test_dense_column_major():
