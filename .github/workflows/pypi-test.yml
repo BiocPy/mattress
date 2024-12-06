@@ -33,12 +33,8 @@ jobs:
       - name: Get latest CMake
         uses: lukka/get-cmake@latest
 
-      - name: Get ccache 
-        uses: hendrikmuhs/ccache-action@v1.2
-
       - name: Test with tox
         run: |
-          export CMAKE_CXX_COMPILER_LAUNCHER=ccache
           pip install tox
           tox
 
