@@ -1,6 +1,5 @@
 import os
 from typing import Union, Tuple, Sequence, List
-import assorthead
 import inspect
 import numpy as np
 
