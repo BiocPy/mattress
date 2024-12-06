@@ -47,6 +47,7 @@ def _tatamize_numpy(x: numpy.ndarray) -> TatamiNumericPointer:
         obj=[x]
     )
 
+
 if is_package_installed("scipy"):
     import scipy.sparse
 
@@ -85,6 +86,29 @@ if is_package_installed("scipy"):
 @tatamize.register
 def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointer:
     return tatamize(x.seed)
+
+
+@tatamize.register
+def _tatamize_SparseNdarray(x: delayedarray.SparseNdarray) -> TatamiNumericPointer:
+    if x.contents is not None:
+        dvecs = []
+        ivecs = []
+        for y in x.contents:
+            if y is None:
+                ivecs.append(None)
+                dvecs.append(None)
+            else:
+                ivecs.append(_contiguify(y[0]))
+                dvecs.append(_contiguify(y[1]))
+    else:
+        nc = x.shape[1]
+        dvecs = [None] * nc
+        ivecs = [None] * nc
+
+    return TatamiNumericPointer(
+        ptr=lib.initialize_fragmented_sparse_matrix(x.shape[0], x.shape[1], dvecs, ivecs, False, x.dtype, x.index_dtype),
+        obj=[dvecs, ivecs]
+    )
 
 
 @tatamize.register
