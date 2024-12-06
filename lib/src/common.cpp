@@ -113,7 +113,7 @@ pybind11::array_t<MatrixValue> compute_column_maxs(const MatrixPointer& mat, int
     auto optr = static_cast<MatrixValue*>(output.request().ptr);
     tatami_stats::ranges::Options opt;
     opt.num_threads = num_threads;
-    tatami_stats::ranges::apply(false, mat.get(), optr, static_cast<MatrixValue*>(NULL), opt);
+    tatami_stats::ranges::apply(false, mat.get(), static_cast<MatrixValue*>(NULL), optr, opt);
     return output;
 }
 
@@ -308,7 +308,7 @@ pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
     return output;
 }
 
-pybind11::array_t<MatrixValue> extract_sparse_subset(MatrixPointer mat,
+pybind11::object extract_sparse_subset(MatrixPointer mat,
     bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
     bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub)
 {
@@ -345,8 +345,8 @@ pybind11::array_t<MatrixValue> extract_sparse_subset(MatrixPointer mat,
         for (int c = 0; c < NC; ++c) {
             if (vcollection[c].size()) {
                 pybind11::list tmp(2);
-                tmp[0] = pybind11::array_t<MatrixValue>(vcollection[c].size(), vcollection[c].data());
-                tmp[1] = pybind11::array_t<MatrixIndex>(icollection[c].size(), icollection[c].data());
+                tmp[0] = pybind11::array_t<MatrixIndex>(icollection[c].size(), icollection[c].data());
+                tmp[1] = pybind11::array_t<MatrixValue>(vcollection[c].size(), vcollection[c].data());
                 content[c] = std::move(tmp);
             } else {
                 content[c] = pybind11::none();
@@ -362,8 +362,8 @@ pybind11::array_t<MatrixValue> extract_sparse_subset(MatrixPointer mat,
             auto info = ext->fetch(vbuffer.data(), ibuffer.data());
             if (info.number) {
                 pybind11::list tmp(2);
-                tmp[0] = pybind11::array_t<MatrixValue>(info.number, info.value);
-                tmp[1] = pybind11::array_t<MatrixIndex>(info.number, info.index);
+                tmp[0] = pybind11::array_t<MatrixIndex>(info.number, info.index);
+                tmp[1] = pybind11::array_t<MatrixValue>(info.number, info.value);
                 content[c] = std::move(tmp);
             } else {
                 content[c] = pybind11::none();

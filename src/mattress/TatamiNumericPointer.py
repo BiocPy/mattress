@@ -1,8 +1,8 @@
-from numpy import ndarray, float64, int32, zeros, dtype
+import numpy
+import delayedarray
 from . import lib_mattress as lib
 from typing import Tuple, Sequence
 from .utils import _sanitize_subset
-from delayedarray import is_sparse, extract_dense_array, extract_sparse_array, is_masked, chunk_grid, SimpleGrid, chunk_shape_to_grid, SparseNdarray
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -11,7 +11,7 @@ __license__ = "MIT"
 
 def _factorize(group):
     mapping = {}
-    indices = ndarray((len(group),), uint32)
+    indices = numpy.ndarray((len(group),), numpy.uint32)
     levels = []
     for i, x in enumerate(group):
         if x not in mapping:
@@ -57,11 +57,11 @@ class TatamiNumericPointer:
         return lib.extract_dim(self.ptr)
 
     @property
-    def dtype(self) -> dtype:
+    def dtype(self) -> numpy.dtype:
         """Type of the matrix, to masquerade as a NumPy-like object."""
-        return dtype("float64")
+        return numpy.dtype("float64")
 
-    def __array__(self) -> ndarray:
+    def __array__(self) -> numpy.ndarray:
         """Realize the underlying matrix into a dense NumPy array.
 
         Returns:
@@ -70,7 +70,7 @@ class TatamiNumericPointer:
         shape = self.shape;
         return _extract_array(self.ptr, (range(shape[0]), range(shape[1])), sparse=False)
 
-    def __DelayedArray_dask__(self) -> ndarray:
+    def __DelayedArray_dask__(self) -> numpy.ndarray:
         """Enable the use of the poiners with dask.
 
         See :py:meth:`~delayedarray.DelayedArray.DelayedArray.__DelayedArray_dask__` for details.
@@ -91,7 +91,7 @@ class TatamiNumericPointer:
         """
         return lib.extract_sparse(self.ptr); 
 
-    def row(self, r: int) -> ndarray:
+    def row(self, r: int) -> numpy.ndarray:
         """Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be
         used to iterate over the matrix in production code. (Do that in C++ instead.)
 
@@ -104,7 +104,7 @@ class TatamiNumericPointer:
         """
         return lib.extract_row(self.ptr, r)
 
-    def column(self, c: int) -> ndarray:
+    def column(self, c: int) -> numpy.ndarray:
         """Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not
         be used to iterate over the matrix in production code. (Do that in C++ instead.)
 
@@ -117,7 +117,7 @@ class TatamiNumericPointer:
         """
         return lib.extract_column(self.ptr, c)
 
-    def row_sums(self, num_threads: int = 1) -> ndarray:
+    def row_sums(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row sums.
 
         Args:
@@ -128,7 +128,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_sums(self.ptr, num_threads)
 
-    def column_sums(self, num_threads: int = 1) -> ndarray:
+    def column_sums(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column sums.
 
         Args:
@@ -139,7 +139,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_sums(self.ptr, num_threads)
 
-    def row_variances(self, num_threads: int = 1) -> ndarray:
+    def row_variances(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row variances.
 
         Args:
@@ -150,7 +150,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_variances(self.ptr, num_threads)
 
-    def column_variances(self, num_threads: int = 1) -> ndarray:
+    def column_variances(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column variances.
 
         Args:
@@ -161,7 +161,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_variances(self.ptr, num_threads)
 
-    def row_medians(self, num_threads: int = 1) -> ndarray:
+    def row_medians(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row medians.
 
         Args:
@@ -172,7 +172,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_medians(self.ptr, num_threads)
 
-    def column_medians(self, num_threads: int = 1) -> ndarray:
+    def column_medians(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column medians.
 
         Args:
@@ -183,7 +183,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_medians(self.ptr, num_threads)
 
-    def row_mins(self, num_threads: int = 1) -> ndarray:
+    def row_mins(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row minima.
 
         Args:
@@ -194,7 +194,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_mins(self.ptr, num_threads)
 
-    def column_mins(self, num_threads: int = 1) -> ndarray:
+    def column_mins(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column minima.
 
         Args:
@@ -205,7 +205,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_mins(self.ptr, num_threads)
 
-    def row_maxs(self, num_threads: int = 1) -> ndarray:
+    def row_maxs(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row maxima.
 
         Args:
@@ -216,7 +216,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_maxs(self.ptr, num_threads)
 
-    def column_maxs(self, num_threads: int = 1) -> ndarray:
+    def column_maxs(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column maxima.
 
         Args:
@@ -227,7 +227,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_maxs(self.ptr, num_threads)
 
-    def row_ranges(self, num_threads: int = 1) -> Tuple[ndarray, ndarray]:
+    def row_ranges(self, num_threads: int = 1) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """Convenience method to compute row ranges.
 
         Args:
@@ -238,7 +238,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_ranges(self.ptr, num_threads)
 
-    def column_ranges(self, num_threads: int = 1) -> Tuple[ndarray, ndarray]:
+    def column_ranges(self, num_threads: int = 1) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """Convenience method to compute column ranges.
 
         Args:
@@ -249,7 +249,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_column_ranges(self.ptr, num_threads)
 
-    def row_nan_counts(self, num_threads: int = 1) -> ndarray:
+    def row_nan_counts(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to count the number of NaNs on each row.
 
         Args:
@@ -260,7 +260,7 @@ class TatamiNumericPointer:
         """
         return lib.compute_row_nan_counts(self.ptr, num_threads)
 
-    def column_nan_counts(self, num_threads: int = 1) -> ndarray:
+    def column_nan_counts(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to count the number of NaNs on each column.
 
         Args:
@@ -273,7 +273,7 @@ class TatamiNumericPointer:
 
     def row_medians_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the row-wise median for each group of columns.
 
         Args:
@@ -298,7 +298,7 @@ class TatamiNumericPointer:
 
     def column_medians_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the column-wise median for each group of row.
 
         Args:
@@ -322,7 +322,7 @@ class TatamiNumericPointer:
 
     def row_sums_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the row-wise sum for each group of columns.
 
         Args:
@@ -348,7 +348,7 @@ class TatamiNumericPointer:
 
     def column_sums_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the column-wise sum for each group of row.
 
         Args:
@@ -372,7 +372,7 @@ class TatamiNumericPointer:
 
     def row_variances_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the row-wise variance for each group of columns.
 
         Args:
@@ -398,7 +398,7 @@ class TatamiNumericPointer:
 
     def column_variances_by_group(
         self, group: Sequence, num_threads: int = 1
-    ) -> Tuple[ndarray, list]:
+    ) -> Tuple[numpy.ndarray, list]:
         """Convenience method to compute the column-wise variance for each group of row.
 
         Args:
@@ -422,7 +422,7 @@ class TatamiNumericPointer:
 
 
 
-@is_sparse.register
+@delayedarray.is_sparse.register
 def is_sparse_tatami(x: TatamiNumericPointer):
     return x.sparse()
 
@@ -437,22 +437,22 @@ def _extract_array(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...], s
         return lib.extract_sparse_subset(x.ptr, rnoop, rsub, cnoop, csub)
 
 
-@extract_dense_array.register
-def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> ndarray:
+@delayedarray.extract_dense_array.register
+def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> numpy.ndarray:
     """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
     return _extract_array(x, subset, False)
 
-@extract_sparse_array.register
-def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> SparseNdarray:
+@delayedarray.extract_sparse_array.register
+def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> delayedarray.SparseNdarray:
     """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
     return _extract_array(x, subset, True)
 
-@is_masked.register
+@delayedarray.is_masked.register
 def is_masked_tatami(x: TatamiNumericPointer) -> bool:
     """See :py:meth:`~delayedarray.is_masked.is_masked`."""
     return False
 
-@chunk_grid.register
+@delayedarray.chunk_grid.register
 def chunk_grid_tatami(x: TatamiNumericPointer) -> bool:
     """See :py:meth:`~delayedarray.chunk_grid.chunk_grid`."""
-    return chunk_shape_to_grid((1, 1), x.shape, cost_factor=1)
+    return delayedarray.chunk_shape_to_grid((1, 1), x.shape, cost_factor=1)

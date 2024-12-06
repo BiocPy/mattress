@@ -1,10 +1,9 @@
 from functools import singledispatch
 from typing import Any
 
-import numpy as np
+import numpy
 import delayedarray
 from biocutils.package_utils import is_package_installed
-
 
 from .TatamiNumericPointer import TatamiNumericPointer
 from . import lib_mattress as lib
@@ -39,7 +38,7 @@ def _tatamize_pointer(x: TatamiNumericPointer) -> TatamiNumericPointer:
 
 
 @tatamize.register
-def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
+def _tatamize_numpy(x: numpy.ndarray) -> TatamiNumericPointer:
     if len(x.shape) != 2:
         raise ValueError("'x' should be a 2-dimensional array")
     x = _contiguify(x)
@@ -55,7 +54,7 @@ if is_package_installed("scipy"):
     def _tatamize_sparse_csr_array(x: scipy.sparse.csr_array) -> TatamiNumericPointer:
         dtmp = _contiguify(x.data)
         itmp = _contiguify(x.indices)
-        indtmp = x.indptr.astype(np.uint64, copy=False)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False)
         return TatamiNumericPointer(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, True),
             obj=[dtmp, itmp, indtmp],
@@ -71,7 +70,7 @@ if is_package_installed("scipy"):
     def _tatamize_sparse_csc_array(x: scipy.sparse.csc_array) -> TatamiNumericPointer:
         dtmp = _contiguify(x.data)
         itmp = _contiguify(x.indices)
-        indtmp = x.indptr.astype(np.uint64, copy=False)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False)
         return TatamiNumericPointer(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, False),
             obj=[dtmp, itmp, indtmp],
@@ -106,8 +105,8 @@ def _tatamize_delayed_unary_isometric_operation_with_args(
     components = tatamize(x.seed)
     obj = components.obj
 
-    if isinstance(x.value, np.ndarray):
-        contents = x.value.astype(np.float64, copy=False)
+    if isinstance(x.value, numpy.ndarray):
+        contents = x.value.astype(numpy.float64, copy=False)
         ptr = lib.initialize_delayed_unary_isometric_operation_with_vector(
             components.ptr, x.operation.encode("UTF-8"), x.right, (x.along == 0), contents
         )
