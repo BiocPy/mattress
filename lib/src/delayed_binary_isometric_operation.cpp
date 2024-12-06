@@ -45,7 +45,7 @@ MatrixPointer initialize_delayed_binary_isometric_operation(MatrixPointer left, 
         return (tatami::make_DelayedBinaryIsometricOperation(std::move(left), std::move(right), tatami::make_DelayedBinaryIsometricBooleanXor()));
     }
 
-    throw std::runtime_error("unknown binary isometric operation '" + std::string(op) + "'");
+    throw std::runtime_error("unknown binary isometric operation '" + op + "'");
     return MatrixPointer();
 }
 

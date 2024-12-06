@@ -89,18 +89,18 @@ def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointe
 
 
 @tatamize.register
-def _tatamize_delayed_unary_isometric_op_simple(
+def _tatamize_delayed_unary_isometric_operation_simple(
     x: delayedarray.UnaryIsometricOpSimple,
 ) -> TatamiNumericPointer:
     components = tatamize(x.seed)
-    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+    ptr = lib.initialize_delayed_unary_isometric_operation_simple(
         components.ptr, x.operation.encode("UTF-8")
     )
     return TatamiNumericPointer(ptr, components.obj)
 
 
 @tatamize.register
-def _tatamize_delayed_unary_isometric_op_with_args(
+def _tatamize_delayed_unary_isometric_operation_with_args(
     x: delayedarray.UnaryIsometricOpWithArgs,
 ) -> TatamiNumericPointer:
     components = tatamize(x.seed)
@@ -108,12 +108,12 @@ def _tatamize_delayed_unary_isometric_op_with_args(
 
     if isinstance(x.value, np.ndarray):
         contents = x.value.astype(np.float64, copy=False)
-        ptr = lib.initialize_delayed_unary_isometric_op_with_vector(
-            components.ptr, x.operation.encode("UTF-8"), x.right, x.along, contents
+        ptr = lib.initialize_delayed_unary_isometric_operation_with_vector(
+            components.ptr, x.operation.encode("UTF-8"), x.right, (x.along == 0), contents
         )
         obj.append(contents)
     else:
-        ptr = lib.initialize_delayed_unary_isometric_op_with_scalar(
+        ptr = lib.initialize_delayed_unary_isometric_operation_with_scalar(
             components.ptr, x.operation.encode("UTF-8"), x.right, x.value
         )
 
@@ -193,7 +193,7 @@ def _tatamize_delayed_round(
             "non-zero decimals in 'delayedarray.Round' are not yet supported"
         )
 
-    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+    ptr = lib.initialize_delayed_unary_isometric_operation_simple(
         components.ptr, "round".encode("UTF-8")
     )
 

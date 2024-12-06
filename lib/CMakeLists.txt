@@ -35,6 +35,8 @@ pybind11_add_module(mattress
     src/delayed_bind.cpp
     src/delayed_subset.cpp
     src/delayed_transpose.cpp
+    src/delayed_unary_isometric_operation_simple.cpp
+    src/delayed_unary_isometric_operation_with_args.cpp
     src/init.cpp
 )
 
