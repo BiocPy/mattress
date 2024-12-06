@@ -55,7 +55,7 @@ if is_package_installed("scipy"):
     def _tatamize_sparse_csr_array(x: scipy.sparse.csr_array) -> TatamiNumericPointer:
         dtmp = _contiguify(x.data)
         itmp = _contiguify(x.indices)
-        indtmp = x.indptr.astype(numpy.uint64, copy=False)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False, order="A")
         return TatamiNumericPointer(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, True),
             obj=[dtmp, itmp, indtmp],
@@ -71,7 +71,7 @@ if is_package_installed("scipy"):
     def _tatamize_sparse_csc_array(x: scipy.sparse.csc_array) -> TatamiNumericPointer:
         dtmp = _contiguify(x.data)
         itmp = _contiguify(x.indices)
-        indtmp = x.indptr.astype(numpy.uint64, copy=False)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False, order="A")
         return TatamiNumericPointer(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, False),
             obj=[dtmp, itmp, indtmp],
@@ -130,7 +130,7 @@ def _tatamize_delayed_unary_isometric_operation_with_args(
     obj = components.obj
 
     if isinstance(x.value, numpy.ndarray):
-        contents = x.value.astype(numpy.float64, copy=False)
+        contents = x.value.astype(numpy.float64, copy=False, order="A")
         ptr = lib.initialize_delayed_unary_isometric_operation_with_vector(
             components.ptr, x.operation.encode("UTF-8"), x.right, (x.along == 0), contents
         )
