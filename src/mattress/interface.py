@@ -132,7 +132,7 @@ def _tatamize_delayed_subset(
         noop, current = _sanitize_subset(current, x.shape[dim])
         if not noop:
             ptr = lib.initialize_delayed_subset(
-                components.ptr, dim, current, len(current)
+                components.ptr, current, dim == 0
             )
             obj.append(current)
             components = TatamiNumericPointer(ptr, obj)

@@ -33,6 +33,8 @@ pybind11_add_module(mattress
     src/compressed_sparse_matrix.cpp
     src/delayed_binary_isometric_operation.cpp
     src/delayed_bind.cpp
+    src/delayed_subset.cpp
+    src/delayed_transpose.cpp
     src/init.cpp
 )
 
