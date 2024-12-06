@@ -1,14 +1,13 @@
 from functools import singledispatch
 from typing import Any
 
-import numpy as np
+import numpy
 import delayedarray
 from biocutils.package_utils import is_package_installed
 
-
 from .TatamiNumericPointer import TatamiNumericPointer
-from . import _cpphelpers as lib
-from .utils import _sanitize_subset
+from . import lib_mattress as lib
+from .utils import _sanitize_subset, _contiguify
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -39,29 +38,13 @@ def _tatamize_pointer(x: TatamiNumericPointer) -> TatamiNumericPointer:
 
 
 @tatamize.register
-def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
+def _tatamize_numpy(x: numpy.ndarray) -> TatamiNumericPointer:
     if len(x.shape) != 2:
         raise ValueError("'x' should be a 2-dimensional array")
-
-    byrow = None
-    if x.flags["C_CONTIGUOUS"]:
-        byrow = True
-    elif x.flags["F_CONTIGUOUS"]:
-        byrow = False
-    else:
-        # I don't think it's possible to hit this, as a (non-view) ndarray
-        # should be contiguous in at least one direction.
-        raise ValueError("'x' must have contiguous storage for its arrays")
-
+    x = _contiguify(x)
     return TatamiNumericPointer(
-        ptr=lib.initialize_dense_matrix(
-            x.shape[0],
-            x.shape[1],
-            str(x.dtype).encode("UTF-8"),
-            x.ctypes.data,
-            byrow,
-        ),
-        obj=[x],
+        ptr=lib.initialize_dense_matrix(x.shape[0], x.shape[1], x),
+        obj=[x]
     )
 
 if is_package_installed("scipy"):
@@ -69,20 +52,12 @@ if is_package_installed("scipy"):
 
     @tatamize.register
     def _tatamize_sparse_csr_array(x: scipy.sparse.csr_array) -> TatamiNumericPointer:
-        tmp = x.indptr.astype(np.uint64, copy=False)
+        dtmp = _contiguify(x.data)
+        itmp = _contiguify(x.indices)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False)
         return TatamiNumericPointer(
-            ptr=lib.initialize_compressed_sparse_matrix(
-                x.shape[0],
-                x.shape[1],
-                len(x.data),
-                str(x.data.dtype).encode("UTF-8"),
-                x.data.ctypes.data,
-                str(x.indices.dtype).encode("UTF-8"),
-                x.indices.ctypes.data,
-                tmp.ctypes.data,
-                True,
-            ),
-            obj=[tmp, x],
+            ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, True),
+            obj=[dtmp, itmp, indtmp],
         )
 
 
@@ -93,20 +68,12 @@ if is_package_installed("scipy"):
 
     @tatamize.register
     def _tatamize_sparse_csc_array(x: scipy.sparse.csc_array) -> TatamiNumericPointer:
-        tmp = x.indptr.astype(np.uint64, copy=False)
+        dtmp = _contiguify(x.data)
+        itmp = _contiguify(x.indices)
+        indtmp = x.indptr.astype(numpy.uint64, copy=False)
         return TatamiNumericPointer(
-            ptr=lib.initialize_compressed_sparse_matrix(
-                x.shape[0],
-                x.shape[1],
-                len(x.data),
-                str(x.data.dtype).encode("UTF-8"),
-                x.data.ctypes.data,
-                str(x.indices.dtype).encode("UTF-8"),
-                x.indices.ctypes.data,
-                tmp.ctypes.data,
-                False,
-            ),
-            obj=[tmp, x],
+            ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, False),
+            obj=[dtmp, itmp, indtmp],
         )
 
 
@@ -121,31 +88,31 @@ def _tatamize_delayed_array(x: delayedarray.DelayedArray) -> TatamiNumericPointe
 
 
 @tatamize.register
-def _tatamize_delayed_unary_isometric_op_simple(
+def _tatamize_delayed_unary_isometric_operation_simple(
     x: delayedarray.UnaryIsometricOpSimple,
 ) -> TatamiNumericPointer:
     components = tatamize(x.seed)
-    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+    ptr = lib.initialize_delayed_unary_isometric_operation_simple(
         components.ptr, x.operation.encode("UTF-8")
     )
     return TatamiNumericPointer(ptr, components.obj)
 
 
 @tatamize.register
-def _tatamize_delayed_unary_isometric_op_with_args(
+def _tatamize_delayed_unary_isometric_operation_with_args(
     x: delayedarray.UnaryIsometricOpWithArgs,
 ) -> TatamiNumericPointer:
     components = tatamize(x.seed)
     obj = components.obj
 
-    if isinstance(x.value, np.ndarray):
-        contents = x.value.astype(np.float64, copy=False)
-        ptr = lib.initialize_delayed_unary_isometric_op_with_vector(
-            components.ptr, x.operation.encode("UTF-8"), x.right, x.along, contents
+    if isinstance(x.value, numpy.ndarray):
+        contents = x.value.astype(numpy.float64, copy=False)
+        ptr = lib.initialize_delayed_unary_isometric_operation_with_vector(
+            components.ptr, x.operation.encode("UTF-8"), x.right, (x.along == 0), contents
         )
         obj.append(contents)
     else:
-        ptr = lib.initialize_delayed_unary_isometric_op_with_scalar(
+        ptr = lib.initialize_delayed_unary_isometric_operation_with_scalar(
             components.ptr, x.operation.encode("UTF-8"), x.right, x.value
         )
 
@@ -164,7 +131,7 @@ def _tatamize_delayed_subset(
         noop, current = _sanitize_subset(current, x.shape[dim])
         if not noop:
             ptr = lib.initialize_delayed_subset(
-                components.ptr, dim, current, len(current)
+                components.ptr, current, dim == 0
             )
             obj.append(current)
             components = TatamiNumericPointer(ptr, obj)
@@ -173,21 +140,17 @@ def _tatamize_delayed_subset(
 
 
 @tatamize.register
-def _tatamize_delayed_combine(
+def _tatamize_delayed_bind(
     x: delayedarray.Combine,
 ) -> TatamiNumericPointer:
-    nseeds = len(x.seeds)
+    collected = []
     objects = []
-    converted = []
-    ptrs = np.ndarray(nseeds, dtype=np.uintp)
-
-    for i in range(nseeds):
-        components = tatamize(x.seeds[i])
-        converted.append(components)
-        ptrs[i] = components.ptr
+    for i, s in enumerate(x.seeds):
+        components = tatamize(s)
+        collected.append(components.ptr)
         objects += components.obj
 
-    ptr = lib.initialize_delayed_combine(nseeds, ptrs.ctypes.data, x.along)
+    ptr = lib.initialize_delayed_bind(collected, x.along)
     return TatamiNumericPointer(ptr, objects)
 
 
@@ -205,13 +168,13 @@ def _tatamize_delayed_transpose(
 
 
 @tatamize.register
-def _tatamize_delayed_binary_isometric_op(
+def _tatamize_delayed_binary_isometric_operation(
     x: delayedarray.BinaryIsometricOp,
 ) -> TatamiNumericPointer:
     lcomponents = tatamize(x.left)
     rcomponents = tatamize(x.right)
 
-    ptr = lib.initialize_delayed_binary_isometric_op(
+    ptr = lib.initialize_delayed_binary_isometric_operation(
         lcomponents.ptr, rcomponents.ptr, x.operation.encode("UTF-8")
     )
 
@@ -229,7 +192,7 @@ def _tatamize_delayed_round(
             "non-zero decimals in 'delayedarray.Round' are not yet supported"
         )
 
-    ptr = lib.initialize_delayed_unary_isometric_op_simple(
+    ptr = lib.initialize_delayed_unary_isometric_operation_simple(
         components.ptr, "round".encode("UTF-8")
     )
 

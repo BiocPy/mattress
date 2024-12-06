@@ -11,15 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
+      - uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+      - name: Set up python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.12
           cache: 'pip'
+
+      - name: Get latest CMake
+        uses: lukka/get-cmake@latest
 
       - name: Set up ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -27,21 +28,22 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip setuptools
+          pip install assorthead pybind11 # from the pyproject.toml build-system requirements.
           DEPENDENCIES=$(python -c 'from setuptools.config.setupcfg import read_configuration as c; a = c("setup.cfg"); print(" ".join(a["options"]["install_requires"][1:]))')
           pip install ${DEPENDENCIES}
           DOCDEPENDENCIES=$(python -c 'with open("docs/requirements.txt") as a: available = list(a); print(" ".join(map(lambda x : x.strip(), filter(lambda x : not x.startswith("#"), available))))')
           pip install ${DOCDEPENDENCIES}
 
-      # Note that doc building requires the inplace shared library.
       - name: Build docs
         run: |
-          CC="ccache gcc" python setup.py build_ext --inplace
+          export CMAKE_CXX_COMPILER_LAUNCHER="ccache"
+          python setup.py install --user
           sphinx-build --color -b html -d docs/doctrees docs docs/_build/html
           touch ./docs/_build/html/.nojekyll
 
       - name: GH Pages Deployment
         if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: ./docs/_build/html
