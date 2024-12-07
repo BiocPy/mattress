@@ -150,3 +150,23 @@ tatamat2 = tatamize(wrapped)
 ```
 
 This avoids relying on `x` and is more efficient as it re-uses the `TatamiNumericPointer` generated from `x`.
+
+## Extending `tatamize()`
+
+Developers of downstream packages can extend **mattress** to custom matrix classes by registering the relevant methods with the `tatamize()` generic.
+This should return a `TatamiNumericPointer` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance.
+Once this is done, all calls to `tatamize()` will be able to handle matrices of the registered type.
+
+```python
+from . import lib_downstream as lib
+import mattress
+
+@mattress.tatamize.register
+def _tatamize_my_custom_matrix(x: MyCustomMatrix):
+    data = x.some_internal_data
+    return mattress.TatamiNumericPointer(lib.initialize_custom(data), obj=[data])
+```
+
+If the initialized `tatami::Matrix` contains references to Python-managed data, e.g., in NumPy arrays,
+we must ensure that the data is not garbage-collected during the lifetime of the `tatami::Matrix`.
+This is achieved by storing a reference to the data in the `obj=` argument of the `TatamiNumericPointer`.
