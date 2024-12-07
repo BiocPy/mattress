@@ -259,7 +259,7 @@
 -->
 <p><a class="reference external" href="https://pypi.org/project/mattress/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/mattress.svg" /></a>
 <a class="reference external" href="https://pepy.tech/project/mattress"><img alt="Monthly Downloads" src="https://static.pepy.tech/badge/mattress/month" /></a>
-<img alt="Unit tests" src="https://github.com/BiocPy/mattress/actions/workflows/pypi-test.yml/badge.svg" /></p>
+<img alt="Unit tests" src="https://github.com/tatami-inc/mattress/actions/workflows/pypi-test.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="python-bindings-for-tatami">
 <h1>Python bindings for tatami<a class="headerlink" href="#python-bindings-for-tatami" title="Link to this heading">¶</a></h1>
 <section id="overview">
@@ -276,43 +276,32 @@ Downstream packages can use <strong>mattress</strong> to develop C++ extensions 
 </div>
 <p><strong>mattress</strong> is intended for Python package developers writing C++ extensions that operate on matrices.</p>
 <ol class="arabic simple">
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">mattress.includes()</span></code> to the <code class="docutils literal notranslate"><span class="pre">include_dirs=</span></code> of your <code class="docutils literal notranslate"><span class="pre">Extension()</span></code> definition in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
-This will give you access to the various <strong>tatami</strong> headers to compile your C++ code.</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;Mattress.h&quot;</span></code> to your C++ source files.
-This defines a <code class="docutils literal notranslate"><span class="pre">Mattress</span></code> class where the <code class="docutils literal notranslate"><span class="pre">ptr</span></code> member is a pointer to a <strong>tatami</strong> matrix.
-Python-visible C++ functions should expect to take a <code class="docutils literal notranslate"><span class="pre">Mattress*</span></code> or equivalent address (e.g., <code class="docutils literal notranslate"><span class="pre">uintptr_t</span></code>),
-after which the <code class="docutils literal notranslate"><span class="pre">ptr</span></code> should be extracted for use in <strong>tatami</strong>-compatible functions.</p></li>
-<li><p>Call <code class="docutils literal notranslate"><span class="pre">mattress.tatamize()</span></code> on Python matrix objects within each of your functions that call <strong>tatami</strong> C++ code.
-This will wrap the Python matrix in a <strong>tatami</strong>-compatible C++ representation for use in the C++ code.
-The pointer to the C++ instance can be accessed through the <code class="docutils literal notranslate"><span class="pre">ptr</span></code> property of the returned object,
-which can then be passed to C++ code as an <code class="docutils literal notranslate"><span class="pre">uintptr_t</span></code> to a <code class="docutils literal notranslate"><span class="pre">Mattress</span></code> instance.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">assorthead.includes()</span></code> to the <code class="docutils literal notranslate"><span class="pre">include_dirs=</span></code> of your <code class="docutils literal notranslate"><span class="pre">Extension()</span></code> definition in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
+This will give us access to the various <strong>tatami</strong> headers to compile your C++ code.</p></li>
+<li><p>Call <code class="docutils literal notranslate"><span class="pre">mattress.tatamize()</span></code> on a Python matrix object to wrap it in a <strong>tatami</strong>-compatible C++ representation.
+This returns a <code class="docutils literal notranslate"><span class="pre">TatamiMatrixPointer</span></code> with a <code class="docutils literal notranslate"><span class="pre">ptr</span></code> property that contains a pointer to the C++ matrix.</p></li>
+<li><p>Pass the <code class="docutils literal notranslate"><span class="pre">ptr</span></code> to <strong>pybind11</strong>-wrapped C++ code as a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr&lt;tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span> <span class="pre">&gt;</span></code>.</p></li>
 </ol>
-<p>So, for example, we can write <strong>ctypes</strong> bindings like:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Mattress.h&quot;</span>
-
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
-
-<span class="kt">int</span><span class="w"> </span><span class="nf">do_something_interesting</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">mat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">Mattress</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">nrow</span><span class="p">();</span>
+<p>So, for example, the C++ code in our downstream package might look like this:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">do_something</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tatami</span><span class="o">::</span><span class="n">Matrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">mat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Do something with the tatami interface.</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 
+<span class="n">PYBIND11_MODULE</span><span class="p">(</span><span class="n">lib_downstream</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;do_something&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">do_something</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Which we can subsequently call like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mattress</span>
+<p>Which can then be called from Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib_downstream</span> <span class="k">as</span> <span class="n">lib</span>
+<span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">tatamize</span>
 
-<span class="kn">import</span> <span class="nn">ctypes</span> <span class="k">as</span> <span class="nn">ct</span>
-<span class="n">lib</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="s2">&quot;compiled.so&quot;</span><span class="p">)</span>
-<span class="n">lib</span><span class="o">.</span><span class="n">do_something_interesting</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_int</span>
-<span class="n">lib</span><span class="o">.</span><span class="n">do_something_interesting</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">ct</span><span class="o">.</span><span class="n">c_void_p</span> <span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">do_something_interesting</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">mat</span> <span class="o">=</span> <span class="n">mattress</span><span class="o">.</span><span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">do_something_interesting</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">tmat</span> <span class="o">=</span> <span class="n">tatamize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="n">tmat</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Of course, any FFI that accepts a pointer address can be used here.</p>
 </section>
 <section id="supported-matrices">
 <h2>Supported matrices<a class="headerlink" href="#supported-matrices" title="Link to this heading">¶</a></h2>
@@ -394,25 +383,6 @@ For example, if we want to add a scalar, we might do:</p>
 </div>
 <p>This avoids relying on <code class="docutils literal notranslate"><span class="pre">x</span></code> and is more efficient as it re-uses the <code class="docutils literal notranslate"><span class="pre">TatamiNumericPointer</span></code> generated from <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </section>
-<section id="developer-notes">
-<h2>Developer Notes<a class="headerlink" href="#developer-notes" title="Link to this heading">¶</a></h2>
-<p>Build the shared object file:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace
-</pre></div>
-</div>
-<p>For quick testing, we usually do:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pytest
-</pre></div>
-</div>
-<p>For more complex testing, we do:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tox
-</pre></div>
-</div>
-<p>To rebuild the <strong>ctypes</strong> bindings with <a class="reference external" href="https://github.com/BiocPy/ctypes-wrapper"><strong>cpptypes</strong></a>:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cpptypes<span class="w"> </span>src/mattress/lib<span class="w"> </span>--py<span class="w"> </span>src/mattress/_cpphelpers.py<span class="w"> </span>--cpp<span class="w"> </span>src/mattress/lib/bindings.cpp<span class="w"> </span>--dll<span class="w"> </span>_core
-</pre></div>
-</div>
-</section>
 </section>
 
         </article>
@@ -476,7 +446,6 @@ For example, if we want to add a scalar, we might do:</p>
 <li><a class="reference internal" href="#supported-matrices">Supported matrices</a></li>
 <li><a class="reference internal" href="#utility-methods">Utility methods</a></li>
 <li><a class="reference internal" href="#operating-on-an-existing-pointer">Operating on an existing pointer</a></li>
-<li><a class="reference internal" href="#developer-notes">Developer Notes</a></li>
 </ul>
 </li>
 </ul>
