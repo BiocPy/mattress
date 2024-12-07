@@ -10,7 +10,7 @@
 
 [![PyPI-Server](https://img.shields.io/pypi/v/mattress.svg)](https://pypi.org/project/mattress/)
 [![Monthly Downloads](https://static.pepy.tech/badge/mattress/month)](https://pepy.tech/project/mattress)
-![Unit tests](https://github.com/BiocPy/mattress/actions/workflows/pypi-test.yml/badge.svg)
+![Unit tests](https://github.com/tatami-inc/mattress/actions/workflows/pypi-test.yml/badge.svg)
 
 # Python bindings for tatami
 
@@ -30,47 +30,35 @@ pip install mattress
 
 **mattress** is intended for Python package developers writing C++ extensions that operate on matrices.
 
-1. Add `mattress.includes()` to the `include_dirs=` of your `Extension()` definition in `setup.py`.
-This will give you access to the various **tatami** headers to compile your C++ code.
-2. Add `#include "Mattress.h"` to your C++ source files.
-This defines a `Mattress` class where the `ptr` member is a pointer to a **tatami** matrix.
-Python-visible C++ functions should expect to take a `Mattress*` or equivalent address (e.g., `uintptr_t`),
-after which the `ptr` should be extracted for use in **tatami**-compatible functions.
-3. Call `mattress.tatamize()` on Python matrix objects within each of your functions that call **tatami** C++ code.
-This will wrap the Python matrix in a **tatami**-compatible C++ representation for use in the C++ code.
-The pointer to the C++ instance can be accessed through the `ptr` property of the returned object,
-which can then be passed to C++ code as an `uintptr_t` to a `Mattress` instance.
+1. Add `assorthead.includes()` to the `include_dirs=` of your `Extension()` definition in `setup.py`.
+This will give us access to the various **tatami** headers to compile your C++ code.
+2. Call `mattress.tatamize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
+This returns a `TatamiMatrixPointer` with a `ptr` property that contains a pointer to the C++ matrix.
+3. Pass the `ptr` to **pybind11**-wrapped C++ code as a `std::shared_ptr<tatami::Matrix<double, uint32_t> >`.
 
-So, for example, we can write **ctypes** bindings like:
+So, for example, the C++ code in our downstream package might look like this:
 
 ```cpp
-#include "Mattress.h"
-
-extern "C" {
-
-int do_something_interesting(const void* mat) {
-    return reinterpret_cast<const Mattress*>(mat)->ptr->nrow();
+int do_something(const std::shared_ptr<tatami::Matrix<double, uint32_t> >& mat) {
+    // Do something with the tatami interface.
+    return 1;
 }
 
+PYBIND11_MODULE(lib_downstream, m) {
+    m.def("do_something", &do_something);
 }
 ```
 
-Which we can subsequently call like:
+Which can then be called from Python:
 
 ```python
-import mattress
+from . import lib_downstream as lib
+from mattress import tatamize
 
-import ctypes as ct
-lib = ct.CDLL("compiled.so")
-lib.do_something_interesting.restype = ct.c_int
-lib.do_something_interesting.argtypes = [ ct.c_void_p ]
-
-def do_something_interesting(x):
-    mat = mattress.tatamize(x)
-    return do_something_interesting(x.ptr)
+def do_something(x):
+    tmat = tatamize(x)
+    return lib.do_something(tmat.ptr)
 ```
-
-Of course, any FFI that accepts a pointer address can be used here.
 
 ## Supported matrices
 
@@ -162,29 +150,3 @@ tatamat2 = tatamize(wrapped)
 ```
 
 This avoids relying on `x` and is more efficient as it re-uses the `TatamiNumericPointer` generated from `x`.
-
-## Developer Notes
-
-Build the shared object file:
-
-```shell
-python setup.py build_ext --inplace
-```
-
-For quick testing, we usually do:
-
-```shell
-pytest
-```
-
-For more complex testing, we do:
-
-```shell
-python setup.py build_ext --inplace && tox
-```
-
-To rebuild the **ctypes** bindings with [**cpptypes**](https://github.com/BiocPy/ctypes-wrapper):
-
-```shell
-cpptypes src/mattress/lib --py src/mattress/_cpphelpers.py --cpp src/mattress/lib/bindings.cpp --dll _core
-```
