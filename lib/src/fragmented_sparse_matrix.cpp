@@ -1,4 +1,5 @@
 #include "def.h"
+#include "utils.h"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -23,11 +24,15 @@ MatrixPointer initialize_fragmented_sparse_matrix_raw(MatrixIndex nr, MatrixValu
         }
 
         // This better not involve any copies.
-        auto castdata = curdata.cast<pybind11::array_t<Data_> >();
-        data_vec.emplace_back(static_cast<const Data_*>(castdata.request().ptr), castdata.size());
+        auto castdata = curdata.cast<pybind11::array>();
         auto curidx = indices[i];
-        auto castidx = curidx.cast<pybind11::array_t<Index_> >();
-        idx_vec.emplace_back(static_cast<const Index_*>(castidx.request().ptr), castidx.size());
+        auto castidx = curidx.cast<pybind11::array>();
+
+        if (castdata.size() != castidx.size()) {
+            throw std::runtime_error("mismatching lengths for the index/data vectors");
+        }
+        data_vec.emplace_back(check_numpy_array<Data_>(castdata), castdata.size());
+        idx_vec.emplace_back(check_numpy_array<Index_>(castidx), castidx.size());
     }
 
     return MatrixPointer(new tatami::FragmentedSparseMatrix<MatrixValue, MatrixIndex, decltype(data_vec), decltype(idx_vec)>(nr, nc, std::move(data_vec), std::move(idx_vec), byrow, false));

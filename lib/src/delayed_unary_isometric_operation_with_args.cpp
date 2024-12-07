@@ -1,4 +1,5 @@
 #include "def.h"
+#include "utils.h"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -9,8 +10,13 @@
 #include <cstdint>
 
 template<bool right_>
-MatrixPointer initialize_delayed_unary_isometric_operation_with_vector_internal(MatrixPointer mat, const std::string& op, bool by_row, const pybind11::array_t<double>& arg) {
-    tatami::ArrayView<double> aview(static_cast<const double*>(arg.request().ptr), by_row ? mat->nrow() : mat->ncol());
+MatrixPointer initialize_delayed_unary_isometric_operation_with_vector_internal(MatrixPointer mat, const std::string& op, bool by_row, const pybind11::array& arg) {
+    auto aptr = check_numpy_array<double>(arg);
+    size_t expected = by_row ? mat->nrow() : mat->ncol();
+    if (expected != arg.size()) {
+        throw std::runtime_error("unexpected length of array for isometric unary operation");
+    }
+    tatami::ArrayView<double> aview(aptr, expected);
 
     if (op == "add") {
         return tatami::make_DelayedUnaryIsometricOperation(std::move(mat), tatami::make_DelayedUnaryIsometricAddVector(std::move(aview), by_row));
@@ -52,7 +58,7 @@ MatrixPointer initialize_delayed_unary_isometric_operation_with_vector_internal(
     return MatrixPointer();
 }
 
-MatrixPointer initialize_delayed_unary_isometric_operation_with_vector(MatrixPointer mat, const std::string& op, bool right, bool by_row, const pybind11::array_t<double>& args) {
+MatrixPointer initialize_delayed_unary_isometric_operation_with_vector(MatrixPointer mat, const std::string& op, bool right, bool by_row, const pybind11::array& args) {
     if (right) {
         return initialize_delayed_unary_isometric_operation_with_vector_internal<true>(std::move(mat), op, by_row, args);
     } else {

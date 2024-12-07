@@ -1,4 +1,5 @@
 #include "def.h"
+#include "utils.h"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -174,9 +175,14 @@ pybind11::array_t<MatrixIndex> compute_column_nan_counts(const MatrixPointer& ma
 
 /** Grouped stats **/
 
-pybind11::array_t<MatrixValue> compute_row_sums_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    size_t ngroups = tatami_stats::total_groups(gptr, mat->ncol());
+pybind11::array_t<MatrixValue> compute_row_sums_by_group(const MatrixPointer& mat, const pybind11::array& grouping, int num_threads) {
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t ncol = mat->ncol();
+    if (grouping.size() != ncol) {
+        throw std::runtime_error("'grouping' should have length equal to the number of columns");
+    }
+
+    size_t ngroups = tatami_stats::total_groups(gptr, ncol);
     size_t nrow = mat->nrow();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
 
@@ -192,9 +198,14 @@ pybind11::array_t<MatrixValue> compute_row_sums_by_group(const MatrixPointer& ma
     return output;
 }
 
-pybind11::array_t<MatrixValue> compute_column_sums_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    size_t ngroups = tatami_stats::total_groups(gptr, mat->nrow());
+pybind11::array_t<MatrixValue> compute_column_sums_by_group(const MatrixPointer& mat, const pybind11::array& grouping, int num_threads) {
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t nrow = mat->nrow();
+    if (grouping.size() != nrow) {
+        throw std::runtime_error("'grouping' should have length equal to the number of rows");
+    }
+
+    size_t ngroups = tatami_stats::total_groups(gptr, nrow);
     size_t ncol = mat->ncol();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
 
@@ -211,8 +222,13 @@ pybind11::array_t<MatrixValue> compute_column_sums_by_group(const MatrixPointer&
 }
 
 pybind11::array_t<MatrixValue> compute_row_variances_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t ncol = mat->ncol();
+    if (grouping.size() != ncol) {
+        throw std::runtime_error("'grouping' should have length equal to the number of columns");
+    }
+
+    auto group_sizes = tatami_stats::tabulate_groups<MatrixIndex, MatrixIndex>(gptr, ncol);
     size_t ngroups = group_sizes.size();
     size_t nrow = mat->nrow();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
@@ -230,8 +246,13 @@ pybind11::array_t<MatrixValue> compute_row_variances_by_group(const MatrixPointe
 }
 
 pybind11::array_t<MatrixValue> compute_column_variances_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t nrow = mat->nrow();
+    if (grouping.size() != nrow) {
+        throw std::runtime_error("'grouping' should have length equal to the number of rows");
+    }
+
+    auto group_sizes = tatami_stats::tabulate_groups<MatrixIndex, MatrixIndex>(gptr, nrow);
     size_t ngroups = group_sizes.size();
     size_t ncol = mat->ncol();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
@@ -249,8 +270,13 @@ pybind11::array_t<MatrixValue> compute_column_variances_by_group(const MatrixPoi
 }
 
 pybind11::array_t<MatrixValue> compute_row_medians_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t ncol = mat->ncol();
+    if (grouping.size() != ncol) {
+        throw std::runtime_error("'grouping' should have length equal to the number of columns");
+    }
+
+    auto group_sizes = tatami_stats::tabulate_groups<MatrixIndex, MatrixIndex>(gptr, ncol);
     size_t ngroups = group_sizes.size();
     size_t nrow = mat->nrow();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ nrow, ngroups });
@@ -268,8 +294,13 @@ pybind11::array_t<MatrixValue> compute_row_medians_by_group(const MatrixPointer&
 }
 
 pybind11::array_t<MatrixValue> compute_column_medians_by_group(const MatrixPointer& mat, const pybind11::array_t<MatrixIndex>& grouping, int num_threads) {
-    auto gptr = static_cast<const MatrixIndex*>(grouping.request().ptr);
-    auto group_sizes = tatami_stats::tabulate_groups(gptr, mat->ncol());
+    auto gptr = check_numpy_array<MatrixIndex>(grouping);
+    size_t nrow = mat->nrow();
+    if (grouping.size() != nrow) {
+        throw std::runtime_error("'grouping' should have length equal to the number of rows");
+    }
+
+    auto group_sizes = tatami_stats::tabulate_groups<MatrixIndex, MatrixIndex>(gptr, nrow);
     size_t ngroups = group_sizes.size();
     size_t ncol = mat->ncol();
     pybind11::array_t<MatrixValue, pybind11::array::f_style> output({ ncol, ngroups });
@@ -288,16 +319,16 @@ pybind11::array_t<MatrixValue> compute_column_medians_by_group(const MatrixPoint
 
 /** Extraction **/
 
-pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
-    bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
-    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub)
-{
+pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat, bool row_noop, const pybind11::array& row_sub, bool col_noop, const pybind11::array& col_sub) {
     if (!row_noop) {
-        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
+        auto rptr = check_numpy_array<MatrixIndex>(row_sub);
+        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(rptr, row_sub.size()));
         mat.swap(tmp);
     }
+
     if (!col_noop) {
-        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(col_sub.data(), col_sub.size()));
+        auto cptr = check_numpy_array<MatrixIndex>(col_sub);
+        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(cptr, col_sub.size()));
         mat.swap(tmp);
     }
 
@@ -308,16 +339,16 @@ pybind11::array_t<MatrixValue> extract_dense_subset(MatrixPointer mat,
     return output;
 }
 
-pybind11::object extract_sparse_subset(MatrixPointer mat,
-    bool row_noop, const pybind11::array_t<MatrixIndex>& row_sub,
-    bool col_noop, const pybind11::array_t<MatrixIndex>& col_sub)
-{
+pybind11::object extract_sparse_subset(MatrixPointer mat, bool row_noop, const pybind11::array& row_sub, bool col_noop, const pybind11::array& col_sub) {
     if (!row_noop) {
-        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(row_sub.data(), row_sub.size()));
+        auto rptr = check_numpy_array<MatrixIndex>(row_sub);
+        auto tmp = tatami::make_DelayedSubset<0>(std::move(mat), tatami::ArrayView<MatrixIndex>(rptr, row_sub.size()));
         mat.swap(tmp);
     }
+
     if (!col_noop) {
-        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(col_sub.data(), col_sub.size()));
+        auto cptr = check_numpy_array<MatrixIndex>(col_sub);
+        auto tmp = tatami::make_DelayedSubset<1>(std::move(mat), tatami::ArrayView<MatrixIndex>(cptr, col_sub.size()));
         mat.swap(tmp);
     }
 
