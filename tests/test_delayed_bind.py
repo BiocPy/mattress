@@ -1,6 +1,6 @@
 import numpy as np
 import delayedarray as da
-from mattress import tatamize
+from mattress import initialize
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -14,7 +14,7 @@ def test_delayed_bind():
     com = np.concatenate((da.DelayedArray(y1), da.DelayedArray(y2)), axis=1)
     ref = np.concatenate((y1, y2), axis=1)
     assert isinstance(com.seed, da.Combine)
-    ptr = tatamize(com)
+    ptr = initialize(com)
     assert all(ptr.row(0) == ref[0, :])
     assert all(ptr.column(1) == ref[:, 1])
 
@@ -27,6 +27,6 @@ def test_delayed_bind():
     )
     ref = np.concatenate((y1, y2, y3))
     assert isinstance(com.seed, da.Combine)
-    ptr = tatamize(com)
+    ptr = initialize(com)
     assert all(ptr.row(0) == ref[0, :])
     assert all(ptr.column(1) == ref[:, 1])

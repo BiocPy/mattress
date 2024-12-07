@@ -1,6 +1,6 @@
 import numpy as np
 import delayedarray as da
-from mattress import tatamize
+from mattress import initialize
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -13,22 +13,22 @@ def test_delayed_unary_isometric_log():
 
     z = np.log1p(x)
     assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.log1p(y[0, :]))
     assert np.allclose(ptr.column(1), np.log1p(y[:, 1]))
 
     z = np.log2(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.log2(y[0, :]))
     assert np.allclose(ptr.column(1), np.log2(y[:, 1]))
 
     z = np.log10(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.log10(y[0, :]))
     assert np.allclose(ptr.column(1), np.log10(y[:, 1]))
 
     z = np.log(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.log(y[0, :]))
     assert np.allclose(ptr.column(1), np.log(y[:, 1]))
 
@@ -39,12 +39,12 @@ def test_delayed_unary_isometric_sign():
 
     z = np.sign(x)
     assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.sign(y[0, :]))
     assert all(ptr.column(1) == np.sign(y[:, 1]))
 
     z = np.abs(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.abs(y[0, :]))
     assert all(ptr.column(1) == np.abs(y[:, 1]))
 
@@ -55,7 +55,7 @@ def test_delayed_unary_isometric_sqrt():
 
     z = np.sqrt(x)
     assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.sqrt(y[0, :]))
     assert np.allclose(ptr.column(1), np.sqrt(y[:, 1]))
 
@@ -66,22 +66,22 @@ def test_delayed_unary_isometric_int():
 
     z = np.ceil(x)
     assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.ceil(y[0, :]))
     assert all(ptr.column(1) == np.ceil(y[:, 1]))
 
     z = np.floor(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.floor(y[0, :]))
     assert all(ptr.column(1) == np.floor(y[:, 1]))
 
     z = np.trunc(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.trunc(y[0, :]))
     assert all(ptr.column(1) == np.trunc(y[:, 1]))
 
     z = np.round(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert all(ptr.row(0) == np.round(y[0, :]))
     assert all(ptr.column(1) == np.round(y[:, 1]))
 
@@ -92,12 +92,12 @@ def test_delayed_unary_isometric_exp():
 
     z = np.exp(x)
     assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.exp(y[0, :]))
     assert np.allclose(ptr.column(1), np.exp(y[:, 1]))
 
     z = np.expm1(x)
-    ptr = tatamize(z)
+    ptr = initialize(z)
     assert np.allclose(ptr.row(0), np.expm1(y[0, :]))
     assert np.allclose(ptr.column(1), np.expm1(y[:, 1]))
 
@@ -121,7 +121,7 @@ def test_delayed_unary_isometric_trig():
         fun = getattr(np, op)
         z = fun(x)
         assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-        ptr = tatamize(z)
+        ptr = initialize(z)
         assert np.allclose(ptr.row(0), fun(y[0, :]))
         assert np.allclose(ptr.column(1), fun(y[:, 1]))
 
@@ -131,6 +131,6 @@ def test_delayed_unary_isometric_trig():
         fun = getattr(np, op)
         z = fun(x)
         assert isinstance(z.seed, da.UnaryIsometricOpSimple)
-        ptr = tatamize(z)
+        ptr = initialize(z)
         assert np.allclose(ptr.row(0), fun(y[0, :]))
         assert np.allclose(ptr.column(1), fun(y[:, 1]))

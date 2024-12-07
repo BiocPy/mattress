@@ -1,6 +1,6 @@
 import numpy as np
 import delayedarray as da
-from mattress import tatamize
+from mattress import initialize
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -12,12 +12,12 @@ def test_delayed_transpose():
     x = da.DelayedArray(y)
 
     t = x.T
-    ptr = tatamize(t)
+    ptr = initialize(t)
     assert all(ptr.row(0) == y[:, 0])
     assert all(ptr.column(1) == y[1, :])
 
     noop = np.transpose(x, axes=(0, 1))
     x2 = da.DelayedArray(noop)
-    ptr = tatamize(x2)
+    ptr = initialize(x2)
     assert all(ptr.row(0) == y[0, :])
     assert all(ptr.column(1) == y[:, 1])

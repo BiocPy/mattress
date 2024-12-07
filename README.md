@@ -32,9 +32,10 @@ pip install mattress
 
 1. Add `assorthead.includes()` to the `include_dirs=` of your `Extension()` definition in `setup.py`.
 This will give us access to the various **tatami** headers to compile your C++ code.
-2. Call `mattress.tatamize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
-This returns a `TatamiMatrixPointer` with a `ptr` property that contains a pointer to the C++ matrix.
-3. Pass the `ptr` to **pybind11**-wrapped C++ code as a `std::shared_ptr<tatami::Matrix<double, uint32_t> >`.
+2. Call `mattress.initialize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
+This returns an `InitializedMatrix` with a `ptr` property that contains a pointer to the C++ matrix.
+3. Pass `ptr` to **pybind11**-wrapped C++ code as a `std::shared_ptr<tatami::Matrix<double, uint32_t> >`,
+which can be interrogated as described in the [**tatami** documentation](https://github.com/tatami-inc/tatami).
 
 So, for example, the C++ code in our downstream package might look like this:
 
@@ -53,10 +54,10 @@ Which can then be called from Python:
 
 ```python
 from . import lib_downstream as lib
-from mattress import tatamize
+from mattress import initialize
 
 def do_something(x):
-    tmat = tatamize(x)
+    tmat = initialize(x)
     return lib.do_something(tmat.ptr)
 ```
 
@@ -66,25 +67,25 @@ Dense **numpy** matrices of varying numeric type:
 
 ```python
 import numpy as np
-from mattress import tatamize
+from mattress import initialize
 x = np.random.rand(1000, 100)
-tatamat = tatamize(x)
+init = initialize(x)
 
 ix = (x * 100).astype(np.uint16)
-tatamat2 = tatamize(ix)
+init2 = initialize(ix)
 ```
 
 Compressed sparse matrices from **scipy** with varying index/data types:
 
 ```python
 from scipy import sparse as sp
-from mattress import tatamize
+from mattress import initialize
 
 xc = sp.random(100, 20, format="csc")
-tatamat = tatamize(xc)
+init = initialize(xc)
 
 xr = sp.random(100, 20, format="csc", dtype=np.uint8)
-tatamat2 = tatamize(xr)
+init2 = initialize(xr)
 ```
 
 Delayed arrays from the [**delayedarray**](https://github.com/BiocPy/DelayedArray) package:
@@ -92,13 +93,13 @@ Delayed arrays from the [**delayedarray**](https://github.com/BiocPy/DelayedArra
 ```python
 from delayedarray import DelayedArray
 from scipy import sparse as sp
-from mattress import tatamize
+from mattress import initialize
 import numpy
 
 xd = DelayedArray(sp.random(100, 20, format="csc"))
 xd = numpy.log1p(xd * 5)
 
-tatada = tatamize(xd)
+init = initialize(xd)
 ```
 
 To be added:
@@ -108,25 +109,25 @@ To be added:
 
 ## Utility methods
 
-The `TatamiNumericPointer` instance returned by `tatamize()` provides a few Python-visible methods for querying the C++ matrix.
+The `InitializedMatrix` instance returned by `initialize()` provides a few Python-visible methods for querying the C++ matrix.
 
 ```python
-tatamat.nrow() // number of rows
-tatamat.column(1) // contents of column 1
-tatamat.sparse() // whether the matrix is sparse.
+init.nrow() // number of rows
+init.column(1) // contents of column 1
+init.sparse() // whether the matrix is sparse.
 ```
 
 It also has a few methods for computing common statistics:
 
 ```python
-tatamat.row_sums()
-tatamat.column_variances(num_threads = 2)
+init.row_sums()
+init.column_variances(num_threads = 2)
 
-grouping = [i%3 for i in range(tatamat.ncol())]
-tatamat.row_medians_by_group(grouping)
+grouping = [i%3 for i in range(init.ncol())]
+init.row_medians_by_group(grouping)
 
-tatamat.row_nan_counts()
-tatamat.column_ranges()
+init.row_nan_counts()
+init.column_ranges()
 ```
 
 These are mostly intended for non-intensive work or testing/debugging.
@@ -134,39 +135,40 @@ It is expected that any serious computation should be performed by iterating ove
 
 ## Operating on an existing pointer
 
-If we already have a `TatamiNumericPointer`, we can easily apply additional operations by wrapping it in the relevant **delayedarray** layers and calling `tatamize()` afterwards.
+If we already have a `InitializedMatrix`, we can easily apply additional operations by wrapping it in the relevant **delayedarray** layers and calling `initialize()` afterwards.
 For example, if we want to add a scalar, we might do:
 
 ```python
 from delayedarray import DelayedArray
-from mattress import tatamize
+from mattress import initialize
 import numpy
 
 x = numpy.random.rand(1000, 10)
-tatamat = tatamize(x)
+init = initialize(x)
 
-wrapped = DelayedArray(tatamat) + 1
-tatamat2 = tatamize(wrapped)
+wrapped = DelayedArray(init) + 1
+init2 = initialize(wrapped)
 ```
 
-This avoids relying on `x` and is more efficient as it re-uses the `TatamiNumericPointer` generated from `x`.
+This is more efficient as it re-uses the `InitializedMatrix` already generated from `x`.
+It is also more convenient as we don't have to carry around `x` to generate `init2`.
 
-## Extending `tatamize()`
+## Extending `initialize()`
 
-Developers of downstream packages can extend **mattress** to custom matrix classes by registering the relevant methods with the `tatamize()` generic.
-This should return a `TatamiNumericPointer` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance.
-Once this is done, all calls to `tatamize()` will be able to handle matrices of the registered type.
+Developers of downstream packages can extend **mattress** to custom matrix classes by registering new methods with the `initialize()` generic.
+This should return a `InitializedMatrix` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance.
+Once this is done, all calls to `initialize()` will be able to handle matrices of the newly registered types.
 
 ```python
 from . import lib_downstream as lib
 import mattress
 
-@mattress.tatamize.register
-def _tatamize_my_custom_matrix(x: MyCustomMatrix):
+@mattress.initialize.register
+def _initialize_my_custom_matrix(x: MyCustomMatrix):
     data = x.some_internal_data
-    return mattress.TatamiNumericPointer(lib.initialize_custom(data), obj=[data])
+    return mattress.InitializedMatrix(lib.initialize_custom(data), obj=[data])
 ```
 
 If the initialized `tatami::Matrix` contains references to Python-managed data, e.g., in NumPy arrays,
 we must ensure that the data is not garbage-collected during the lifetime of the `tatami::Matrix`.
-This is achieved by storing a reference to the data in the `obj=` argument of the `TatamiNumericPointer`.
+This is achieved by storing a reference to the data in the `obj=` argument of the `InitializedMatrix`.

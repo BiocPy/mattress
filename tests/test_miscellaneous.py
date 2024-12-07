@@ -1,5 +1,5 @@
 import numpy as np
-from mattress import tatamize, TatamiNumericPointer
+from mattress import initialize, InitializedMatrix
 import delayedarray as da
 import scipy
 
@@ -10,14 +10,14 @@ __license__ = "MIT"
 
 def test_pointer_rewrap():
     y = np.random.rand(1000, 100)
-    ptr = tatamize(y)
-    reptr = tatamize(ptr)
+    ptr = initialize(y)
+    reptr = initialize(ptr)
     assert ptr.ptr == reptr.ptr
 
 
 def test_simple_stats():
     y = np.random.rand(1000, 100)
-    ptr = tatamize(y)
+    ptr = initialize(y)
 
     assert np.allclose(ptr.row_sums(), y.sum(axis=1))
     assert np.allclose(ptr.column_sums(), y.sum(axis=0))
@@ -47,7 +47,7 @@ def test_nan_counts():
     y[4, 3] = np.nan
     y[2, 3] = np.nan
 
-    ptr = tatamize(y)
+    ptr = initialize(y)
     rnan = ptr.row_nan_counts()
     cnan = ptr.column_nan_counts()
     assert rnan[0] == 1
@@ -56,7 +56,7 @@ def test_nan_counts():
 
 def test_grouped_stats():
     y = np.random.rand(20, 10)
-    ptr = tatamize(y)
+    ptr = initialize(y)
 
     cgrouping = ["D", "C", "B", "A", "A", "B", "C", "B", "A", "A"]
     rgrouping = []
@@ -77,7 +77,7 @@ def test_grouped_stats():
         if x == 1:
             keep.append(i)
     ref = y[keep, :]
-    rptr = tatamize(ref)
+    rptr = initialize(ref)
     assert (cmed[clev.index(1), :] == rptr.column_medians()).all()
 
     rsum, rlev = ptr.row_sums_by_group(cgrouping)
@@ -94,16 +94,16 @@ def test_grouped_stats():
         if x == 0:
             keep.append(i)
     ref = y[keep, :]
-    rptr = tatamize(ref)
+    rptr = initialize(ref)
     assert (csum[clev.index(0), :] == rptr.column_sums()).all()
 
 
 def test_DelayedArray_rewrap_dense():
     y = np.random.rand(1000, 100)
-    ptr = tatamize(y)
+    ptr = initialize(y)
 
     da2 = da.DelayedArray(ptr)
-    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert isinstance(da2.seed, InitializedMatrix)
     assert (np.array(da2) == y).all()
 
     # These all indirectly call extract_dense_array().
@@ -119,17 +119,17 @@ def test_DelayedArray_rewrap_dense():
 
 def test_DelayedArray_rewrap_sparse_csc():
     y = scipy.sparse.random(200, 500, 0.1).tocsc()
-    ptr = tatamize(y)
+    ptr = initialize(y)
 
     da2 = da.DelayedArray(ptr)
-    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert isinstance(da2.seed, InitializedMatrix)
     assert da.is_sparse(da2)
 
     full = da.to_sparse_array(da2)
     assert isinstance(full, da.SparseNdarray)
     assert (np.array(full) == y.toarray()).all()
 
-    # These all indirectly call TatamiNumericPointer's extract_dense_array().
+    # These all indirectly call InitializedMatrix's extract_dense_array().
     sub = da.extract_sparse_array(da2, (range(10, 50), range(0, 100, 2)))
     assert (np.array(sub) == y[10:50, 0:100:2].toarray()).all()
 
@@ -142,17 +142,17 @@ def test_DelayedArray_rewrap_sparse_csc():
 
 def test_DelayedArray_rewrap_sparse_csr():
     y = scipy.sparse.random(200, 500, 0.1).tocsr()
-    ptr = tatamize(y)
+    ptr = initialize(y)
 
     da2 = da.DelayedArray(ptr)
-    assert isinstance(da2.seed, TatamiNumericPointer)
+    assert isinstance(da2.seed, InitializedMatrix)
     assert da.is_sparse(da2)
 
     full = da.to_sparse_array(da2)
     assert isinstance(full, da.SparseNdarray)
     assert (np.array(full) == y.toarray()).all()
 
-    # These all indirectly call TatamiNumericPointer's extract_dense_array().
+    # These all indirectly call InitializedMatrix's extract_dense_array().
     sub = da.extract_sparse_array(da2, (range(10, 50), range(0, 100, 2)))
     assert (np.array(sub) == y[10:50, 0:100:2].toarray()).all()
 

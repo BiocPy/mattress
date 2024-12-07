@@ -1,4 +1,4 @@
-from mattress import tatamize
+from mattress import initialize
 import delayedarray
 import random
 import numpy
@@ -27,7 +27,7 @@ def simulate_SparseNdarray(nr, nc, dtype, itype):
 def test_SparseNdarray_data_type():
     for dt in [numpy.float64, numpy.float32, numpy.int64, numpy.int32, numpy.int16, numpy.int8, numpy.uint64, numpy.uint32, numpy.uint16, numpy.uint8]:
         m = simulate_SparseNdarray(100, 50, dt, numpy.int32)
-        ptr = tatamize(m)
+        ptr = initialize(m)
         assert all(ptr.row(0) == m[0, :])
         assert all(ptr.column(1) == m[:, 1])
 
@@ -35,18 +35,18 @@ def test_SparseNdarray_data_type():
 def test_SparseNdarray_index_type():
     for it in [numpy.int64, numpy.int32, numpy.int16, numpy.int8, numpy.uint64, numpy.uint32, numpy.uint16, numpy.uint8]:
         m = simulate_SparseNdarray(50, 100, numpy.float64, it)
-        ptr = tatamize(m)
+        ptr = initialize(m)
         assert all(ptr.row(0) == m[0, :])
         assert all(ptr.column(1) == m[:, 1])
 
 
 def test_SparseNdarray_empty():
     m = delayedarray.SparseNdarray((10, 2), [None, None], numpy.float64, numpy.int32)
-    ptr = tatamize(m)
+    ptr = initialize(m)
     assert all(ptr.row(0) == m[0, :])
     assert all(ptr.column(1) == m[:, 1])
 
     m = delayedarray.SparseNdarray((10, 2), None, numpy.float64, numpy.int32)
-    ptr = tatamize(m)
+    ptr = initialize(m)
     assert all(ptr.row(0) == m[0, :])
     assert all(ptr.column(1) == m[:, 1])

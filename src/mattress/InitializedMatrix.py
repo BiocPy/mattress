@@ -21,14 +21,14 @@ def _factorize(group):
     return levels, indices
 
 
-class TatamiNumericPointer:
-    """Pointer to a tatami numeric matrix allocated by C++ code. Instances of
-    this class should only be created by developers and used within package
+class InitializedMatrix:
+    """Pointer to an initialized tatami matrix, for use in C++ code. Instances
+    of this class should only be created by developers and used within package
     functions; this is done by fetching the :py:attr:`~ptr` attribute and
     passing it as a ``tatami::Matrix<double, uint32_t>`` in C++ code. Pointers
     are expected to be transient within a Python session; they should not be
     serialized, nor should they be visible to end users. Each instance will
-    automatically free the C++-allocated memory upon its own destruction.
+    automatically free the C++-allocated memory upon garbage collection.
     """
 
     def __init__(self, ptr: int, obj: list):
@@ -423,11 +423,11 @@ class TatamiNumericPointer:
 
 
 @delayedarray.is_sparse.register
-def is_sparse_tatami(x: TatamiNumericPointer):
+def is_sparse_tatami(x: InitializedMatrix):
     return x.sparse()
 
 
-def _extract_array(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...], sparse: bool): 
+def _extract_array(x: InitializedMatrix, subset: Tuple[Sequence[int], ...], sparse: bool): 
     shape = x.shape
     rnoop, rsub = _sanitize_subset(subset[0], shape[0])
     cnoop, csub = _sanitize_subset(subset[1], shape[1])
@@ -438,21 +438,21 @@ def _extract_array(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...], s
 
 
 @delayedarray.extract_dense_array.register
-def extract_dense_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> numpy.ndarray:
+def extract_dense_array_tatami(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> numpy.ndarray:
     """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
     return _extract_array(x, subset, False)
 
 @delayedarray.extract_sparse_array.register
-def extract_sparse_array_tatami(x: TatamiNumericPointer, subset: Tuple[Sequence[int], ...]) -> delayedarray.SparseNdarray:
+def extract_sparse_array_tatami(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> delayedarray.SparseNdarray:
     """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
     return _extract_array(x, subset, True)
 
 @delayedarray.is_masked.register
-def is_masked_tatami(x: TatamiNumericPointer) -> bool:
+def is_masked_tatami(x: InitializedMatrix) -> bool:
     """See :py:meth:`~delayedarray.is_masked.is_masked`."""
     return False
 
 @delayedarray.chunk_grid.register
-def chunk_grid_tatami(x: TatamiNumericPointer) -> bool:
+def chunk_grid_tatami(x: InitializedMatrix) -> bool:
     """See :py:meth:`~delayedarray.chunk_grid.chunk_grid`."""
     return delayedarray.chunk_shape_to_grid((1, 1), x.shape, cost_factor=1)
