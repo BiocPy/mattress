@@ -248,22 +248,590 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="mattress-package">
-<h1>mattress package<a class="headerlink" href="#mattress-package" title="Link to this heading">¶</a></h1>
+          <section id="module-mattress">
+<span id="mattress-package"></span><h1>mattress package<a class="headerlink" href="#module-mattress" title="Link to this heading">¶</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="mattress-tataminumericpointer-module">
-<h2>mattress.TatamiNumericPointer module<a class="headerlink" href="#mattress-tataminumericpointer-module" title="Link to this heading">¶</a></h2>
+<section id="module-mattress.InitializedMatrix">
+<span id="mattress-initializedmatrix-module"></span><h2>mattress.InitializedMatrix module<a class="headerlink" href="#module-mattress.InitializedMatrix" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">InitializedMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Pointer to an initialized <code class="docutils literal notranslate"><span class="pre">tatami::matrix</span></code>, for use in C++ code.
+Instances of this class should only be created by developers and used
+within package functions; this is done by fetching the <code class="xref py py-attr docutils literal notranslate"><span class="pre">ptr</span></code>
+attribute and passing it as a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr&lt;tatami::Matrix&lt;double,</span>
+<span class="pre">uint32_t&gt;</span> <span class="pre">&gt;</span></code> in C++ code, e.g., via pybind11. All <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code>
+instances are expected to be transient within a Python session; they should
+not be serialized, nor should they be visible to end users. Each instance
+will automatically free the C++-allocated memory upon garbage collection.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code>
+instance, created and wrapped by pybind11.</p></li>
+<li><p><strong>obj</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></span>) – List of Python objects to protect from garbage collection
+as their data is referenced by <code class="docutils literal notranslate"><span class="pre">ptr</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column">
+<span class="sig-name descname"><span class="pre">column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column" title="Link to this definition">¶</a></dt>
+<dd><p>Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not
+be used to iterate over the matrix in production code. (Do that in C++ instead.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>c</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Column to access.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Column from the matrix. This is always in double-precision,
+regardless of the underlying representation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_maxs">
+<span class="sig-name descname"><span class="pre">column_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_maxs" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column maxima.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column maxima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_medians">
+<span class="sig-name descname"><span class="pre">column_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_medians" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column medians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column medians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_medians_by_group">
+<span class="sig-name descname"><span class="pre">column_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_medians_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the column-wise median for each group of row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of row of the matrix,
+containing the group assignment for each row.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each row represents a
+group and contains the column-wise medians for that group, across
+all columns of the matrix; and a list containing the unique levels
+of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_mins">
+<span class="sig-name descname"><span class="pre">column_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_mins" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column minima.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column minima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_nan_counts">
+<span class="sig-name descname"><span class="pre">column_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_nan_counts" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to count the number of NaNs on each column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column NaN counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_ranges">
+<span class="sig-name descname"><span class="pre">column_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_ranges" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the column minima and maxima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_sums">
+<span class="sig-name descname"><span class="pre">column_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_sums" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column sums.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column sums.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_sums_by_group">
+<span class="sig-name descname"><span class="pre">column_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_sums_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the column-wise sum for each group of row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of row of the matrix,
+containing the group assignment for each row.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each row represents a
+group and contains the column-wise sums for that group, across all
+columns of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_variances">
+<span class="sig-name descname"><span class="pre">column_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_variances" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute column variances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of column variances.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.column_variances_by_group">
+<span class="sig-name descname"><span class="pre">column_variances_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.column_variances_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.column_variances_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the column-wise variance for each group of row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of row of the matrix,
+containing the group assignment for each row.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each row represents a
+group and contains the column-wise variances for that group, across all
+columns of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each row.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><span class="pre">dtype</span></a></em><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.dtype" title="Link to this definition">¶</a></dt>
+<dd><p>Type of the matrix, to masquerade as a NumPy-like object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.ncol">
+<span class="sig-name descname"><span class="pre">ncol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.ncol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.ncol" title="Link to this definition">¶</a></dt>
+<dd><p>Get number of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of columns.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.nrow">
+<span class="sig-name descname"><span class="pre">nrow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.nrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.nrow" title="Link to this definition">¶</a></dt>
+<dd><p>Get number of rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of rows.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row">
+<span class="sig-name descname"><span class="pre">row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row" title="Link to this definition">¶</a></dt>
+<dd><p>Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be
+used to iterate over the matrix in production code. (Do that in C++ instead.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Row to access.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Row from the matrix. This is always in double-precision,
+regardless of the underlying representation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_maxs">
+<span class="sig-name descname"><span class="pre">row_maxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_maxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_maxs" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row maxima.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row maxima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_medians">
+<span class="sig-name descname"><span class="pre">row_medians</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_medians"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_medians" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row medians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row medians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_medians_by_group">
+<span class="sig-name descname"><span class="pre">row_medians_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_medians_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_medians_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the row-wise median for each group of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of columns of the matrix,
+containing the group assignment for each column.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each column represents
+a group and contains the row-wise medians for that group, across all rows of the matrix;
+and a list containing the unique levels of <code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_mins">
+<span class="sig-name descname"><span class="pre">row_mins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_mins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_mins" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row minima.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row minima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_nan_counts">
+<span class="sig-name descname"><span class="pre">row_nan_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_nan_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_nan_counts" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to count the number of NaNs on each row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row NaN counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_ranges">
+<span class="sig-name descname"><span class="pre">row_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_ranges" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the row minima and maxima.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_sums">
+<span class="sig-name descname"><span class="pre">row_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_sums" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row sums.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row sums.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_sums_by_group">
+<span class="sig-name descname"><span class="pre">row_sums_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_sums_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_sums_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the row-wise sum for each group of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of columns of the matrix,
+containing the group assignment for each column.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each column represents
+a group and contains the row-wise sums for that group, across all
+rows of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_variances">
+<span class="sig-name descname"><span class="pre">row_variances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_variances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_variances" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute row variances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array of row variances.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.row_variances_by_group">
+<span class="sig-name descname"><span class="pre">row_variances_by_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.row_variances_by_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.row_variances_by_group" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience method to compute the row-wise variance for each group of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a></span>) – Sequence of length equal to the number of columns of the matrix,
+containing the group assignment for each column.</p></li>
+<li><p><strong>num_threads</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of threads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing a 2-dimensional array where each column represents
+a group and contains the row-wise variances for that group, across all
+rows of the matrix; and a list containing the unique levels of
+<code class="docutils literal notranslate"><span class="pre">group</span></code> represented by each column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.shape" title="Link to this definition">¶</a></dt>
+<dd><p>Shape of the matrix, to masquerade as a NumPy-like object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.sparse">
+<span class="sig-name descname"><span class="pre">sparse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.sparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.sparse" title="Link to this definition">¶</a></dt>
+<dd><p>Is the matrix sparse?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if matrix is sparse.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.chunk_grid">
+<span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">chunk_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#chunk_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.chunk_grid" title="Link to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.chunk_grid.chunk_grid" title="(in DelayedArray v0.5.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">chunk_grid()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.extract_dense_array">
+<span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">extract_dense_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#extract_dense_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.extract_dense_array" title="Link to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.extract_dense_array.extract_dense_array" title="(in DelayedArray v0.5.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_dense_array()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.extract_sparse_array">
+<span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">extract_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#extract_sparse_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.extract_sparse_array" title="Link to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.extract_sparse_array.extract_sparse_array" title="(in DelayedArray v0.5.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">extract_sparse_array()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.SparseNdarray.SparseNdarray" title="(in DelayedArray v0.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseNdarray</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.is_masked">
+<span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">is_masked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#is_masked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.is_masked" title="Link to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.is_masked.is_masked" title="(in DelayedArray v0.5.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_masked()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.InitializedMatrix.is_sparse">
+<span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">is_sparse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#is_sparse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.is_sparse" title="Link to this definition">¶</a></dt>
+<dd><p>See <a class="reference external" href="https://biocpy.github.io/DelayedArray/api/delayedarray.html#delayedarray.is_sparse.is_sparse" title="(in DelayedArray v0.5.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_sparse()</span></code></a>.</p>
+</dd></dl>
+
 </section>
-<section id="mattress-interface-module">
-<h2>mattress.interface module<a class="headerlink" href="#mattress-interface-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="mattress-utils-module">
-<h2>mattress.utils module<a class="headerlink" href="#mattress-utils-module" title="Link to this heading">¶</a></h2>
-</section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="module-mattress.initialize">
+<span id="mattress-initialize-module"></span><h2>mattress.initialize module<a class="headerlink" href="#module-mattress.initialize" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.initialize.initialize">
+<span class="sig-prename descclassname"><span class="pre">mattress.initialize.</span></span><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/initialize.html#initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.initialize.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize an <a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix" title="mattress.InitializedMatrix.InitializedMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">InitializedMatrix</span></code></a>
+from a Python matrix representation. This prepares the matrix for use in
+C++ code that can accept a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Any matrix-like object.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – if x is not supported.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix" title="mattress.InitializedMatrix.InitializedMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">InitializedMatrix</span></code></a></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pointer to tatami object.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -316,10 +884,49 @@
             <ul>
 <li><a class="reference internal" href="#">mattress package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#mattress-tataminumericpointer-module">mattress.TatamiNumericPointer module</a></li>
-<li><a class="reference internal" href="#mattress-interface-module">mattress.interface module</a></li>
-<li><a class="reference internal" href="#mattress-utils-module">mattress.utils module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-mattress.InitializedMatrix">mattress.InitializedMatrix module</a><ul>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code></a><ul>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.__init__"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_maxs"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_maxs()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_medians"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_medians()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_medians_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_medians_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_mins"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_mins()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_nan_counts"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_nan_counts()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_ranges"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_ranges()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_sums"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_sums()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_sums_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_sums_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_variances"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_variances()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.column_variances_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.column_variances_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.dtype"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.dtype</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ncol"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.ncol()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.nrow"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.nrow()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_maxs"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_maxs()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_medians"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_medians()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_medians_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_medians_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_mins"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_mins()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_nan_counts"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_nan_counts()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_ranges"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_ranges()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_sums"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_sums()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_sums_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_sums_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_variances"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_variances()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_variances_by_group"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_variances_by_group()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.shape"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.shape</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.sparse"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.sparse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.chunk_grid"><code class="docutils literal notranslate"><span class="pre">chunk_grid()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.extract_dense_array"><code class="docutils literal notranslate"><span class="pre">extract_dense_array()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.extract_sparse_array"><code class="docutils literal notranslate"><span class="pre">extract_sparse_array()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.is_masked"><code class="docutils literal notranslate"><span class="pre">is_masked()</span></code></a></li>
+<li><a class="reference internal" href="#mattress.InitializedMatrix.is_sparse"><code class="docutils literal notranslate"><span class="pre">is_sparse()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-mattress.initialize">mattress.initialize module</a><ul>
+<li><a class="reference internal" href="#mattress.initialize.initialize"><code class="docutils literal notranslate"><span class="pre">initialize()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -1,37 +1,26 @@
 mattress package
 ================
 
+.. automodule:: mattress
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
-mattress.TatamiNumericPointer module
-------------------------------------
+mattress.InitializedMatrix module
+---------------------------------
 
-.. automodule:: mattress.TatamiNumericPointer
+.. automodule:: mattress.InitializedMatrix
    :members:
    :undoc-members:
    :show-inheritance:
 
-mattress.interface module
--------------------------
+mattress.initialize module
+--------------------------
 
-.. automodule:: mattress.interface
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mattress.utils module
----------------------
-
-.. automodule:: mattress.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: mattress
+.. automodule:: mattress.initialize
    :members:
    :undoc-members:
    :show-inheritance:
