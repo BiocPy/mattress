@@ -46,7 +46,7 @@ def _initialize_numpy(x: numpy.ndarray) -> InitializedMatrix:
     x = _contiguify(x)
     return InitializedMatrix(
         ptr=lib.initialize_dense_matrix(x.shape[0], x.shape[1], x),
-        obj=[x]
+        objects=[x]
     )
 
 
@@ -60,7 +60,7 @@ if is_package_installed("scipy"):
         indtmp = x.indptr.astype(numpy.uint64, copy=False, order="A")
         return InitializedMatrix(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, True),
-            obj=[dtmp, itmp, indtmp],
+            objects=[dtmp, itmp, indtmp],
         )
 
 
@@ -76,7 +76,7 @@ if is_package_installed("scipy"):
         indtmp = x.indptr.astype(numpy.uint64, copy=False, order="A")
         return InitializedMatrix(
             ptr=lib.initialize_compressed_sparse_matrix(x.shape[0], x.shape[1], dtmp, itmp, indtmp, False),
-            obj=[dtmp, itmp, indtmp],
+            objects=[dtmp, itmp, indtmp],
         )
 
 
@@ -109,7 +109,7 @@ def _initialize_SparseNdarray(x: delayedarray.SparseNdarray) -> InitializedMatri
 
     return InitializedMatrix(
         ptr=lib.initialize_fragmented_sparse_matrix(x.shape[0], x.shape[1], dvecs, ivecs, False, x.dtype, x.index_dtype),
-        obj=[dvecs, ivecs]
+        objects=[dvecs, ivecs]
     )
 
 
@@ -121,7 +121,7 @@ def _initialize_delayed_unary_isometric_operation_simple(
     ptr = lib.initialize_delayed_unary_isometric_operation_simple(
         components.ptr, x.operation.encode("UTF-8")
     )
-    return InitializedMatrix(ptr, components.obj)
+    return InitializedMatrix(ptr, components.objects)
 
 
 @initialize.register
@@ -129,7 +129,7 @@ def _initialize_delayed_unary_isometric_operation_with_args(
     x: delayedarray.UnaryIsometricOpWithArgs,
 ) -> InitializedMatrix:
     components = initialize(x.seed)
-    obj = components.obj
+    obj = components.objects
 
     if isinstance(x.value, numpy.ndarray):
         contents = x.value.astype(numpy.float64, copy=False, order="A")
@@ -150,7 +150,6 @@ def _initialize_delayed_subset(
     x: delayedarray.Subset,
 ) -> InitializedMatrix:
     components = initialize(x.seed)
-    obj = components.obj
 
     for dim in range(2):
         current = x.subset[dim]
@@ -159,8 +158,7 @@ def _initialize_delayed_subset(
             ptr = lib.initialize_delayed_subset(
                 components.ptr, current, dim == 0
             )
-            obj.append(current)
-            components = InitializedMatrix(ptr, obj)
+            components = InitializedMatrix(ptr, components.objects + [current])
 
     return components
 
@@ -174,7 +172,7 @@ def _initialize_delayed_bind(
     for i, s in enumerate(x.seeds):
         components = initialize(s)
         collected.append(components.ptr)
-        objects += components.obj
+        objects += components.objects
 
     ptr = lib.initialize_delayed_bind(collected, x.along)
     return InitializedMatrix(ptr, objects)
@@ -188,7 +186,7 @@ def _initialize_delayed_transpose(
 
     if x.perm == (1, 0):
         ptr = lib.initialize_delayed_transpose(components.ptr)
-        components = InitializedMatrix(ptr, components.obj)
+        components = InitializedMatrix(ptr, components.objects)
 
     return components
 
@@ -204,7 +202,7 @@ def _initialize_delayed_binary_isometric_operation(
         lcomponents.ptr, rcomponents.ptr, x.operation.encode("UTF-8")
     )
 
-    return InitializedMatrix(ptr, lcomponents.obj + rcomponents.obj)
+    return InitializedMatrix(ptr, lcomponents.objects + rcomponents.objects)
 
 
 @initialize.register
@@ -222,4 +220,4 @@ def _initialize_delayed_round(
         components.ptr, "round".encode("UTF-8")
     )
 
-    return InitializedMatrix(ptr, components.obj)
+    return InitializedMatrix(ptr, components.objects)

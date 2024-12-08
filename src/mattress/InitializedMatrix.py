@@ -32,19 +32,19 @@ class InitializedMatrix:
     will automatically free the C++-allocated memory upon garbage collection.
     """
 
-    def __init__(self, ptr, obj: list):
+    def __init__(self, ptr, objects: list):
         """
         Args:
             ptr:
                 Shared pointer to a ``tatami::Matrix<double, uint32_t>``
                 instance, created and wrapped by pybind11.
 
-            obj:
+            objects:
                 List of Python objects (typically NumPy arrays) to protect from
                 garbage collection, as their data is referenced by ``ptr``.
         """
-        self.ptr = ptr
-        self.obj = obj
+        self._ptr = ptr
+        self._objects = objects
 
     def nrow(self) -> int:
         """Get number of rows.
@@ -65,7 +65,19 @@ class InitializedMatrix:
     @property
     def shape(self) -> Tuple[int, int]:
         """Shape of the matrix, to masquerade as a NumPy-like object."""
-        return lib.extract_dim(self.ptr)
+        return lib.extract_dim(self._ptr)
+
+    @property
+    def ptr(self): 
+        """Shared pointer to a ``tatami::Matrix<double, uint32_t>`` instance,
+        to be passed to C++ code via pybind11."""
+        return self._ptr
+
+    @property
+    def objects(self) -> list:
+        """List of objects to protect from garbage collection as they are
+        referenced by :py:attr:`~ptr`."""
+        return self._objects
 
     @property
     def dtype(self) -> numpy.dtype:
@@ -79,7 +91,7 @@ class InitializedMatrix:
             Contents of the underlying matrix.
         """
         shape = self.shape;
-        return _extract_array(self.ptr, (range(shape[0]), range(shape[1])), sparse=False)
+        return _extract_array(self._ptr, (range(shape[0]), range(shape[1])), sparse=False)
 
     def __DelayedArray_dask__(self) -> numpy.ndarray:
         """Enable the use of the poiners with dask.
@@ -100,7 +112,7 @@ class InitializedMatrix:
         Returns:
             True if matrix is sparse.
         """
-        return lib.extract_sparse(self.ptr); 
+        return lib.extract_sparse(self._ptr); 
 
     def row(self, r: int) -> numpy.ndarray:
         """Access a row from the tatami matrix. This method is primarily intended for troubleshooting and should not be
@@ -113,7 +125,7 @@ class InitializedMatrix:
             Row from the matrix. This is always in double-precision,
             regardless of the underlying representation.
         """
-        return lib.extract_row(self.ptr, r)
+        return lib.extract_row(self._ptr, r)
 
     def column(self, c: int) -> numpy.ndarray:
         """Access a column from the tatami matrix. This method is primarily intended for troubleshooting and should not
@@ -126,7 +138,7 @@ class InitializedMatrix:
             Column from the matrix. This is always in double-precision,
             regardless of the underlying representation.
         """
-        return lib.extract_column(self.ptr, c)
+        return lib.extract_column(self._ptr, c)
 
     def row_sums(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row sums.
@@ -137,7 +149,7 @@ class InitializedMatrix:
         Returns:
             Array of row sums.
         """
-        return lib.compute_row_sums(self.ptr, num_threads)
+        return lib.compute_row_sums(self._ptr, num_threads)
 
     def column_sums(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column sums.
@@ -148,7 +160,7 @@ class InitializedMatrix:
         Returns:
             Array of column sums.
         """
-        return lib.compute_column_sums(self.ptr, num_threads)
+        return lib.compute_column_sums(self._ptr, num_threads)
 
     def row_variances(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row variances.
@@ -159,7 +171,7 @@ class InitializedMatrix:
         Returns:
             Array of row variances.
         """
-        return lib.compute_row_variances(self.ptr, num_threads)
+        return lib.compute_row_variances(self._ptr, num_threads)
 
     def column_variances(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column variances.
@@ -170,7 +182,7 @@ class InitializedMatrix:
         Returns:
             Array of column variances.
         """
-        return lib.compute_column_variances(self.ptr, num_threads)
+        return lib.compute_column_variances(self._ptr, num_threads)
 
     def row_medians(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row medians.
@@ -181,7 +193,7 @@ class InitializedMatrix:
         Returns:
             Array of row medians.
         """
-        return lib.compute_row_medians(self.ptr, num_threads)
+        return lib.compute_row_medians(self._ptr, num_threads)
 
     def column_medians(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column medians.
@@ -192,7 +204,7 @@ class InitializedMatrix:
         Returns:
             Array of column medians.
         """
-        return lib.compute_column_medians(self.ptr, num_threads)
+        return lib.compute_column_medians(self._ptr, num_threads)
 
     def row_mins(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row minima.
@@ -203,7 +215,7 @@ class InitializedMatrix:
         Returns:
             Array of row minima.
         """
-        return lib.compute_row_mins(self.ptr, num_threads)
+        return lib.compute_row_mins(self._ptr, num_threads)
 
     def column_mins(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column minima.
@@ -214,7 +226,7 @@ class InitializedMatrix:
         Returns:
             Array of column minima.
         """
-        return lib.compute_column_mins(self.ptr, num_threads)
+        return lib.compute_column_mins(self._ptr, num_threads)
 
     def row_maxs(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute row maxima.
@@ -225,7 +237,7 @@ class InitializedMatrix:
         Returns:
             Array of row maxima.
         """
-        return lib.compute_row_maxs(self.ptr, num_threads)
+        return lib.compute_row_maxs(self._ptr, num_threads)
 
     def column_maxs(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to compute column maxima.
@@ -236,7 +248,7 @@ class InitializedMatrix:
         Returns:
             Array of column maxima.
         """
-        return lib.compute_column_maxs(self.ptr, num_threads)
+        return lib.compute_column_maxs(self._ptr, num_threads)
 
     def row_ranges(self, num_threads: int = 1) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """Convenience method to compute row ranges.
@@ -247,7 +259,7 @@ class InitializedMatrix:
         Returns:
             Tuple containing the row minima and maxima.
         """
-        return lib.compute_row_ranges(self.ptr, num_threads)
+        return lib.compute_row_ranges(self._ptr, num_threads)
 
     def column_ranges(self, num_threads: int = 1) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """Convenience method to compute column ranges.
@@ -258,7 +270,7 @@ class InitializedMatrix:
         Returns:
             Tuple containing the column minima and maxima.
         """
-        return lib.compute_column_ranges(self.ptr, num_threads)
+        return lib.compute_column_ranges(self._ptr, num_threads)
 
     def row_nan_counts(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to count the number of NaNs on each row.
@@ -269,7 +281,7 @@ class InitializedMatrix:
         Returns:
             Array of row NaN counts.
         """
-        return lib.compute_row_nan_counts(self.ptr, num_threads)
+        return lib.compute_row_nan_counts(self._ptr, num_threads)
 
     def column_nan_counts(self, num_threads: int = 1) -> numpy.ndarray:
         """Convenience method to count the number of NaNs on each column.
@@ -280,7 +292,7 @@ class InitializedMatrix:
         Returns:
             Array of column NaN counts.
         """
-        return lib.compute_column_nan_counts(self.ptr, num_threads)
+        return lib.compute_column_nan_counts(self._ptr, num_threads)
 
     def row_medians_by_group(
         self, group: Sequence, num_threads: int = 1
@@ -304,7 +316,7 @@ class InitializedMatrix:
                 "'group' should have length equal to the number of columns"
             )
 
-        output = lib.compute_row_medians_by_group(self.ptr, ind, num_threads);
+        output = lib.compute_row_medians_by_group(self._ptr, ind, num_threads);
         return output, lev
 
     def column_medians_by_group(
@@ -328,7 +340,7 @@ class InitializedMatrix:
         if len(ind) != self.nrow():
             raise ValueError("'group' should have length equal to the number of rows")
 
-        output = lib.compute_column_medians_by_group(self.ptr, ind, num_threads)
+        output = lib.compute_column_medians_by_group(self._ptr, ind, num_threads)
         return output.T, lev
 
     def row_sums_by_group(
@@ -354,7 +366,7 @@ class InitializedMatrix:
                 "'group' should have length equal to the number of columns"
             )
 
-        output = lib.compute_row_sums_by_group(self.ptr, ind, num_threads)
+        output = lib.compute_row_sums_by_group(self._ptr, ind, num_threads)
         return output, lev
 
     def column_sums_by_group(
@@ -378,7 +390,7 @@ class InitializedMatrix:
         if len(ind) != self.nrow():
             raise ValueError("'group' should have length equal to the number of rows")
 
-        output = lib.compute_column_sums_by_group(self.ptr, ind, num_threads)
+        output = lib.compute_column_sums_by_group(self._ptr, ind, num_threads)
         return output.T, lev
 
     def row_variances_by_group(
@@ -404,7 +416,7 @@ class InitializedMatrix:
                 "'group' should have length equal to the number of columns"
             )
 
-        output = lib.compute_row_variances_by_group(self.ptr, ind, num_threads)
+        output = lib.compute_row_variances_by_group(self._ptr, ind, num_threads)
         return output, lev
 
     def column_variances_by_group(
@@ -428,7 +440,7 @@ class InitializedMatrix:
         if len(ind) != self.nrow():
             raise ValueError("'group' should have length equal to the number of rows")
 
-        output = lib.compute_column_variances_by_group(self.ptr, ind, num_threads)
+        output = lib.compute_column_variances_by_group(self._ptr, ind, num_threads)
         return output.T, lev
 
 

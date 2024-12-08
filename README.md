@@ -166,7 +166,7 @@ import mattress
 @mattress.initialize.register
 def _initialize_my_custom_matrix(x: MyCustomMatrix):
     data = x.some_internal_data
-    return mattress.InitializedMatrix(lib.initialize_custom(data), obj=[data])
+    return mattress.InitializedMatrix(lib.initialize_custom(data), objects=[data])
 ```
 
 If the initialized `tatami::Matrix` contains references to Python-managed data, e.g., in NumPy arrays,
