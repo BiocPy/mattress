@@ -7,7 +7,7 @@ from biocutils.package_utils import is_package_installed
 
 from .InitializedMatrix import InitializedMatrix
 from . import lib_mattress as lib
-from .utils import _sanitize_subset, _contiguify
+from ._utils import _sanitize_subset, _contiguify
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -16,7 +16,9 @@ __license__ = "MIT"
 
 @singledispatch
 def initialize(x: Any) -> InitializedMatrix:
-    """Initialize a tatami::Matrix from a Python matrix representation.
+    """Initialize an :py:class:`~mattress.InitializedMatrix.InitializedMatrix`
+    from a Python matrix representation. This prepares the matrix for use in
+    C++ code that can accept a ``tatami::Matrix`` instance.
 
     Args:
         x: Any matrix-like object.

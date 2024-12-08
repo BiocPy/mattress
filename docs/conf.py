@@ -43,7 +43,7 @@ except FileNotFoundError:
 try:
     import sphinx
 
-    cmd_line = f"sphinx-apidoc --implicit-namespaces -f -o {output_dir} {module_dir}"
+    cmd_line = f"sphinx-apidoc -M --implicit-namespaces -f -o {output_dir} {module_dir} {module_dir}/lib_mattress.py"
 
     args = cmd_line.split(" ")
     if tuple(sphinx.__version__.split(".")) >= ("1", "7"):
@@ -75,9 +75,12 @@ extensions = [
     "sphinx_autodoc_typehints",
 ]
 
+autodoc_default_options = {
+    'special-members': '__init__'
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
-
 
 # Enable markdown
 extensions.append("myst_parser")

@@ -2,7 +2,7 @@ import numpy
 import delayedarray
 from . import lib_mattress as lib
 from typing import Tuple, Sequence
-from .utils import _sanitize_subset
+from ._utils import _sanitize_subset
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
@@ -22,16 +22,27 @@ def _factorize(group):
 
 
 class InitializedMatrix:
-    """Pointer to an initialized tatami matrix, for use in C++ code. Instances
-    of this class should only be created by developers and used within package
-    functions; this is done by fetching the :py:attr:`~ptr` attribute and
-    passing it as a ``tatami::Matrix<double, uint32_t>`` in C++ code. Pointers
-    are expected to be transient within a Python session; they should not be
-    serialized, nor should they be visible to end users. Each instance will
-    automatically free the C++-allocated memory upon garbage collection.
+    """Pointer to an initialized ``tatami::matrix``, for use in C++ code.
+    Instances of this class should only be created by developers and used
+    within package functions; this is done by fetching the :py:attr:`~ptr`
+    attribute and passing it as a ``std::shared_ptr<tatami::Matrix<double,
+    uint32_t> >`` in C++ code, e.g., via pybind11. All ``InitializedMatrix``
+    instances are expected to be transient within a Python session; they should
+    not be serialized, nor should they be visible to end users. Each instance
+    will automatically free the C++-allocated memory upon garbage collection.
     """
 
-    def __init__(self, ptr: int, obj: list):
+    def __init__(self, ptr, obj: list):
+        """
+        Args:
+            ptr:
+                Shared pointer to a ``tatami::Matrix<double, uint32_t>``
+                instance, created and wrapped by pybind11.
+
+            obj:
+                List of Python objects (typically NumPy arrays) to protect from
+                garbage collection, as their data is referenced by ``ptr``.
+        """
         self.ptr = ptr
         self.obj = obj
 
@@ -112,7 +123,7 @@ class InitializedMatrix:
             c: Column to access.
 
         Returns:
-            Column from the matrix. This is always in double-precisino,
+            Column from the matrix. This is always in double-precision,
             regardless of the underlying representation.
         """
         return lib.extract_column(self.ptr, c)
@@ -423,7 +434,8 @@ class InitializedMatrix:
 
 
 @delayedarray.is_sparse.register
-def is_sparse_tatami(x: InitializedMatrix):
+def is_sparse(x: InitializedMatrix):
+    """See :py:func:`~delayedarray.is_sparse.is_sparse`."""
     return x.sparse()
 
 
@@ -438,21 +450,21 @@ def _extract_array(x: InitializedMatrix, subset: Tuple[Sequence[int], ...], spar
 
 
 @delayedarray.extract_dense_array.register
-def extract_dense_array_tatami(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> numpy.ndarray:
-    """See :py:meth:`~delayedarray.extract_dense_array.extract_dense_array`."""
+def extract_dense_array(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> numpy.ndarray:
+    """See :py:func:`~delayedarray.extract_dense_array.extract_dense_array`."""
     return _extract_array(x, subset, False)
 
 @delayedarray.extract_sparse_array.register
-def extract_sparse_array_tatami(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> delayedarray.SparseNdarray:
-    """See :py:meth:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
+def extract_sparse_array(x: InitializedMatrix, subset: Tuple[Sequence[int], ...]) -> delayedarray.SparseNdarray:
+    """See :py:func:`~delayedarray.extract_sparse_array.extract_sparse_array`."""
     return _extract_array(x, subset, True)
 
 @delayedarray.is_masked.register
-def is_masked_tatami(x: InitializedMatrix) -> bool:
-    """See :py:meth:`~delayedarray.is_masked.is_masked`."""
+def is_masked(x: InitializedMatrix) -> bool:
+    """See :py:func:`~delayedarray.is_masked.is_masked`."""
     return False
 
 @delayedarray.chunk_grid.register
-def chunk_grid_tatami(x: InitializedMatrix) -> bool:
-    """See :py:meth:`~delayedarray.chunk_grid.chunk_grid`."""
+def chunk_grid(x: InitializedMatrix) -> bool:
+    """See :py:func:`~delayedarray.chunk_grid.chunk_grid`."""
     return delayedarray.chunk_shape_to_grid((1, 1), x.shape, cost_factor=1)
