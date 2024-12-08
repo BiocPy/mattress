@@ -396,7 +396,7 @@ Once this is done, all calls to <code class="docutils literal notranslate"><span
 <span class="nd">@mattress</span><span class="o">.</span><span class="n">initialize</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span> <span class="nf">_initialize_my_custom_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">MyCustomMatrix</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">some_internal_data</span>
-    <span class="k">return</span> <span class="n">mattress</span><span class="o">.</span><span class="n">InitializedMatrix</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_custom</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">obj</span><span class="o">=</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">mattress</span><span class="o">.</span><span class="n">InitializedMatrix</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">initialize_custom</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="n">data</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>If the initialized <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code> contains references to Python-managed data, e.g., in NumPy arrays,

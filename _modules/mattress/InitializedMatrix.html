@@ -246,7 +246,7 @@
 <span class="kn">import</span> <span class="nn">delayedarray</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib_mattress</span> <span class="k">as</span> <span class="n">lib</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_sanitize_subset</span>
+<span class="kn">from</span> <span class="nn">._utils</span> <span class="kn">import</span> <span class="n">_sanitize_subset</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;ltla, jkanche&quot;</span>
@@ -280,19 +280,19 @@
 
 <div class="viewcode-block" id="InitializedMatrix.__init__">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.InitializedMatrix.InitializedMatrix.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            ptr:</span>
 <span class="sd">                Shared pointer to a ``tatami::Matrix&lt;double, uint32_t&gt;``</span>
 <span class="sd">                instance, created and wrapped by pybind11.</span>
 
-<span class="sd">            obj:</span>
-<span class="sd">                List of Python objects to protect from garbage collection</span>
-<span class="sd">                as their data is referenced by ``ptr``.</span>
+<span class="sd">            objects:</span>
+<span class="sd">                List of Python objects (typically NumPy arrays) to protect from</span>
+<span class="sd">                garbage collection, as their data is referenced by ``ptr``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span> <span class="o">=</span> <span class="n">ptr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">objects</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.nrow">
@@ -320,7 +320,19 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape of the matrix, to masquerade as a NumPy-like object.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_dim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_dim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shared pointer to a ``tatami::Matrix&lt;double, uint32_t&gt;`` instance,</span>
+<span class="sd">        to be passed to C++ code via pybind11.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of objects to protect from garbage collection as they are</span>
+<span class="sd">        referenced by :py:attr:`~ptr`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
@@ -334,7 +346,7 @@
 <span class="sd">            Contents of the underlying matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">;</span>
-        <span class="k">return</span> <span class="n">_extract_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_extract_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__DelayedArray_dask__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable the use of the poiners with dask.</span>
@@ -357,7 +369,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            True if matrix is sparse.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">);</span> </div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_sparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">);</span> </div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row">
@@ -373,7 +385,7 @@
 <span class="sd">            Row from the matrix. This is always in double-precision,</span>
 <span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column">
@@ -389,7 +401,7 @@
 <span class="sd">            Column from the matrix. This is always in double-precision,</span>
 <span class="sd">            regardless of the underlying representation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">extract_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_sums">
@@ -403,7 +415,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_sums">
@@ -417,7 +429,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column sums.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_variances">
@@ -431,7 +443,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_variances">
@@ -445,7 +457,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column variances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_medians">
@@ -459,7 +471,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row medians.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_medians">
@@ -473,7 +485,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column medians.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_mins">
@@ -487,7 +499,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row minima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_mins">
@@ -501,7 +513,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column minima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_mins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_maxs">
@@ -515,7 +527,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_maxs">
@@ -529,7 +541,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_maxs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_ranges">
@@ -543,7 +555,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Tuple containing the row minima and maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_ranges">
@@ -557,7 +569,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Tuple containing the column minima and maxima.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_ranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_nan_counts">
@@ -571,7 +583,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of row NaN counts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.column_nan_counts">
@@ -585,7 +597,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Array of column NaN counts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_nan_counts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InitializedMatrix.row_medians_by_group">
@@ -612,7 +624,7 @@
                 <span class="s2">&quot;&#39;group&#39; should have length equal to the number of columns&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">);</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_medians_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">);</span>
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">lev</span></div>
 
 
@@ -639,7 +651,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;group&#39; should have length equal to the number of rows&quot;</span><span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_medians_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lev</span></div>
 
 
@@ -668,7 +680,7 @@
                 <span class="s2">&quot;&#39;group&#39; should have length equal to the number of columns&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_sums_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">lev</span></div>
 
 
@@ -695,7 +707,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;group&#39; should have length equal to the number of rows&quot;</span><span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_sums_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lev</span></div>
 
 
@@ -724,7 +736,7 @@
                 <span class="s2">&quot;&#39;group&#39; should have length equal to the number of columns&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_row_variances_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">lev</span></div>
 
 
@@ -751,7 +763,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;group&#39; should have length equal to the number of rows&quot;</span><span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">compute_column_variances_by_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lev</span></div>
 </div>
 
