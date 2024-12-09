@@ -34,10 +34,10 @@ pip install mattress
 This will give us access to the various **tatami** headers to compile your C++ code.
 2. Call `mattress.initialize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
 This returns an `InitializedMatrix` with a `ptr` property that contains a pointer to the C++ matrix.
-3. Pass `ptr` to **pybind11**-wrapped C++ code as a `std::shared_ptr<tatami::Matrix<double, uint32_t> >`,
+3. Pass `ptr` to **pybind11**-wrapped C++ code as a [shared pointer to a `tatami::Matrix`](lib/src/def.h),
 which can be interrogated as described in the [**tatami** documentation](https://github.com/tatami-inc/tatami).
 
-So, for example, the C++ code in our downstream package might look like this:
+So, for example, the C++ code in our downstream package might look like the code below:
 
 ```cpp
 int do_something(const std::shared_ptr<tatami::Matrix<double, uint32_t> >& mat) {
@@ -60,6 +60,8 @@ def do_something(x):
     tmat = initialize(x)
     return lib.do_something(tmat.ptr)
 ```
+
+See [`lib/src/def.h`](lib/src/def.h) for the exact definitions of the interface types used by **mattress**.
 
 ## Supported matrices
 
@@ -156,7 +158,7 @@ It is also more convenient as we don't have to carry around `x` to generate `ini
 ## Extending `initialize()`
 
 Developers of downstream packages can extend **mattress** to custom matrix classes by registering new methods with the `initialize()` generic.
-This should return a `InitializedMatrix` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance.
+This should return a `InitializedMatrix` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance (see [`lib/src/def.h`](lib/src/def.h) for types).
 Once this is done, all calls to `initialize()` will be able to handle matrices of the newly registered types.
 
 ```python
@@ -171,4 +173,4 @@ def _initialize_my_custom_matrix(x: MyCustomMatrix):
 
 If the initialized `tatami::Matrix` contains references to Python-managed data, e.g., in NumPy arrays,
 we must ensure that the data is not garbage-collected during the lifetime of the `tatami::Matrix`.
-This is achieved by storing a reference to the data in the `obj=` argument of the `InitializedMatrix`.
+This is achieved by storing a reference to the data in the `objects=` argument of the `InitializedMatrix`.
