@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="mattress" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="Contents" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Python bindings for tatami - mattress unknown documentation</title>
@@ -199,7 +199,7 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributions &amp; Help</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
@@ -280,10 +280,10 @@ Downstream packages can use <strong>mattress</strong> to develop C++ extensions 
 This will give us access to the various <strong>tatami</strong> headers to compile your C++ code.</p></li>
 <li><p>Call <code class="docutils literal notranslate"><span class="pre">mattress.initialize()</span></code> on a Python matrix object to wrap it in a <strong>tatami</strong>-compatible C++ representation.
 This returns an <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> with a <code class="docutils literal notranslate"><span class="pre">ptr</span></code> property that contains a pointer to the C++ matrix.</p></li>
-<li><p>Pass <code class="docutils literal notranslate"><span class="pre">ptr</span></code> to <strong>pybind11</strong>-wrapped C++ code as a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr&lt;tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span> <span class="pre">&gt;</span></code>,
+<li><p>Pass <code class="docutils literal notranslate"><span class="pre">ptr</span></code> to <strong>pybind11</strong>-wrapped C++ code as a <a class="reference internal" href="#lib/src/def.h"><span class="xref myst">shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code></span></a>,
 which can be interrogated as described in the <a class="reference external" href="https://github.com/tatami-inc/tatami"><strong>tatami</strong> documentation</a>.</p></li>
 </ol>
-<p>So, for example, the C++ code in our downstream package might look like this:</p>
+<p>So, for example, the C++ code in our downstream package might look like the code below:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">do_something</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tatami</span><span class="o">::</span><span class="n">Matrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">mat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Do something with the tatami interface.</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
@@ -303,6 +303,7 @@ which can be interrogated as described in the <a class="reference external" href
     <span class="k">return</span> <span class="n">lib</span><span class="o">.</span><span class="n">do_something</span><span class="p">(</span><span class="n">tmat</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>See <a class="reference internal" href="#lib/src/def.h"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">lib/src/def.h</span></code></span></a> for the exact definitions of the interface types used by <strong>mattress</strong>.</p>
 </section>
 <section id="supported-matrices">
 <h2>Supported matrices<a class="headerlink" href="#supported-matrices" title="Link to this heading">¶</a></h2>
@@ -388,7 +389,7 @@ It is also more convenient as we don’t have to carry around <code class="docut
 <section id="extending-initialize">
 <h2>Extending <code class="docutils literal notranslate"><span class="pre">initialize()</span></code><a class="headerlink" href="#extending-initialize" title="Link to this heading">¶</a></h2>
 <p>Developers of downstream packages can extend <strong>mattress</strong> to custom matrix classes by registering new methods with the <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> generic.
-This should return a <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> object containing a shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code> instance.
+This should return a <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> object containing a shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code> instance (see <a class="reference internal" href="#lib/src/def.h"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">lib/src/def.h</span></code></span></a> for types).
 Once this is done, all calls to <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> will be able to handle matrices of the newly registered types.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib_downstream</span> <span class="k">as</span> <span class="n">lib</span>
 <span class="kn">import</span> <span class="nn">mattress</span>
@@ -401,7 +402,7 @@ Once this is done, all calls to <code class="docutils literal notranslate"><span
 </div>
 <p>If the initialized <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code> contains references to Python-managed data, e.g., in NumPy arrays,
 we must ensure that the data is not garbage-collected during the lifetime of the <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code>.
-This is achieved by storing a reference to the data in the <code class="docutils literal notranslate"><span class="pre">obj=</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code>.</p>
+This is achieved by storing a reference to the data in the <code class="docutils literal notranslate"><span class="pre">objects=</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code>.</p>
 </section>
 </section>
 
