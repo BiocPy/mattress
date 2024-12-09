@@ -29,12 +29,15 @@ pip install mattress
 ```
 
 **mattress** is intended for Python package developers writing C++ extensions that operate on matrices.
+The aim is to allow package C++ code to accept [all types of matrix representations](#supported-matrices) without requiring re-compilation of the associated code.
+To achive this:
 
-1. Add `assorthead.includes()` to the `include_dirs=` of your `Extension()` definition in `setup.py`.
-This will give us access to the various **tatami** headers to compile your C++ code.
+1. Add `assorthead.includes()` to the compiler's include path. 
+This can be done through `include_dirs=` of the `Extension()` definition in `setup.py`
+or by adding a `target_include_directories()` in CMake, depending on the build system.
 2. Call `mattress.initialize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
 This returns an `InitializedMatrix` with a `ptr` property that contains a pointer to the C++ matrix.
-3. Pass `ptr` to **pybind11**-wrapped C++ code as a [shared pointer to a `tatami::Matrix`](lib/src/def.h),
+3. Pass `ptr` to [**pybind11**](https://pybind11.readthedocs.io)-wrapped C++ code as a [shared pointer to a `tatami::Matrix`](lib/src/def.h),
 which can be interrogated as described in the [**tatami** documentation](https://github.com/tatami-inc/tatami).
 
 So, for example, the C++ code in our downstream package might look like the code below:
@@ -104,10 +107,17 @@ xd = numpy.log1p(xd * 5)
 init = initialize(xd)
 ```
 
-To be added:
+Sparse arrays from **delayedarray** are also supported:
 
-- File-backed matrices from the [**FileBackedArray**](https://github.com/BiocPy/FileBackedArray) package, including HDF5 and TileDB.
-- Arbitrary Python matrices?
+```python
+import delayedarray
+from numpy import float64, int32
+from mattress import initialize
+sa = delayedarray.SparseNdarray((50, 20), None, dtype=float64, index_dtype=int32)
+init = initialize(sa)
+```
+
+See [below](#extending-to-custom-matrices) to extend `initialize()` to custom matrix representations. 
 
 ## Utility methods
 
@@ -157,7 +167,7 @@ It is also more convenient as we don't have to carry around `x` to generate `ini
 
 ## Extending `initialize()`
 
-Developers of downstream packages can extend **mattress** to custom matrix classes by registering new methods with the `initialize()` generic.
+Developers can extend **mattress** to custom matrix classes by registering new methods with the `initialize()` generic.
 This should return a `InitializedMatrix` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance (see [`lib/src/def.h`](lib/src/def.h) for types).
 Once this is done, all calls to `initialize()` will be able to handle matrices of the newly registered types.
 
