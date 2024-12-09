@@ -12,7 +12,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-13, macos-latest] # at some point get this to work on windows-2019
+        # macos-13 is an intel runner, higher macos's are apple silicon
+        # At some point, maybe get this to work on windows-latest
+        os: [ubuntu-latest, macos-13, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
