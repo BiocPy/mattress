@@ -274,13 +274,16 @@ Downstream packages can use <strong>mattress</strong> to develop C++ extensions 
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>mattress
 </pre></div>
 </div>
-<p><strong>mattress</strong> is intended for Python package developers writing C++ extensions that operate on matrices.</p>
+<p><strong>mattress</strong> is intended for Python package developers writing C++ extensions that operate on matrices.
+The aim is to allow package C++ code to accept <a class="reference internal" href="#supported-matrices"><span class="xref myst">all types of matrix representations</span></a> without requiring re-compilation of the associated code.
+To achive this:</p>
 <ol class="arabic simple">
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">assorthead.includes()</span></code> to the <code class="docutils literal notranslate"><span class="pre">include_dirs=</span></code> of your <code class="docutils literal notranslate"><span class="pre">Extension()</span></code> definition in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.
-This will give us access to the various <strong>tatami</strong> headers to compile your C++ code.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">assorthead.includes()</span></code> to the compiler’s include path.
+This can be done through <code class="docutils literal notranslate"><span class="pre">include_dirs=</span></code> of the <code class="docutils literal notranslate"><span class="pre">Extension()</span></code> definition in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>
+or by adding a <code class="docutils literal notranslate"><span class="pre">target_include_directories()</span></code> in CMake, depending on the build system.</p></li>
 <li><p>Call <code class="docutils literal notranslate"><span class="pre">mattress.initialize()</span></code> on a Python matrix object to wrap it in a <strong>tatami</strong>-compatible C++ representation.
 This returns an <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> with a <code class="docutils literal notranslate"><span class="pre">ptr</span></code> property that contains a pointer to the C++ matrix.</p></li>
-<li><p>Pass <code class="docutils literal notranslate"><span class="pre">ptr</span></code> to <strong>pybind11</strong>-wrapped C++ code as a <a class="reference internal" href="#lib/src/def.h"><span class="xref myst">shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code></span></a>,
+<li><p>Pass <code class="docutils literal notranslate"><span class="pre">ptr</span></code> to <a class="reference external" href="https://pybind11.readthedocs.io"><strong>pybind11</strong></a>-wrapped C++ code as a <a class="reference internal" href="#lib/src/def.h"><span class="xref myst">shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix</span></code></span></a>,
 which can be interrogated as described in the <a class="reference external" href="https://github.com/tatami-inc/tatami"><strong>tatami</strong> documentation</a>.</p></li>
 </ol>
 <p>So, for example, the C++ code in our downstream package might look like the code below:</p>
@@ -340,11 +343,15 @@ which can be interrogated as described in the <a class="reference external" href
 <span class="n">init</span> <span class="o">=</span> <span class="n">initialize</span><span class="p">(</span><span class="n">xd</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To be added:</p>
-<ul class="simple">
-<li><p>File-backed matrices from the <a class="reference external" href="https://github.com/BiocPy/FileBackedArray"><strong>FileBackedArray</strong></a> package, including HDF5 and TileDB.</p></li>
-<li><p>Arbitrary Python matrices?</p></li>
-</ul>
+<p>Sparse arrays from <strong>delayedarray</strong> are also supported:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">delayedarray</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">float64</span><span class="p">,</span> <span class="n">int32</span>
+<span class="kn">from</span> <span class="nn">mattress</span> <span class="kn">import</span> <span class="n">initialize</span>
+<span class="n">sa</span> <span class="o">=</span> <span class="n">delayedarray</span><span class="o">.</span><span class="n">SparseNdarray</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span> <span class="n">index_dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">init</span> <span class="o">=</span> <span class="n">initialize</span><span class="p">(</span><span class="n">sa</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#extending-to-custom-matrices"><span class="xref myst">below</span></a> to extend <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> to custom matrix representations.</p>
 </section>
 <section id="utility-methods">
 <h2>Utility methods<a class="headerlink" href="#utility-methods" title="Link to this heading">¶</a></h2>
@@ -388,7 +395,7 @@ It is also more convenient as we don’t have to carry around <code class="docut
 </section>
 <section id="extending-initialize">
 <h2>Extending <code class="docutils literal notranslate"><span class="pre">initialize()</span></code><a class="headerlink" href="#extending-initialize" title="Link to this heading">¶</a></h2>
-<p>Developers of downstream packages can extend <strong>mattress</strong> to custom matrix classes by registering new methods with the <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> generic.
+<p>Developers can extend <strong>mattress</strong> to custom matrix classes by registering new methods with the <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> generic.
 This should return a <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> object containing a shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code> instance (see <a class="reference internal" href="#lib/src/def.h"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">lib/src/def.h</span></code></span></a> for types).
 Once this is done, all calls to <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> will be able to handle matrices of the newly registered types.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lib_downstream</span> <span class="k">as</span> <span class="n">lib</span>
