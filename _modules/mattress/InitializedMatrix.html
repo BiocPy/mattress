@@ -270,30 +270,28 @@
 <span class="k">class</span> <span class="nc">InitializedMatrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pointer to an initialized ``tatami::matrix``, for use in C++ code.</span>
 <span class="sd">    Instances of this class should only be created by developers and used</span>
-<span class="sd">    within package functions; this is done by fetching the :py:attr:`~ptr`</span>
-<span class="sd">    attribute and passing it as a ``std::shared_ptr&lt;tatami::Matrix&lt;double,</span>
-<span class="sd">    uint32_t&gt; &gt;`` in C++ code, e.g., via pybind11. All ``InitializedMatrix``</span>
-<span class="sd">    instances are expected to be transient within a Python session; they should</span>
-<span class="sd">    not be serialized, nor should they be visible to end users. Each instance</span>
-<span class="sd">    will automatically free the C++-allocated memory upon garbage collection.</span>
+<span class="sd">    within package functions; this is done by passing the :py:attr:`~ptr`</span>
+<span class="sd">    address to C++ and casting it to a ``mattress::BoundMatrix``. All</span>
+<span class="sd">    ``InitializedMatrix`` instances are expected to be transient within a</span>
+<span class="sd">    Python session; they should not be serialized, nor should they be visible</span>
+<span class="sd">    to end users. Each instance will automatically free the C++-allocated</span>
+<span class="sd">    memory upon garbage collection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="InitializedMatrix.__init__">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.InitializedMatrix.InitializedMatrix.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">,</span> <span class="n">objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptr</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            ptr:</span>
-<span class="sd">                Shared pointer to a ``tatami::Matrix&lt;double, uint32_t&gt;``</span>
-<span class="sd">                instance, created and wrapped by pybind11.</span>
-
-<span class="sd">            objects:</span>
-<span class="sd">                List of Python objects (typically NumPy arrays) to protect from</span>
-<span class="sd">                garbage collection, as their data is referenced by ``ptr``.</span>
+<span class="sd">                Address of a ``mattress::BoundMatrix`` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span> <span class="o">=</span> <span class="n">ptr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">objects</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span> <span class="o">=</span> <span class="n">ptr</span></div>
 
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Free the instance at :py:attr:`~ptr`.&quot;&quot;&quot;</span>
+        <span class="n">lib</span><span class="o">.</span><span class="n">free_mattress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InitializedMatrix.nrow">
 <a class="viewcode-back" href="../../api/mattress.html#mattress.InitializedMatrix.InitializedMatrix.nrow">[docs]</a>
@@ -324,15 +322,9 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shared pointer to a ``tatami::Matrix&lt;double, uint32_t&gt;`` instance,</span>
-<span class="sd">        to be passed to C++ code via pybind11.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An address to a ``mattress::BoundMatrix`` instance, to be passed</span>
+<span class="sd">        as a ``uintptr_t`` to C++ for casting.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ptr</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of objects to protect from garbage collection as they are</span>
-<span class="sd">        referenced by :py:attr:`~ptr`.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>

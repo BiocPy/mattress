@@ -250,6 +250,20 @@
         <article role="main" id="furo-main-content">
           <section id="module-mattress">
 <span id="mattress-package"></span><h1>mattress package<a class="headerlink" href="#module-mattress" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mattress.includes">
+<span class="sig-prename descclassname"><span class="pre">mattress.</span></span><span class="sig-name descname"><span class="pre">includes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress.html#includes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.includes" title="Link to this definition">¶</a></dt>
+<dd><p>Provides access to mattress C++ headers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to a directory containing the mattress header.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
@@ -257,27 +271,22 @@
 <span id="mattress-initializedmatrix-module"></span><h2>mattress.InitializedMatrix module<a class="headerlink" href="#module-mattress.InitializedMatrix" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">InitializedMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objects</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mattress.InitializedMatrix.</span></span><span class="sig-name descname"><span class="pre">InitializedMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Pointer to an initialized <code class="docutils literal notranslate"><span class="pre">tatami::matrix</span></code>, for use in C++ code.
 Instances of this class should only be created by developers and used
-within package functions; this is done by fetching the <a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ptr" title="mattress.InitializedMatrix.InitializedMatrix.ptr"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ptr</span></code></a>
-attribute and passing it as a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr&lt;tatami::Matrix&lt;double,</span>
-<span class="pre">uint32_t&gt;</span> <span class="pre">&gt;</span></code> in C++ code, e.g., via pybind11. All <code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code>
-instances are expected to be transient within a Python session; they should
-not be serialized, nor should they be visible to end users. Each instance
-will automatically free the C++-allocated memory upon garbage collection.</p>
+within package functions; this is done by passing the <a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ptr" title="mattress.InitializedMatrix.InitializedMatrix.ptr"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ptr</span></code></a>
+address to C++ and casting it to a <code class="docutils literal notranslate"><span class="pre">mattress::BoundMatrix</span></code>. All
+<code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code> instances are expected to be transient within a
+Python session; they should not be serialized, nor should they be visible
+to end users. Each instance will automatically free the C++-allocated
+memory upon garbage collection.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objects</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.__init__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mattress/InitializedMatrix.html#InitializedMatrix.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.__init__" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – Shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code>
-instance, created and wrapped by pybind11.</p></li>
-<li><p><strong>objects</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></span>) – List of Python objects (typically NumPy arrays) to protect from
-garbage collection, as their data is referenced by <code class="docutils literal notranslate"><span class="pre">ptr</span></code>.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>ptr</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Address of a <code class="docutils literal notranslate"><span class="pre">mattress::BoundMatrix</span></code> instance.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -527,17 +536,10 @@ columns of the matrix; and a list containing the unique levels of
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.objects">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></em><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.objects" title="Link to this definition">¶</a></dt>
-<dd><p>List of objects to protect from garbage collection as they are
-referenced by <a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ptr" title="mattress.InitializedMatrix.InitializedMatrix.ptr"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ptr</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="mattress.InitializedMatrix.InitializedMatrix.ptr">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ptr</span></span><a class="headerlink" href="#mattress.InitializedMatrix.InitializedMatrix.ptr" title="Link to this definition">¶</a></dt>
-<dd><p>Shared pointer to a <code class="docutils literal notranslate"><span class="pre">tatami::Matrix&lt;double,</span> <span class="pre">uint32_t&gt;</span></code> instance,
-to be passed to C++ code via pybind11.</p>
+<dd><p>An address to a <code class="docutils literal notranslate"><span class="pre">mattress::BoundMatrix</span></code> instance, to be passed
+as a <code class="docutils literal notranslate"><span class="pre">uintptr_t</span></code> to C++ for casting.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -897,6 +899,7 @@ C++ code that can accept a <code class="docutils literal notranslate"><span clas
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">mattress package</a><ul>
+<li><a class="reference internal" href="#mattress.includes"><code class="docutils literal notranslate"><span class="pre">includes()</span></code></a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-mattress.InitializedMatrix">mattress.InitializedMatrix module</a><ul>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix</span></code></a><ul>
@@ -915,7 +918,6 @@ C++ code that can accept a <code class="docutils literal notranslate"><span clas
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.dtype"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.dtype</span></code></a></li>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ncol"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.ncol()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.nrow"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.nrow()</span></code></a></li>
-<li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.objects"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.objects</span></code></a></li>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.ptr"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.ptr</span></code></a></li>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row()</span></code></a></li>
 <li><a class="reference internal" href="#mattress.InitializedMatrix.InitializedMatrix.row_maxs"><code class="docutils literal notranslate"><span class="pre">InitializedMatrix.row_maxs()</span></code></a></li>
