@@ -1,4 +1,4 @@
-#include "def.h"
+#include "mattress.h"
 #include "utils.h"
 
 #include "tatami/tatami.hpp"
@@ -11,7 +11,7 @@
 #include <cstdint>
 
 template<typename Type_>
-MatrixPointer initialize_dense_matrix_internal(MatrixIndex nr, MatrixIndex nc, const pybind11::array& buffer) {
+uintptr_t initialize_dense_matrix_internal(mattress::MatrixIndex nr, mattress::MatrixIndex nc, const pybind11::array& buffer) {
     size_t expected = static_cast<size_t>(nr) * static_cast<size_t>(nc);
     if (buffer.size() != expected) {
         throw std::runtime_error("unexpected size for the dense matrix buffer");
@@ -27,12 +27,16 @@ MatrixPointer initialize_dense_matrix_internal(MatrixIndex nr, MatrixIndex nc, c
         throw std::runtime_error("numpy array contents should be contiguous");
     }
 
+    auto tmp = std::make_unique<mattress::BoundMatrix>();
     auto ptr = get_numpy_array_data<Type_>(buffer);
     tatami::ArrayView<Type_> view(ptr, expected);
-    return MatrixPointer(new tatami::DenseMatrix<MatrixValue, MatrixIndex, decltype(view)>(nr, nc, std::move(view), byrow));
+    tmp->ptr.reset(new tatami::DenseMatrix<mattress::MatrixValue, mattress::MatrixIndex, decltype(view)>(nr, nc, std::move(view), byrow));
+    tmp->original = buffer;
+
+    return mattress::cast(tmp.release());
 }
 
-MatrixPointer initialize_dense_matrix(MatrixIndex nr, MatrixIndex nc, const pybind11::array& buffer) {
+uintptr_t initialize_dense_matrix(mattress::MatrixIndex nr, mattress::MatrixIndex nc, const pybind11::array& buffer) {
     // Don't make any kind of copy of buffer to coerce the type or storage
     // order, as this should be handled by the caller; we don't provide any
     // protection from GC for the arrays referenced by the views. 
@@ -61,7 +65,7 @@ MatrixPointer initialize_dense_matrix(MatrixIndex nr, MatrixIndex nc, const pybi
     }
 
     throw std::runtime_error("unrecognized array type '" + std::string(dtype.kind(), 1) + std::to_string(dtype.itemsize()) + "' for dense matrix initialization");
-    return MatrixPointer();
+    return 0;
 }
 
 void init_dense_matrix(pybind11::module& m) {

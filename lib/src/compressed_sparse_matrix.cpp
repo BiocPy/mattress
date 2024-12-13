@@ -1,4 +1,4 @@
-#include "def.h"
+#include "mattress.h"
 #include "utils.h"
 
 #include "pybind11/pybind11.h"
@@ -9,7 +9,14 @@
 #include <cstdint>
 
 template<typename Data_, typename Index_>
-MatrixPointer initialize_compressed_sparse_matrix_raw(MatrixIndex nr, MatrixValue nc, const pybind11::array& data, const pybind11::array& index, const pybind11::array& indptr, bool byrow) {
+uintptr_t initialize_compressed_sparse_matrix_raw(
+    mattress::MatrixIndex nr,
+    mattress::MatrixValue nc,
+    const pybind11::array& data,
+    const pybind11::array& index,
+    const pybind11::array& indptr,
+    bool byrow)
+{
     size_t expected = (byrow ? nr : nc);
     if (indptr.size() != expected + 1) {
         throw std::runtime_error("unexpected length for the 'indptr' array");
@@ -27,12 +34,28 @@ MatrixPointer initialize_compressed_sparse_matrix_raw(MatrixIndex nr, MatrixValu
     }
     tatami::ArrayView<Index_> iview(check_contiguous_numpy_array<Index_>(index), nz);
 
-    typedef tatami::CompressedSparseMatrix<MatrixValue, MatrixIndex, decltype(dview), decltype(iview), decltype(pview)> Spmat;
-    return MatrixPointer(new Spmat(nr, nc, std::move(dview), std::move(iview), std::move(pview), byrow));
+    auto tmp = std::make_unique<mattress::BoundMatrix>();
+    typedef tatami::CompressedSparseMatrix<mattress::MatrixValue, mattress::MatrixIndex, decltype(dview), decltype(iview), decltype(pview)> Spmat;
+    tmp->ptr.reset(new Spmat(nr, nc, std::move(dview), std::move(iview), std::move(pview), byrow));
+
+    pybind11::tuple objects(3);
+    objects[0] = data;
+    objects[1] = index;
+    objects[2] = indptr;
+    tmp->original = std::move(objects);
+
+    return mattress::cast(tmp.release());
 }
 
 template<typename Data_>
-MatrixPointer initialize_compressed_sparse_matrix_itype(MatrixIndex nr, MatrixValue nc, const pybind11::array& data, const pybind11::array& index, const pybind11::array& indptr, bool byrow) {
+uintptr_t initialize_compressed_sparse_matrix_itype(
+    mattress::MatrixIndex nr,
+    mattress::MatrixValue nc,
+    const pybind11::array& data,
+    const pybind11::array& index,
+    const pybind11::array& indptr,
+    bool byrow)
+{
     auto dtype = index.dtype();
 
     if (dtype.is(pybind11::dtype::of<int64_t>())) {
@@ -54,10 +77,17 @@ MatrixPointer initialize_compressed_sparse_matrix_itype(MatrixIndex nr, MatrixVa
     }
 
     throw std::runtime_error("unrecognized index type '" + std::string(dtype.kind(), 1) + std::to_string(dtype.itemsize()) + "' for compressed sparse matrix initialization");
-    return MatrixPointer();
+    return 0;
 }
 
-MatrixPointer initialize_compressed_sparse_matrix(MatrixIndex nr, MatrixValue nc, const pybind11::array& data, const pybind11::array& index, const pybind11::array& indptr, bool byrow) {
+uintptr_t initialize_compressed_sparse_matrix(
+    mattress::MatrixIndex nr,
+    mattress::MatrixValue nc,
+    const pybind11::array& data,
+    const pybind11::array& index,
+    const pybind11::array& indptr,
+    bool byrow)
+{
     auto dtype = data.dtype();
 
     if (dtype.is(pybind11::dtype::of<double>())) {
@@ -83,7 +113,7 @@ MatrixPointer initialize_compressed_sparse_matrix(MatrixIndex nr, MatrixValue nc
     }
 
     throw std::runtime_error("unrecognized data type '" + std::string(dtype.kind(), 1) + std::to_string(dtype.itemsize()) + "' for compressed sparse matrix initialization");
-    return MatrixPointer();
+    return 0;
 }
 
 void init_compressed_sparse_matrix(pybind11::module& m) {

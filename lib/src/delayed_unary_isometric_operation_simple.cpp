@@ -1,4 +1,4 @@
-#include "def.h"
+#include "mattress.h"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -8,69 +8,78 @@
 #include <string>
 #include <cstdint>
 
-MatrixPointer initialize_delayed_unary_isometric_operation_simple(MatrixPointer ptr, const std::string& op) {
+template<typename Operation_>
+uintptr_t convert(uintptr_t ptr, Operation_ op) {
+    auto bound = mattress::cast(ptr);
+    auto tmp = std::make_unique<mattress::BoundMatrix>();
+    tmp->ptr = tatami::make_DelayedUnaryIsometricOperation(bound->ptr, std::move(op));
+    tmp->original = bound->original;
+    return mattress::cast(tmp.release());
+}
+
+uintptr_t initialize_delayed_unary_isometric_operation_simple(uintptr_t ptr, const std::string& op) {
     if (op == "abs") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAbs<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAbs<>());
     } else if (op == "sign") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricSign<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricSign<>());
 
     } else if (op == "log") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricLog<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricLog<>());
     } else if (op == "log2") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricLog(2.0));
+        return convert(ptr, tatami::DelayedUnaryIsometricLog(2.0));
     } else if (op == "log10") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricLog(10.0));
+        return convert(ptr, tatami::DelayedUnaryIsometricLog(10.0));
     } else if (op == "log1p") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricLog1p<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricLog1p<>());
 
     } else if (op == "sqrt") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricSqrt<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricSqrt<>());
 
     } else if (op == "ceil") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricCeiling<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricCeiling<>());
     } else if (op == "floor") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricFloor<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricFloor<>());
     } else if (op == "trunc") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricTrunc<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricTrunc<>());
     } else if (op == "round") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricRound<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricRound<>());
 
     } else if (op == "exp") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricExp<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricExp<>());
     } else if (op == "expm1") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricExpm1<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricExpm1<>());
 
     } else if (op == "cos") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricCos<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricCos<>());
     } else if (op == "sin") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricSin<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricSin<>());
     } else if (op == "tan") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricTan<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricTan<>());
 
     } else if (op == "cosh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricCosh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricCosh<>());
     } else if (op == "sinh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricSinh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricSinh<>());
     } else if (op == "tanh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricTanh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricTanh<>());
 
     } else if (op == "arccos") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAcos<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAcos<>());
     } else if (op == "arcsin") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAsin<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAsin<>());
     } else if (op == "arctan") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAtan<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAtan<>());
 
     } else if (op == "arccosh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAcosh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAcosh<>());
     } else if (op == "arcsinh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAsinh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAsinh<>());
     } else if (op == "arctanh") {
-        return tatami::make_DelayedUnaryIsometricOperation(std::move(ptr), tatami::DelayedUnaryIsometricAtanh<>());
+        return convert(ptr, tatami::DelayedUnaryIsometricAtanh<>());
     }
 
     throw std::runtime_error("unknown binary isometric operation '" + op + "'");
-    return MatrixPointer();
+    return 0;
 }
 
 void init_delayed_unary_isometric_operation_simple(pybind11::module& m) {
