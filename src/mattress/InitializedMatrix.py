@@ -24,27 +24,25 @@ def _factorize(group):
 class InitializedMatrix:
     """Pointer to an initialized ``tatami::matrix``, for use in C++ code.
     Instances of this class should only be created by developers and used
-    within package functions; this is done by fetching the :py:attr:`~ptr`
-    attribute and passing it as a ``std::shared_ptr<tatami::Matrix<double,
-    uint32_t> >`` in C++ code, e.g., via pybind11. All ``InitializedMatrix``
-    instances are expected to be transient within a Python session; they should
-    not be serialized, nor should they be visible to end users. Each instance
-    will automatically free the C++-allocated memory upon garbage collection.
+    within package functions; this is done by passing the :py:attr:`~ptr`
+    address to C++ and casting it to a ``mattress::BoundMatrix``. All
+    ``InitializedMatrix`` instances are expected to be transient within a
+    Python session; they should not be serialized, nor should they be visible
+    to end users. Each instance will automatically free the C++-allocated
+    memory upon garbage collection.
     """
 
-    def __init__(self, ptr, objects: list):
+    def __init__(self, ptr: int):
         """
         Args:
             ptr:
-                Shared pointer to a ``tatami::Matrix<double, uint32_t>``
-                instance, created and wrapped by pybind11.
-
-            objects:
-                List of Python objects (typically NumPy arrays) to protect from
-                garbage collection, as their data is referenced by ``ptr``.
+                Address of a ``mattress::BoundMatrix`` instance.
         """
         self._ptr = ptr
-        self._objects = objects
+
+    def __del__(self):
+        """Free the instance at :py:attr:`~ptr`."""
+        lib.free_mattress(self._ptr)
 
     def nrow(self) -> int:
         """Get number of rows.
@@ -69,15 +67,9 @@ class InitializedMatrix:
 
     @property
     def ptr(self): 
-        """Shared pointer to a ``tatami::Matrix<double, uint32_t>`` instance,
-        to be passed to C++ code via pybind11."""
+        """An address to a ``mattress::BoundMatrix`` instance, to be passed
+        as a ``uintptr_t`` to C++ for casting."""
         return self._ptr
-
-    @property
-    def objects(self) -> list:
-        """List of objects to protect from garbage collection as they are
-        referenced by :py:attr:`~ptr`."""
-        return self._objects
 
     @property
     def dtype(self) -> numpy.dtype:

@@ -17,3 +17,14 @@ finally:
 
 from .initialize import initialize
 from .InitializedMatrix import InitializedMatrix
+
+def includes() -> str:
+    """Provides access to mattress C++ headers.
+
+    Returns:
+        str: Path to a directory containing the mattress header.
+    """
+    import os
+    import inspect
+    dirname = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    return os.path.join(dirname, "include")

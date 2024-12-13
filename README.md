@@ -32,22 +32,26 @@ pip install mattress
 The aim is to allow package C++ code to accept [all types of matrix representations](#supported-matrices) without requiring re-compilation of the associated code.
 To achive this:
 
-1. Add `assorthead.includes()` to the compiler's include path. 
+1. Add `mattress.includes()` and `assorthead.includes()` to the compiler's include path. 
 This can be done through `include_dirs=` of the `Extension()` definition in `setup.py`
 or by adding a `target_include_directories()` in CMake, depending on the build system.
 2. Call `mattress.initialize()` on a Python matrix object to wrap it in a **tatami**-compatible C++ representation. 
 This returns an `InitializedMatrix` with a `ptr` property that contains a pointer to the C++ matrix.
-3. Pass `ptr` to [**pybind11**](https://pybind11.readthedocs.io)-wrapped C++ code as a [shared pointer to a `tatami::Matrix`](lib/src/def.h),
+3. Pass `ptr` to C++ code as a `uintptr_t` referencing a `tatami::Matrix`,
 which can be interrogated as described in the [**tatami** documentation](https://github.com/tatami-inc/tatami).
 
 So, for example, the C++ code in our downstream package might look like the code below:
 
 ```cpp
-int do_something(const std::shared_ptr<tatami::Matrix<double, uint32_t> >& mat) {
+#include "mattress.h"
+
+int do_something(uintptr_t ptr) {
+    const auto& mat_ptr = mattress::cast(ptr)->ptr;
     // Do something with the tatami interface.
     return 1;
 }
 
+// Assuming we're using pybind11, but any framework that can accept a uintptr_t is fine.
 PYBIND11_MODULE(lib_downstream, m) {
     m.def("do_something", &do_something);
 }
@@ -64,7 +68,7 @@ def do_something(x):
     return lib.do_something(tmat.ptr)
 ```
 
-See [`lib/src/def.h`](lib/src/def.h) for the exact definitions of the interface types used by **mattress**.
+Check out [the included header](src/mattress/include/mattress.h) for more definitions.
 
 ## Supported matrices
 
@@ -165,10 +169,10 @@ init2 = initialize(wrapped)
 This is more efficient as it re-uses the `InitializedMatrix` already generated from `x`.
 It is also more convenient as we don't have to carry around `x` to generate `init2`.
 
-## Extending `initialize()`
+## Extending to custom matrices
 
 Developers can extend **mattress** to custom matrix classes by registering new methods with the `initialize()` generic.
-This should return a `InitializedMatrix` object containing a shared pointer to a `tatami::Matrix<double, uint32_t>` instance (see [`lib/src/def.h`](lib/src/def.h) for types).
+This should return a `InitializedMatrix` object containing a `uintptr_t` cast from a pointer to a `tatami::Matrix` (see [the included header](src/mattress/include/mattress.h)).
 Once this is done, all calls to `initialize()` will be able to handle matrices of the newly registered types.
 
 ```python
@@ -178,9 +182,9 @@ import mattress
 @mattress.initialize.register
 def _initialize_my_custom_matrix(x: MyCustomMatrix):
     data = x.some_internal_data
-    return mattress.InitializedMatrix(lib.initialize_custom(data), objects=[data])
+    return mattress.InitializedMatrix(lib.initialize_custom(data))
 ```
 
 If the initialized `tatami::Matrix` contains references to Python-managed data, e.g., in NumPy arrays,
 we must ensure that the data is not garbage-collected during the lifetime of the `tatami::Matrix`.
-This is achieved by storing a reference to the data in the `objects=` argument of the `InitializedMatrix`.
+This is achieved by storing a reference to the data in the `original` member of the `mattress::BoundMatrix`.

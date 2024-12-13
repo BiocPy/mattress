@@ -24,6 +24,7 @@ pybind11_add_module(mattress
 )
 
 target_include_directories(mattress PRIVATE "${ASSORTHEAD_INCLUDE_DIR}")
+target_include_directories(mattress PRIVATE "../src/mattress/include")
 
 set_property(TARGET mattress PROPERTY CXX_STANDARD 17)
 

@@ -1,4 +1,4 @@
-#include "def.h"
+#include "mattress.h"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -6,8 +6,12 @@
 #include <string>
 #include <cstdint>
 
-MatrixPointer initialize_delayed_transpose(MatrixPointer mat) {
-    return tatami::make_DelayedTranspose(std::move(mat));
+uintptr_t initialize_delayed_transpose(uintptr_t ptr) {
+    auto bound = mattress::cast(ptr);
+    auto tmp = std::make_unique<mattress::BoundMatrix>();
+    tmp->ptr = tatami::make_DelayedTranspose(bound->ptr);
+    tmp->original = bound->original;
+    return mattress::cast(tmp.release());
 }
 
 void init_delayed_transpose(pybind11::module& m) {

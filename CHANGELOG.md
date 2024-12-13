@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.1
+
+- Cast to/from `uintptr_t` so that downstream packages aren't forced to rely on **pybind11** converters.
+- Added a `mattress.h` to ensure developers use the correct types during casting.
+- Shift all responsibility for GC protection to C++ via the new `mattress::BoundMatrix` class.
+
 ## Version 0.3.0
 
 - Switch to **pybind11** for the Python/C++ interface, with CMake for the build system.
