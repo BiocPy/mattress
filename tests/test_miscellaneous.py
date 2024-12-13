@@ -101,7 +101,6 @@ def test_grouped_stats():
 def test_DelayedArray_rewrap_dense():
     y = np.random.rand(1000, 100)
     ptr = initialize(y)
-    print(ptr.shape)
 
     da2 = da.DelayedArray(ptr)
     assert isinstance(da2.seed, InitializedMatrix)
@@ -109,7 +108,6 @@ def test_DelayedArray_rewrap_dense():
 
     # These all indirectly call extract_dense_array().
     sub = da2[10:50, 0:100:2]
-    print(np.array(sub))
     assert (np.array(sub) == y[10:50, 0:100:2]).all()
 
     sub = da2[10:50, :]
