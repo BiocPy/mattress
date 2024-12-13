@@ -161,3 +161,11 @@ def test_DelayedArray_rewrap_sparse_csr():
 
     sub = da.extract_sparse_array(da2, (range(y.shape[0]), range(10, 50)))
     assert (np.array(sub) == y[:, 10:50].toarray()).all()
+
+
+def test_includes():
+    import os
+    import mattress
+    path = mattress.includes()
+    assert isinstance(path, str)
+    assert os.path.exists(os.path.join(path, "mattress.h"))

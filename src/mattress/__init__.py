@@ -18,11 +18,12 @@ finally:
 from .initialize import initialize
 from .InitializedMatrix import InitializedMatrix
 
+
 def includes() -> str:
-    """Provides access to mattress C++ headers.
+    """Provides access to the ``mattress.h`` C++ header.
 
     Returns:
-        str: Path to a directory containing the mattress header.
+        Path to a directory containing the header.
     """
     import os
     import inspect
